@@ -7,6 +7,8 @@ from pathlib import Path
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from core.embeddings.presets import DEFAULT_EMBEDDING_PRESET
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -30,11 +32,19 @@ class Settings(BaseSettings):
 
     # Retrieval
     top_k: int = 5
-    embedding_dim: int = 384
+    embedding_dim: int = 384  # hash embedder only; ST models infer dimension
 
-    # Embeddings — set EMBEDDING_PROVIDER=hash|openai|sentence_transformers
-    embedding_provider: str = "hash"
-    embedding_model: str = "text-embedding-3-small"
+    # Embeddings — sentence_transformers (local) | hash | openai
+    embedding_provider: str = Field(
+        default="sentence_transformers",
+        validation_alias="EMBEDDING_PROVIDER",
+    )
+    embedding_preset: str = Field(
+        default=DEFAULT_EMBEDDING_PRESET,
+        validation_alias="EMBEDDING_PRESET",
+    )
+    embedding_model: str = Field(default="", validation_alias="EMBEDDING_MODEL")
+    embedding_batch_size: int = Field(default=32, validation_alias="EMBEDDING_BATCH_SIZE")
 
     # Vector store — set VECTOR_STORE=memory|faiss (faiss stub for now)
     vector_store: str = "memory"

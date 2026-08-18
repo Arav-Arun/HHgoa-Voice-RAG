@@ -100,6 +100,24 @@ def _cmd_bench(args: argparse.Namespace) -> None:
     )
 
 
+def _cmd_eval_compare(args: argparse.Namespace) -> None:
+    from eval.compare import compare_embedding_presets
+
+    if not args.eval_file.exists():
+        raise SystemExit(f"Eval file not found: {args.eval_file}")
+
+    results = compare_embedding_presets(
+        tuple(args.presets),
+        args.eval_file,
+        top_k=args.top_k,
+        ingest_limit=args.ingest_limit,
+        ingest_split=args.split,
+        baseline=args.baseline,
+        bootstrap_resamples=args.bootstrap_resamples,
+    )
+    print(json.dumps(results, indent=2))
+
+
 def _cmd_serve(args: argparse.Namespace) -> None:
     import uvicorn
 
@@ -200,7 +218,7 @@ def main(argv: list[str] | None = None) -> None:
     p_eval_build.add_argument(
         "--limit",
         type=int,
-        default=100,
+        default=500,
         help="Max query examples per language (same slice as ingest default)",
     )
     p_eval_build.add_argument(
@@ -209,6 +227,47 @@ def main(argv: list[str] | None = None) -> None:
         help="Use the full split (no per-language limit)",
     )
     p_eval_build.set_defaults(func=_cmd_eval_build)
+
+    p_eval_compare = sub.add_parser(
+        "eval-compare",
+        help="Re-ingest and compare embedding presets (per-language metrics)",
+    )
+    p_eval_compare.add_argument(
+        "--presets",
+        nargs="+",
+        default=["e5-small", "indic-sbert", "bge-m3"],
+        choices=["e5-small", "indic-sbert", "bge-m3"],
+    )
+    p_eval_compare.add_argument(
+        "--eval-file",
+        type=Path,
+        default=Path("data/eval/queries.jsonl"),
+    )
+    p_eval_compare.add_argument("--top-k", type=int, default=5)
+    p_eval_compare.add_argument(
+        "--ingest-limit",
+        type=int,
+        default=500,
+        help="MS MARCO-XI examples per language to index for each preset",
+    )
+    p_eval_compare.add_argument(
+        "--baseline",
+        default="e5-small",
+        choices=["e5-small", "indic-sbert", "bge-m3"],
+        help="Preset to compare others against in bootstrap tests",
+    )
+    p_eval_compare.add_argument(
+        "--bootstrap-resamples",
+        type=int,
+        default=10_000,
+        help="Bootstrap resamples for paired significance tests",
+    )
+    p_eval_compare.add_argument(
+        "--split",
+        choices=["train", "validation"],
+        default="validation",
+    )
+    p_eval_compare.set_defaults(func=_cmd_eval_compare)
 
     p_bench = sub.add_parser("bench", help="Benchmark query latency")
     p_bench.add_argument("--query", default="भारत की राजधानी क्या है?")

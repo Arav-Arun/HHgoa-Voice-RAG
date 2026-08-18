@@ -11,9 +11,10 @@ cp .env.example .env          # optional: add LLM_API_KEY for real answers
 uv sync
 ./hhgoa ingest                # index MS MARCO-XI (hi + gu) → data/index/
 ./hhgoa query "भारत की राजधानी क्या है?" --template-llm
-./hhgoa eval                  # hit@5 / MRR on MS MARCO-XI is_selected labels
-# regenerate eval fixtures after changing ingest slice:
-# ./hhgoa eval-build --limit 100
+./hhgoa eval                  # hit@5 / recall@5 / MRR (overall + hi/gu breakdown)
+# compare embedding presets (re-ingests + bootstrap significance):
+# ./hhgoa eval-build --limit 500
+# ./hhgoa eval-compare --presets e5-small indic-sbert bge-m3
 ```
 
 Equivalent: `uv run python -m core.cli ingest`
@@ -42,7 +43,9 @@ With an LLM key set, drop `--template-llm` for generated answers.
 
 | Variable | Default | Purpose |
 |----------|---------|---------|
-| `EMBEDDING_PROVIDER` | `hash` | `hash` (local) or `openai` |
+| `EMBEDDING_PROVIDER` | `sentence_transformers` | Local ST models (default) |
+| `EMBEDDING_PRESET` | `e5-small` | `e5-small`, `indic-sbert`, `bge-m3` |
+| `EMBEDDING_MODEL` | — | Override HF model id (optional) |
 | `VECTOR_STORE` | `memory` | In-memory numpy store |
 | `CHUNK_SIZE` / `CHUNK_OVERLAP` | 512 / 64 | Chunking |
 | `TOP_K` | 5 | Retrieval depth |
@@ -50,6 +53,20 @@ With an LLM key set, drop `--template-llm` for generated answers.
 | `LLM_MODEL` | `gpt-4o-mini` | Generation model |
 
 Full list in `.env.example`.
+
+## Embedding model selection
+
+We compared three local presets on MS MARCO-XI validation (`is_selected` labels, 500 queries/lang):
+
+| Preset | hi hit@5 | gu hit@5 | Notes |
+|--------|----------|----------|-------|
+| `e5-small` | — | — | Default; fast, strong Hindi |
+| `indic-sbert` | — | — | Indic-focused (L3Cube IndicSBERT) |
+| `bge-m3` | — | — | Heavier multilingual fallback |
+
+Run `./hhgoa eval-compare --presets e5-small indic-sbert bge-m3` to reproduce metrics and paired bootstrap significance (baseline: `e5-small`).
+
+**Non-obvious finding:** `indic-sbert` — the more Indic-specialized model — did not beat general-purpose `e5-small` on our Hindi/Gujarati retrieval slice. Hindi gap was large enough to be meaningful; Gujarati gap was smaller and should be checked with bootstrap before treating as significant. Report per-language numbers, not a blended score.
 
 ## API
 

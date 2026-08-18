@@ -30,7 +30,7 @@ query / api  →  core/retriever  →  core/llm  →  answer
 ## Components (defaults)
 
 - **Chunker:** `FixedSizeChunker` — character windows with overlap
-- **Embedder:** `HashEmbedder` — local, no API key (swap to `openai` when ready)
+- **Embedder:** `SentenceTransformerEmbedder` — local models via `EMBEDDING_PRESET` (`e5-small` default; applies `query:` / `passage:` prefixes for E5)
 - **Store:** `MemoryVectorStore` — numpy cosine search, persists under `data/index/`
 - **Retriever:** `DenseRetriever`
 - **LLM:** `TemplateLLM` if no key; `OpenAICompatibleLLM` when `LLM_API_KEY` is set

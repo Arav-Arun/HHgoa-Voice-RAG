@@ -6,6 +6,8 @@ from core.chunking.fixed import FixedSizeChunker
 from core.config import Settings, get_settings
 from core.embeddings.hash import HashEmbedder
 from core.embeddings.openai import OpenAIEmbedder
+from core.embeddings.presets import DEFAULT_EMBEDDING_PRESET, EMBEDDING_PRESETS
+from core.embeddings.sentence_transformers import SentenceTransformerEmbedder
 from core.llm.openai_compat import OpenAICompatibleLLM
 from core.llm.template import TemplateLLM
 from core.rag.pipeline import RAGPipeline
@@ -17,6 +19,21 @@ def build_embedder(settings: Settings | None = None):
     settings = settings or get_settings()
     provider = settings.embedding_provider.lower()
 
+    if provider in {"sentence_transformers", "local", "st"}:
+        preset_name = settings.embedding_preset.lower()
+        preset = EMBEDDING_PRESETS.get(preset_name)
+        model_name = settings.embedding_model or (preset.model if preset else "")
+        if not model_name:
+            raise ValueError(
+                "Set EMBEDDING_MODEL or a known EMBEDDING_PRESET "
+                f"({', '.join(sorted(EMBEDDING_PRESETS))})"
+            )
+        return SentenceTransformerEmbedder(
+            model_name=model_name,
+            query_prefix=preset.query_prefix if preset else "",
+            passage_prefix=preset.passage_prefix if preset else "",
+            batch_size=settings.embedding_batch_size,
+        )
     if provider == "openai":
         return OpenAIEmbedder(
             api_key=settings.llm_api_key,
@@ -28,7 +45,7 @@ def build_embedder(settings: Settings | None = None):
 
     raise ValueError(
         f"Unknown EMBEDDING_PROVIDER={settings.embedding_provider!r}. "
-        "Supported: hash, openai"
+        "Supported: sentence_transformers, hash, openai"
     )
 
 
