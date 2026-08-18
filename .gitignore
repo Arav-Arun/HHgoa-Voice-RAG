@@ -1,0 +1,85 @@
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+.venv/
+venv/
+ENV/
+
+# uv / tooling
+.uv/
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Model caches & weights
+.cache/
+models/
+*.pt
+*.pth
+*.onnx
+*.bin
+*.safetensors
+*.gguf
+*.ckpt
+huggingface/
+transformers_cache/
+torch_cache/
+whisper_cache/
+sentence_transformers/
+
+# Large data / indexes (keep layout; commit samples + eval fixtures)
+data/*
+!data/.gitkeep
+!data/samples/
+!data/samples/**
+!data/eval/
+!data/eval/**
+*.faiss
+*.index
+*.ann
+*.npy
+*.npz
+*.parquet
+*.arrow
+*.mmap
+*.sqlite
+*.db
+*.duckdb
+
+# Audio / media dumps
+*.wav
+*.mp3
+*.flac
+*.ogg
+*.m4a
+
+# Logs & temp
+logs/
+*.log
+tmp/
+temp/
+*.tmp

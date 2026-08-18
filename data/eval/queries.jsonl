@@ -1,0 +1,4 @@
+{"query": "भारत की राजधानी क्या है?", "language": "hi", "expected_doc_ids": ["hi_capital"]}
+{"query": "गोवा कहाँ है?", "language": "hi", "expected_doc_ids": ["hi_goa"]}
+{"query": "ભારતની રાજધાની કઈ છે?", "language": "gu", "expected_doc_ids": ["gu_capital"]}
+{"query": "ગોવા વિશે શું જાણવા મળે?", "language": "gu", "expected_doc_ids": ["gu_goa"]}
