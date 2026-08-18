@@ -9,11 +9,30 @@ from pathlib import Path
 
 
 def _cmd_ingest(args: argparse.Namespace) -> None:
-    from ingest.indexer import ingest_path
-
     source = args.source
+    if str(source).lower() == "msmarco":
+        from ingest.indexer import ingest_msmarco_xi
+
+        languages = tuple(args.languages)
+        limit = None if args.all else args.limit
+        count = ingest_msmarco_xi(
+            languages=languages,
+            split=args.split,
+            limit=limit,
+        )
+        lang_label = ", ".join(languages)
+        limit_label = "all examples" if args.all else f"{limit} examples/lang"
+        print(
+            f"Ingested {count} chunks from ai4bharat/MSMARCO-XI "
+            f"({lang_label}, {args.split}, {limit_label})"
+        )
+        return
+
     if not source.exists():
         raise SystemExit(f"Source not found: {source}")
+
+    from ingest.indexer import ingest_path
+
     count = ingest_path(source, language=args.language)
     print(f"Ingested {count} chunks from {source}")
 
@@ -85,9 +104,34 @@ def main(argv: list[str] | None = None) -> None:
         "source",
         type=Path,
         nargs="?",
-        default=Path("data/samples"),
+        default=Path("msmarco"),
+        help="Path to file/dir, or 'msmarco' for ai4bharat/MSMARCO-XI (hi + gu)",
     )
     p_ingest.add_argument("--language", choices=["hi", "gu"], default=None)
+    p_ingest.add_argument(
+        "--languages",
+        nargs="+",
+        choices=["hi", "gu"],
+        default=["hi", "gu"],
+        help="MS MARCO-XI languages to ingest (default: hi gu)",
+    )
+    p_ingest.add_argument(
+        "--split",
+        choices=["train", "validation"],
+        default="validation",
+        help="MS MARCO-XI split (default: validation)",
+    )
+    p_ingest.add_argument(
+        "--limit",
+        type=int,
+        default=100,
+        help="Max query examples per language for msmarco (default: 100)",
+    )
+    p_ingest.add_argument(
+        "--all",
+        action="store_true",
+        help="Ingest the full msmarco split (no per-language limit)",
+    )
     p_ingest.set_defaults(func=_cmd_ingest)
 
     p_query = sub.add_parser("query", help="Run a RAG query")

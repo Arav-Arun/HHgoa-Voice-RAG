@@ -2,7 +2,7 @@
 
 ## Decision
 
-We go deep on **Hindi** and **Gujarati** from [MS MARCO-XI](https://huggingface.co/datasets/unicamp-dl/mmarco), not the full multilingual set.
+We go deep on **Hindi** and **Gujarati** from [MS MARCO-XI](https://huggingface.co/datasets/ai4bharat/MSMARCO-XI), not the full multilingual set.
 
 | Language  | ISO 639-1 | Script   | Role                          |
 |-----------|-----------|----------|-------------------------------|

@@ -9,7 +9,7 @@ Each layer is swappable — chunking, embeddings, vector store, retrieval, LLM, 
 ```bash
 cp .env.example .env          # optional: add LLM_API_KEY for real answers
 uv sync
-./hhgoa ingest                # index sample corpus → data/index/
+./hhgoa ingest                # index MS MARCO-XI (hi + gu) → data/index/
 ./hhgoa query "भारत की राजधानी क्या है?" --template-llm
 ./hhgoa eval                  # hit@5 / MRR on sample queries
 ```
@@ -33,7 +33,7 @@ With an LLM key set, drop `--template-llm` for generated answers.
 | `eval/` | Retrieval metrics |
 | `bench/` | Latency benchmarks |
 | `api/` | HTTP service |
-| `data/samples/` | Starter corpus (committed) |
+| `data/samples/` | Local ingest examples (MS MARCO-XI loaded from HF by default) |
 | `data/index/` | Built index (gitignored) |
 
 ## Config (`.env`)
