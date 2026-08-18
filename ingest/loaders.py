@@ -24,6 +24,11 @@ _MSMARCO_XI_FILES: dict[str, dict[str, str]] = {
 }
 
 
+def msmarco_passage_id(language: str, query_id: object, passage_index: int) -> str:
+    """Stable document ID shared by ingest and eval fixtures."""
+    return f"{language}_{query_id}_p{passage_index}"
+
+
 def load_text_file(path: Path, *, language: str = "hi", doc_id: str | None = None) -> Document:
     text = path.read_text(encoding="utf-8").strip()
     return Document(
@@ -85,7 +90,7 @@ def _msmarco_example_to_documents(row: dict, *, language: str, split: str) -> li
             continue
         documents.append(
             Document(
-                id=f"{language}_{query_id}_p{idx}",
+                id=msmarco_passage_id(language, query_id, idx),
                 text=passage_text,
                 language=language,
                 metadata={
@@ -103,7 +108,7 @@ def _msmarco_example_to_documents(row: dict, *, language: str, split: str) -> li
     return documents
 
 
-def _load_msmarco_split(language: str, split: str, *, limit: int | None) -> list[dict]:
+def load_msmarco_xi_rows(language: str, split: str, *, limit: int | None) -> list[dict]:
     from datasets import load_dataset
 
     if language not in _MSMARCO_XI_FILES:
@@ -136,7 +141,7 @@ def load_msmarco_xi(
 
     documents: list[Document] = []
     for language in languages:
-        for row in _load_msmarco_split(language, split, limit=limit):
+        for row in load_msmarco_xi_rows(language, split, limit=limit):
             documents.extend(_msmarco_example_to_documents(row, language=language, split=split))
     return documents
 
@@ -153,7 +158,7 @@ def iter_msmarco_xi(
         raise ValueError("split must be 'train' or 'validation'")
 
     for language in languages:
-        rows = _load_msmarco_split(language, split, limit=limit)
+        rows = load_msmarco_xi_rows(language, split, limit=limit)
         batch: list[Document] = []
         for row in rows:
             batch.extend(_msmarco_example_to_documents(row, language=language, split=split))

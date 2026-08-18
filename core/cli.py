@@ -60,6 +60,28 @@ def _cmd_eval(args: argparse.Namespace) -> None:
     print(json.dumps(run_eval(args.eval_file, top_k=args.top_k), indent=2))
 
 
+def _cmd_eval_build(args: argparse.Namespace) -> None:
+    from eval.build import build_and_write_msmarco_eval_set
+
+    languages = tuple(args.languages)
+    limit = None if args.all else args.limit
+    examples = build_and_write_msmarco_eval_set(
+        args.output,
+        languages=languages,
+        split=args.split,
+        limit=limit,
+    )
+    by_lang: dict[str, int] = {}
+    for example in examples:
+        by_lang[example.language] = by_lang.get(example.language, 0) + 1
+    counts = ", ".join(f"{lang}={n}" for lang, n in sorted(by_lang.items())) or "none"
+    limit_label = "all examples" if args.all else f"{limit} examples/lang"
+    print(
+        f"Wrote {len(examples)} eval queries to {args.output} "
+        f"({counts}; {args.split}, {limit_label})"
+    )
+
+
 def _cmd_bench(args: argparse.Namespace) -> None:
     from bench.runner import bench_query
 
@@ -154,6 +176,39 @@ def main(argv: list[str] | None = None) -> None:
     )
     p_eval.add_argument("--top-k", type=int, default=5)
     p_eval.set_defaults(func=_cmd_eval)
+
+    p_eval_build = sub.add_parser(
+        "eval-build",
+        help="Build data/eval/queries.jsonl from MS MARCO-XI is_selected labels",
+    )
+    p_eval_build.add_argument(
+        "--output",
+        type=Path,
+        default=Path("data/eval/queries.jsonl"),
+    )
+    p_eval_build.add_argument(
+        "--languages",
+        nargs="+",
+        choices=["hi", "gu"],
+        default=["hi", "gu"],
+    )
+    p_eval_build.add_argument(
+        "--split",
+        choices=["train", "validation"],
+        default="validation",
+    )
+    p_eval_build.add_argument(
+        "--limit",
+        type=int,
+        default=100,
+        help="Max query examples per language (same slice as ingest default)",
+    )
+    p_eval_build.add_argument(
+        "--all",
+        action="store_true",
+        help="Use the full split (no per-language limit)",
+    )
+    p_eval_build.set_defaults(func=_cmd_eval_build)
 
     p_bench = sub.add_parser("bench", help="Benchmark query latency")
     p_bench.add_argument("--query", default="भारत की राजधानी क्या है?")

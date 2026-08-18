@@ -11,7 +11,9 @@ cp .env.example .env          # optional: add LLM_API_KEY for real answers
 uv sync
 ./hhgoa ingest                # index MS MARCO-XI (hi + gu) → data/index/
 ./hhgoa query "भारत की राजधानी क्या है?" --template-llm
-./hhgoa eval                  # hit@5 / MRR on sample queries
+./hhgoa eval                  # hit@5 / MRR on MS MARCO-XI is_selected labels
+# regenerate eval fixtures after changing ingest slice:
+# ./hhgoa eval-build --limit 100
 ```
 
 Equivalent: `uv run python -m core.cli ingest`

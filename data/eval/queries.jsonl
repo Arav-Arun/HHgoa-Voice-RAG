@@ -1,4 +1,102 @@
-{"query": "भारत की राजधानी क्या है?", "language": "hi", "expected_doc_ids": ["hi_capital"]}
-{"query": "गोवा कहाँ है?", "language": "hi", "expected_doc_ids": ["hi_goa"]}
-{"query": "ભારતની રાજધાની કઈ છે?", "language": "gu", "expected_doc_ids": ["gu_capital"]}
-{"query": "ગોવા વિશે શું જાણવા મળે?", "language": "gu", "expected_doc_ids": ["gu_goa"]}
+{"query": "कॉर्पोरेशन क्या है?", "language": "hi", "expected_doc_ids": ["hi_1102432_p5"]}
+{"query": "रेचल कार्सन ने क्यों एक दायित्व बर्दाश्त करने के लिए लिखा", "language": "hi", "expected_doc_ids": ["hi_1102431_p4", "hi_1102431_p5"]}
+{"query": "ईमानदारी या सच्चाई की परिभाषा", "language": "hi", "expected_doc_ids": ["hi_205107_p2", "hi_205107_p4"]}
+{"query": "फ्रैंक गिफोर्ड ने कितनी महिलाओं से शादी की", "language": "hi", "expected_doc_ids": ["hi_300122_p1"]}
+{"query": "बाज़ कितनी तेजी से यात्रा करता है", "language": "hi", "expected_doc_ids": ["hi_233826_p0"]}
+{"query": "स्टबहब टोल फ्री नंबर", "language": "hi", "expected_doc_ids": ["hi_1090355_p7"]}
+{"query": "क्या डेल्टा बैंगलोर के लिए उड़ान भरता है?", "language": "hi", "expected_doc_ids": ["hi_165349_p0"]}
+{"query": "कैंटालूप को कितने समय तक परिपक्व होना है", "language": "hi", "expected_doc_ids": ["hi_260880_p7"]}
+{"query": "परिभाषा मनमानी है", "language": "hi", "expected_doc_ids": ["hi_116898_p0"]}
+{"query": "किन्ना पारस्परिक आदान-प्रदान होता है और इसकी समस्याएं क्या हैं", "language": "hi", "expected_doc_ids": ["hi_1060361_p1", "hi_1060361_p9"]}
+{"query": "जलवायु मौसम का अध्ययन", "language": "hi", "expected_doc_ids": ["hi_1090353_p4"]}
+{"query": "समाजशास्त्र की परिभाषा की संस्कृति", "language": "hi", "expected_doc_ids": ["hi_113570_p4"]}
+{"query": "मूलगामी गर्दन को परिभाषित करें", "language": "hi", "expected_doc_ids": ["hi_126172_p2"]}
+{"query": "कितने खर्च होते हैं यू.एस.एक्स. गेम्स?", "language": "hi", "expected_doc_ids": ["hi_331047_p0"]}
+{"query": "आधारभूत क्या है जीने में?", "language": "hi", "expected_doc_ids": ["hi_1060359_p2"]}
+{"query": "आपको कितने समय तक कार्ब चक्र लगाना चाहिए", "language": "hi", "expected_doc_ids": ["hi_267380_p2"]}
+{"query": "स्टाई कारण होता है", "language": "hi", "expected_doc_ids": ["hi_1090352_p4"]}
+{"query": "रेडिंग का उच्चतम रिकॉर्ड तापमान", "language": "hi", "expected_doc_ids": ["hi_202891_p8"]}
+{"query": "मैट लॉयर एक साल में कितना कमाता है", "language": "hi", "expected_doc_ids": ["hi_317450_p8"]}
+{"query": "एक 'एक्सेल शीट' कैसे प्रिंट करें", "language": "hi", "expected_doc_ids": ["hi_373460_p9"]}
+{"query": "डेथ हेड यूनिट्स की परिभाषा", "language": "hi", "expected_doc_ids": ["hi_116095_p5", "hi_116095_p6"]}
+{"query": "मक्का का भोजन और मक्का का आटा एक जैसा ही है।", "language": "hi", "expected_doc_ids": ["hi_21860_p3"]}
+{"query": "क्या बुनियादी है?", "language": "hi", "expected_doc_ids": ["hi_1060348_p2"]}
+{"query": "क्या लाल स्वादिष्ट सेब अच्छी सेब की चटनी बनाते हैं?", "language": "hi", "expected_doc_ids": ["hi_158720_p3"]}
+{"query": "एक टिकट कवर कितना वजन करता है", "language": "hi", "expected_doc_ids": ["hi_330463_p2"]}
+{"query": "वयस्कों में विस्थापन में सीमावर्ती व्यक्तित्व विकार के लक्षण", "language": "hi", "expected_doc_ids": ["hi_1090350_p2"]}
+{"query": "विटामिन डी की मदद करने वाले खाद्य पदार्थ", "language": "hi", "expected_doc_ids": ["hi_190327_p2"]}
+{"query": "कैरेबियन में दिसंबर का औसत तापमान", "language": "hi", "expected_doc_ids": ["hi_44760_p0"]}
+{"query": "मकई के एक कण को माइक्रोवेव में कितने समय तक पकाना है?", "language": "hi", "expected_doc_ids": ["hi_271597_p5"]}
+{"query": "स्थानीय डिस्क की परिभाषा", "language": "hi", "expected_doc_ids": ["hi_131336_p0"]}
+{"query": "कंधे की रिकवरी कितने समय तक चलती है", "language": "hi", "expected_doc_ids": ["hi_264507_p7"]}
+{"query": "क्या भारतीय लोग चावल खाते हैं?", "language": "hi", "expected_doc_ids": ["hi_1101287_p3"]}
+{"query": "सब स्लैब परिभाषा", "language": "hi", "expected_doc_ids": ["hi_1090349_p1"]}
+{"query": "फिलाडेल्फिया लैंकेस्टर से कितनी दूर है", "language": "hi", "expected_doc_ids": ["hi_232017_p4"]}
+{"query": "कवनसोलॉपर के गोदाम के लिए पर्यवेक्षक की वेतन दर कितनी है", "language": "hi", "expected_doc_ids": ["hi_328321_p5"]}
+{"query": "छोटे खीरे में कैलोरी की मात्रा", "language": "hi", "expected_doc_ids": ["hi_59804_p7"]}
+{"query": "बैटरी का जीवन क्या है", "language": "hi", "expected_doc_ids": ["hi_1060342_p3"]}
+{"query": "साइट्रिक्स ज़ेनैप सर्वर से कनेक्ट नहीं कर सकता है", "language": "hi", "expected_doc_ids": ["hi_81945_p7"]}
+{"query": "कर्ब इवेंट सेंटर", "language": "hi", "expected_doc_ids": ["hi_113649_p6"]}
+{"query": "परिभाषित करें: थ्रूपुट", "language": "hi", "expected_doc_ids": ["hi_129807_p3"]}
+{"query": "स्कॉट्सडेल रीसाइक्लिंग कार्यक्रम का शहर", "language": "hi", "expected_doc_ids": ["hi_92849_p8"]}
+{"query": "गैलेंटाइन परिभाषा", "language": "hi", "expected_doc_ids": ["hi_1100338_p4"]}
+{"query": "रद्द की गई जाँच की परिभाषा", "language": "hi", "expected_doc_ids": ["hi_81586_p7"]}
+{"query": "सुगंधित पानी कितना प्रभावी है", "language": "hi", "expected_doc_ids": ["hi_229215_p0"]}
+{"query": "आपका चेकिंग खाता आपके क्रेडिट अंक को कैसे प्रभावित कर सकता है", "language": "hi", "expected_doc_ids": ["hi_211441_p2"]}
+{"query": "कितने समय तक आई.आर.एस. रिकॉर्ड रखें", "language": "hi", "expected_doc_ids": ["hi_265717_p2"]}
+{"query": "संघीय ठेकेदार की परिभाषा", "language": "hi", "expected_doc_ids": ["hi_185914_p3"]}
+{"query": "बट्टी क्या है", "language": "hi", "expected_doc_ids": ["hi_1060341_p4"]}
+{"query": "नियमित गतिविधि को परिभाषित करें।", "language": "hi", "expected_doc_ids": ["hi_126636_p4"]}
+{"query": "दुनिया की सबसे बड़ी ओरिगामी", "language": "hi", "expected_doc_ids": ["hi_53335_p4"]}
+{"query": "क्या आप ठंडी शराब पी रहे हैं?", "language": "hi", "expected_doc_ids": ["hi_160108_p5"]}
+{"query": ". શું એક કોર્પોરેશન છે?", "language": "gu", "expected_doc_ids": ["gu_1102432_p5"]}
+{"query": "રશેલ કાર્સને શા માટે સહન કરવાની જવાબદારી લખી?", "language": "gu", "expected_doc_ids": ["gu_1102431_p4", "gu_1102431_p5"]}
+{"query": "પ્રામાણિકતા અથવા સત્યનિષ્ઠાની વ્યાખ્યા", "language": "gu", "expected_doc_ids": ["gu_205107_p2", "gu_205107_p4"]}
+{"query": "ફ્રેન્ક ગિફોર્ડે કેટલી સ્ત્રીઓ સાથે લગ્ન કર્યા હતા", "language": "gu", "expected_doc_ids": ["gu_300122_p1"]}
+{"query": "ગરુડ કેટલી ઝડપથી મુસાફરી કરે છે", "language": "gu", "expected_doc_ids": ["gu_233826_p0"]}
+{"query": "સ્ટબહબ ટોલ ફ્રી નંબર", "language": "gu", "expected_doc_ids": ["gu_1090355_p7"]}
+{"query": "શું ડેલ્ટા બેંગ્લોર તરફ ઉડે છે?", "language": "gu", "expected_doc_ids": ["gu_165349_p0"]}
+{"query": "કેન્ટાલૂપ પાકવા માટે કેટલો સમય લાગે છે", "language": "gu", "expected_doc_ids": ["gu_260880_p7"]}
+{"query": "વ્યાખ્યા મનમાની", "language": "gu", "expected_doc_ids": ["gu_116898_p0"]}
+{"query": "બાર્ટર સિસ્ટમ શું છે અને તેની સમસ્યાઓ શું છે", "language": "gu", "expected_doc_ids": ["gu_1060361_p1", "gu_1060361_p9"]}
+{"query": "આબોહવાના અભ્યાસ", "language": "gu", "expected_doc_ids": ["gu_1090353_p4"]}
+{"query": "સમાજશાસ્ત્રની વ્યાખ્યાની સંસ્કૃતિ", "language": "gu", "expected_doc_ids": ["gu_113570_p4"]}
+{"query": "કટ્ટરપંથી ગરદનની વ્યાખ્યા", "language": "gu", "expected_doc_ids": ["gu_126172_p2"]}
+{"query": "યુનિક્સ ગેમ્સની કિંમત કેટલી છે", "language": "gu", "expected_doc_ids": ["gu_331047_p0"]}
+{"query": "આધારભૂત શું છે એલ.એન.એ.માં", "language": "gu", "expected_doc_ids": ["gu_1060359_p2"]}
+{"query": "તમારે કેટલો સમય કાર્બ ચક્ર ચલાવવું જોઈએ", "language": "gu", "expected_doc_ids": ["gu_267380_p2"]}
+{"query": "સ્ટાઇ કારણે", "language": "gu", "expected_doc_ids": ["gu_1090352_p4"]}
+{"query": "લાલ રંગના રેકોર્ડ માટે સૌથી વધુ તાપમાન", "language": "gu", "expected_doc_ids": ["gu_202891_p8"]}
+{"query": "મેટ લોઅર એક વર્ષમાં કેટલું બનાવે છે", "language": "gu", "expected_doc_ids": ["gu_317450_p8"]}
+{"query": "એક્સેલ શીટ કેવી રીતે છાપવી", "language": "gu", "expected_doc_ids": ["gu_373460_p9"]}
+{"query": "ડેથ હેડ યુનિટ્સની વ્યાખ્યા", "language": "gu", "expected_doc_ids": ["gu_116095_p5", "gu_116095_p6"]}
+{"query": "મકાઈનું ભોજન અને મકાઈનો લોટ સમાન છે.", "language": "gu", "expected_doc_ids": ["gu_21860_p3"]}
+{"query": "શું મૂળભૂત છે? યુનિ", "language": "gu", "expected_doc_ids": ["gu_1060348_p2"]}
+{"query": "શું લાલ સ્વાદિષ્ટ સફરજન સારી સફરજનની ચટણી બનાવે છે?", "language": "gu", "expected_doc_ids": ["gu_158720_p3"]}
+{"query": "સ્ટેમ્પ કવર કેટલું વજન ધરાવે છે", "language": "gu", "expected_doc_ids": ["gu_330463_p2"]}
+{"query": "પુખ્ત વયના લોકોમાં સરહદી વ્યક્તિત્વ વિકારના લક્ષણો", "language": "gu", "expected_doc_ids": ["gu_1090350_p2"]}
+{"query": "વિટામિન ડી માટે મદદ કરતા ખોરાક", "language": "gu", "expected_doc_ids": ["gu_190327_p2"]}
+{"query": "કેરેબિયનમાં ડિસેમ્બરનું સરેરાશ તાપમાન", "language": "gu", "expected_doc_ids": ["gu_44760_p0"]}
+{"query": "મકાઈના એક કાનને માઇક્રોવેવ કરવા માટે કેટલો સમય લાગે છે?", "language": "gu", "expected_doc_ids": ["gu_271597_p5"]}
+{"query": "સ્થાનિક ડિસ્કની વ્યાખ્યા", "language": "gu", "expected_doc_ids": ["gu_131336_p0"]}
+{"query": "ખભાની રિકવરી કેટલી લાંબી છે", "language": "gu", "expected_doc_ids": ["gu_264507_p7"]}
+{"query": "ભારતીયો ચોખા ખાય છે", "language": "gu", "expected_doc_ids": ["gu_1101287_p3"]}
+{"query": "સબ સ્લેબ વ્યાખ્યા", "language": "gu", "expected_doc_ids": ["gu_1090349_p1"]}
+{"query": "ફિલાડેલ્ફિયા લેન્કેસ્ટર પાથી કેટલું દૂર છે", "language": "gu", "expected_doc_ids": ["gu_232017_p4"]}
+{"query": "કેવો દર સુપરવાઇઝર ચુકવણી કરે છે કાવનવલ વેરહાઉસ માટે", "language": "gu", "expected_doc_ids": ["gu_328321_p5"]}
+{"query": "નાના કાકડીમાં કેલરીઝ", "language": "gu", "expected_doc_ids": ["gu_59804_p7"]}
+{"query": "બેટરીનું કાર્યકાળ શું છે?", "language": "gu", "expected_doc_ids": ["gu_1060342_p3"]}
+{"query": "સિટ્રિક્સ ઝેનાપ સર્વર સાથે જોડાઈ શકતું નથી", "language": "gu", "expected_doc_ids": ["gu_81945_p7"]}
+{"query": "કર્બ ઇવેન્ટ સેન્ટર", "language": "gu", "expected_doc_ids": ["gu_113649_p6"]}
+{"query": "થ્રુપુટ: વ્યાખ્યા કરો", "language": "gu", "expected_doc_ids": ["gu_129807_p3"]}
+{"query": "સ્કોટ્સડેલ રિસાઇક્લિંગ શહેરનો સમયપત્રક", "language": "gu", "expected_doc_ids": ["gu_92849_p8"]}
+{"query": "ગેલેન્ટાઇન વ્યાખ્યા", "language": "gu", "expected_doc_ids": ["gu_1100338_p4"]}
+{"query": "રદ કરેલી ચેકની વ્યાખ્યા", "language": "gu", "expected_doc_ids": ["gu_81586_p7"]}
+{"query": "કેટલું અસરકારક છે સેસી પાણી", "language": "gu", "expected_doc_ids": ["gu_229215_p0"]}
+{"query": "તમારું ચેકિંગ ખાતું તમારા ક્રેડિટ સ્કોરને કેવી રીતે અસર કરી શકે છે", "language": "gu", "expected_doc_ids": ["gu_211441_p2"]}
+{"query": "આઈઆરએસ રેકોર્ડ્સ કેટલો સમય રાખે છે", "language": "gu", "expected_doc_ids": ["gu_265717_p2"]}
+{"query": "ફેડરલ કોન્ટ્રાક્ટર વ્યાખ્યા", "language": "gu", "expected_doc_ids": ["gu_185914_p3"]}
+{"query": "બટ્ટી શું છે", "language": "gu", "expected_doc_ids": ["gu_1060341_p4"]}
+{"query": "નિયમિત પ્રવૃત્તિને વ્યાખ્યાયિત કરો", "language": "gu", "expected_doc_ids": ["gu_126636_p4"]}
+{"query": "વિશ્વની સૌથી મોટી ઓરિગેમી", "language": "gu", "expected_doc_ids": ["gu_53335_p4"]}
+{"query": "શું તમે વાઈન પીઓ.", "language": "gu", "expected_doc_ids": ["gu_160108_p5"]}

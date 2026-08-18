@@ -5,7 +5,9 @@ from ingest.loaders import (
     load_directory,
     load_jsonl,
     load_msmarco_xi,
+    load_msmarco_xi_rows,
     load_text_file,
+    msmarco_passage_id,
 )
 
 __all__ = [
@@ -17,5 +19,7 @@ __all__ = [
     "load_directory",
     "load_jsonl",
     "load_msmarco_xi",
+    "load_msmarco_xi_rows",
     "load_text_file",
+    "msmarco_passage_id",
 ]
