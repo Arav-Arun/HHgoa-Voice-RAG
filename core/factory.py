@@ -13,6 +13,7 @@ from core.embeddings.presets import DEFAULT_EMBEDDING_PRESET, EMBEDDING_PRESETS
 from core.embeddings.sentence_transformers import SentenceTransformerEmbedder
 from core.guardrails.composite import CompositeGuardrail
 from core.guardrails.grounding import GroundingGate
+from core.guardrails.hallucination import HallucinationChecker
 from core.guardrails.input_intent import InputIntentFilter
 from core.guardrails.stub import StubGuardrail
 from core.llm.openai_compat import OpenAICompatibleLLM
@@ -165,6 +166,9 @@ def build_guardrail(settings: Settings | None = None):
                 supported_languages=settings.supported_languages,
             ),
             grounding_gate=GroundingGate(min_score=settings.guardrail_min_score),
+            hallucination_checker=HallucinationChecker(
+                min_overlap=settings.guardrail_min_answer_overlap,
+            ),
         )
     if provider == "input":
         return InputIntentFilter(

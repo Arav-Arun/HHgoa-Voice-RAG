@@ -1,0 +1,24 @@
+{"query": "आज मुंबई में मौसम कैसा है?", "language": "hi", "category": "off_topic", "expected_outcome": "abstain"}
+{"query": "कल रात का फुटबॉल मैच कौन जीता?", "language": "hi", "category": "off_topic", "expected_outcome": "abstain"}
+{"query": "मुझे चॉकलेट केक की रेसिपी बताओ", "language": "hi", "category": "off_topic", "expected_outcome": "abstain"}
+{"query": "बिटकॉइन की आज की कीमत क्या है?", "language": "hi", "category": "off_topic", "expected_outcome": "abstain"}
+{"query": "टesla स्टॉक अभी कितने का है?", "language": "hi", "category": "off_topic", "expected_outcome": "abstain"}
+{"query": "पिज़्ज़ा ऑर्डर कैसे करें?", "language": "hi", "category": "off_topic", "expected_outcome": "abstain"}
+{"query": "नेटफ्लिक्स पर कौन सी नई सीरीज़ आई है?", "language": "hi", "category": "off_topic", "expected_outcome": "abstain"}
+{"query": "मेरा बैंक पासवर्ड रीसेट कैसे करूँ?", "language": "hi", "category": "off_topic", "expected_outcome": "abstain"}
+{"query": "asdfghjkl qwerty zxcvbnm", "language": "hi", "category": "nonsense", "expected_outcome": "abstain"}
+{"query": "????? ##### @@@@@", "language": "hi", "category": "nonsense", "expected_outcome": "abstain"}
+{"query": "आज रात कौन सा चंद्रमा दिखेगा?", "language": "hi", "category": "off_topic", "expected_outcome": "abstain"}
+{"query": "लंदन से न्यूयॉर्क की फ्लाइट टिकट की कीमत?", "language": "hi", "category": "off_topic", "expected_outcome": "abstain"}
+{"query": "આજે અમદાવાદમાં હવામાન કેવું છે?", "language": "gu", "category": "off_topic", "expected_outcome": "abstain"}
+{"query": "ચોકલેટ કેકની રેસિપી આપો", "language": "gu", "category": "off_topic", "expected_outcome": "abstain"}
+{"query": "બિટકોઈનની આજની કિંમત શું છે?", "language": "gu", "category": "off_topic", "expected_outcome": "abstain"}
+{"query": "આજે ક્રિકેટ મેચ કોણ જીત્યું?", "language": "gu", "category": "off_topic", "expected_outcome": "abstain"}
+{"query": "નેટફ્લિક્સ પર નવી શ્રેણી કઈ આવી?", "language": "gu", "category": "off_topic", "expected_outcome": "abstain"}
+{"query": "પિઝ્ઝા ઓર્ડર કેવી રીતે કરવું?", "language": "gu", "category": "off_topic", "expected_outcome": "abstain"}
+{"query": "xyzabc ઘટકો માટે અર્થ", "language": "gu", "category": "nonsense", "expected_outcome": "abstain"}
+{"query": "ટેસ્લા શેરની કિંમત કેટલી છે?", "language": "gu", "category": "off_topic", "expected_outcome": "abstain"}
+{"query": "What is the weather in Tokyo today?", "language": "hi", "category": "off_topic", "expected_outcome": "abstain"}
+{"query": "How do I bake sourdough bread?", "language": "gu", "category": "off_topic", "expected_outcome": "abstain"}
+{"query": "Who won the NBA finals last night?", "language": "hi", "category": "off_topic", "expected_outcome": "abstain"}
+{"query": "Latest iPhone release date and price", "language": "gu", "category": "off_topic", "expected_outcome": "abstain"}

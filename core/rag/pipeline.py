@@ -67,9 +67,27 @@ class RAGPipeline:
             language=lang,
             system=self.system_prompt,
         )
+
+        answer_decision = self.guardrail.check_answer(
+            question,
+            answer,
+            sources,
+            language=lang,
+        )
+        if answer_decision.blocked:
+            return self._blocked_response(
+                question,
+                answer_decision,
+                language=lang,
+                metadata=metadata,
+            )
+
+        if answer_decision.metadata:
+            metadata["hallucination"] = answer_decision.metadata
+
         return RAGResponse(
             query=question,
-            answer=answer,
+            answer=answer_decision.answer or answer,
             sources=sources,
             language=lang,
             metadata=metadata,
@@ -81,19 +99,19 @@ class RAGPipeline:
         decision: GuardrailDecision,
         *,
         language: str,
+        metadata: dict | None = None,
     ) -> RAGResponse:
-        metadata = {
-            "guardrail": {
-                "blocked": True,
-                "stage": decision.stage,
-                "reason": decision.reason,
-                **decision.metadata,
-            }
+        combined = dict(metadata or {})
+        combined["guardrail"] = {
+            "blocked": True,
+            "stage": decision.stage,
+            "reason": decision.reason,
+            **decision.metadata,
         }
         return RAGResponse(
             query=question,
             answer=decision.answer or "",
             sources=decision.sources or [],
             language=language,
-            metadata=metadata,
+            metadata=combined,
         )

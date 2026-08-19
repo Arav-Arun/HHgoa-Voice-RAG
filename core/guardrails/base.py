@@ -35,3 +35,14 @@ class BaseGuardrail(ABC):
         language: str = "hi",
     ) -> GuardrailDecision:
         """Validate retrieved context before calling the LLM."""
+
+    def check_answer(
+        self,
+        query: str,
+        answer: str,
+        sources: list[ScoredChunk],
+        *,
+        language: str = "hi",
+    ) -> GuardrailDecision:
+        """Validate generated answer against retrieved context."""
+        return GuardrailDecision(blocked=False, answer=answer, stage="hallucination")

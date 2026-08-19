@@ -76,8 +76,12 @@ class Settings(BaseSettings):
 
     # Guardrails — input intent filter + grounding/abstain gate
     guardrail_provider: str = Field(default="default", validation_alias="GUARDRAIL_PROVIDER")
-    guardrail_min_score: float = Field(default=0.30, validation_alias="GUARDRAIL_MIN_SCORE")
+    guardrail_min_score: float = Field(default=0.86, validation_alias="GUARDRAIL_MIN_SCORE")
     guardrail_min_query_length: int = Field(default=3, validation_alias="GUARDRAIL_MIN_QUERY_LENGTH")
+    guardrail_min_answer_overlap: float = Field(
+        default=0.20,
+        validation_alias="GUARDRAIL_MIN_ANSWER_OVERLAP",
+    )
 
     # API
     api_host: str = "127.0.0.1"

@@ -35,7 +35,7 @@ core/stt (voice)   eval/metrics, bench/runner
 - **Embedder:** `SentenceTransformerEmbedder` — local models via `EMBEDDING_PRESET` (`e5-small` default; applies `query:` / `passage:` prefixes for E5)
 - **Store:** `MemoryVectorStore` — numpy cosine search, persists under `data/index/`
 - **Retriever:** `DenseRetriever`
-- **Guardrails:** `CompositeGuardrail` by default — `InputIntentFilter` (pre-retrieval) + `GroundingGate` (score threshold / abstain); set `GUARDRAIL_PROVIDER=stub` to disable
+- **Guardrails:** `CompositeGuardrail` by default — `InputIntentFilter` (pre-retrieval) + `GroundingGate` (score threshold / abstain) + `HallucinationChecker` (post-generation token overlap); set `GUARDRAIL_PROVIDER=stub` to disable
 - **LLM:** `TemplateLLM` if no key; `OpenAICompatibleLLM` when `LLM_API_KEY` is set
 - **STT:** `ElevenLabsSTT` by default (`STT_PROVIDER=elevenlabs`); falls back to `StubSTT` without API key; optional `OpenAIWhisperSTT` when `STT_PROVIDER=openai`
 

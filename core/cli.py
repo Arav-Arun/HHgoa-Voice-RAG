@@ -181,6 +181,18 @@ def _cmd_voice_query(args: argparse.Namespace) -> None:
     print(response.answer)
 
 
+def _cmd_guardrail_calibrate(args: argparse.Namespace) -> None:
+    from eval.calibrate_guardrail import calibrate_and_write
+
+    report = calibrate_and_write(
+        answerable_path=args.answerable_file,
+        abstain_path=args.abstain_file,
+        output_path=args.output,
+        top_k=args.top_k,
+    )
+    print(json.dumps(report, indent=2, ensure_ascii=False))
+
+
 def _cmd_bench(args: argparse.Namespace) -> None:
     from bench.runner import bench_query
 
@@ -406,6 +418,28 @@ def main(argv: list[str] | None = None) -> None:
         default=10_000,
     )
     p_chunk_compare.set_defaults(func=_cmd_chunk_compare)
+
+    p_guardrail_calibrate = sub.add_parser(
+        "guardrail-calibrate",
+        help="Calibrate GUARDRAIL_MIN_SCORE from answerable vs abstain queries",
+    )
+    p_guardrail_calibrate.add_argument(
+        "--answerable-file",
+        type=Path,
+        default=Path("data/eval/queries.jsonl"),
+    )
+    p_guardrail_calibrate.add_argument(
+        "--abstain-file",
+        type=Path,
+        default=Path("data/eval/abstain_queries.jsonl"),
+    )
+    p_guardrail_calibrate.add_argument(
+        "--output",
+        type=Path,
+        default=Path("data/eval/guardrail-calibration.json"),
+    )
+    p_guardrail_calibrate.add_argument("--top-k", type=int, default=5)
+    p_guardrail_calibrate.set_defaults(func=_cmd_guardrail_calibrate)
 
     p_bench = sub.add_parser("bench", help="Benchmark query latency")
     p_bench.add_argument("--query", default="भारत की राजधानी क्या है?")

@@ -41,3 +41,15 @@ Relevance comes from MSMARCO-XI `is_selected` flags on translated passages. Exam
 ```
 
 Re-ingests the corpus slice with each `CHUNKING_PROVIDER`, scores held-out queries, and runs paired bootstrap vs baseline (`fixed`). Results saved to `data/eval/chunk-compare.json`.
+
+## Guardrail calibration
+
+`abstain_queries.jsonl` — off-topic / unanswerable queries (expected outcome: abstain).
+
+```bash
+./hhgoa guardrail-calibrate
+```
+
+Compares top-1 retrieval scores on held-out **answerable** queries (`queries.jsonl`) vs **abstain** queries, sweeps `GUARDRAIL_MIN_SCORE`, and writes `guardrail-calibration.json`.
+
+**Current result (e5-small, top_k=5):** recommended threshold **0.86** (balanced accuracy ~79%). Score distributions overlap heavily (answerable min ≈ 0.83, abstain max ≈ 0.88), so retrieval score alone cannot perfectly separate the classes — the post-generation hallucination overlap check is the backstop.

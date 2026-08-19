@@ -13,7 +13,22 @@ _BLOCKED_PATTERNS = (
     re.compile(r"disregard\s+(all\s+)?(previous|prior)\s+instructions", re.I),
     re.compile(r"you\s+are\s+now\s+(in\s+)?(developer|admin|root)\s+mode", re.I),
     re.compile(r"reveal\s+(the\s+)?(system|hidden)\s+prompt", re.I),
+    re.compile(r"reveal\s+the\s+hidden\s+prompt", re.I),
+    re.compile(r"reveal\s+.*\s+prompt", re.I),
     re.compile(r"<\s*/?\s*script", re.I),
+    re.compile(r"forget\s+(everything|all)\s+(you\s+)?(know|learned)", re.I),
+    re.compile(r"act\s+as\s+(dan|jailbreak)", re.I),
+    # Hindi injection phrasing
+    re.compile(r"पिछले\s+निर्देश", re.I),
+    re.compile(r"पिछले\s+सूचनाओं\s+को\s+नज़?रअंदाज़", re.I),
+    re.compile(r"सिस्टम\s+प्रॉ?म्प्ट", re.I),
+    re.compile(r"छुप.*प्रॉ?म्प्ट", re.I),
+    re.compile(r"सभी\s+नियमों?\s+को\s+तोड़", re.I),
+    # Gujarati injection phrasing
+    re.compile(r"પાછલા\s+સૂચનાઓ", re.I),
+    re.compile(r"સિસ્ટમ\s+પ્રોમ્પ્ટ", re.I),
+    re.compile(r"છુપાયેલ\s+પ્રોમ્પ્ટ", re.I),
+    re.compile(r"બધા\s+નિયમો\s+તોડ", re.I),
 )
 
 

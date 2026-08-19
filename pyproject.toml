@@ -35,6 +35,10 @@ packages = ["core", "ingest", "eval", "bench", "api"]
 [tool.uv]
 package = true
 
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
 [tool.ruff]
 line-length = 100
 target-version = "py312"

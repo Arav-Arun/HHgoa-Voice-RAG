@@ -17,6 +17,11 @@ ABSTAIN_LOW_CONFIDENCE: dict[str, str] = {
     "gu": "મને આ પ્રશ્ન માટે પૂરતો વિશ્વસનીય સંદર્ભ મળ્યો નથી.",
 }
 
+ABSTAIN_HALLUCINATION: dict[str, str] = {
+    "hi": "मुझे दिए गए संदर्भ के आधार पर इस प्रश्न का विश्वसनीय उत्तर नहीं दे सकता।",
+    "gu": "આપેલ સંદર્ભના આધારે હું આ પ્રશ્નનો વિશ્વસનીય જવાબ આપી શકતો નથી.",
+}
+
 
 def message_for(language: str, table: dict[str, str]) -> str:
     return table.get(language, table["hi"])
