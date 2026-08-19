@@ -2,13 +2,18 @@
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 from core.config import Settings, get_settings
 from core.factory import build_retriever
 from eval.dataset import load_eval_set
-from eval.metrics import evaluate_examples, evaluate_examples_by_language
+from eval.metrics import aggregate_scores, aggregate_scores_by_language
 from eval.significance import compare_preset_scores, score_examples
+
+
+def _log(msg: str) -> None:
+    print(msg, file=sys.stderr, flush=True)
 
 
 def _pairwise_significance(
@@ -71,6 +76,7 @@ def compare_embedding_presets(
     scores_by_preset: dict[str, list[dict]] = {}
 
     for preset in presets:
+        _log(f"[eval-compare] preset={preset}: ingesting (limit={ingest_limit}/lang)...")
         preset_settings = base.model_copy(
             update={
                 "embedding_provider": "sentence_transformers",
@@ -83,6 +89,7 @@ def compare_embedding_presets(
             split=ingest_split,
             limit=ingest_limit,
         )
+        _log(f"[eval-compare] preset={preset}: scoring {len(examples)} queries...")
         retriever = build_retriever(preset_settings)
         retrieve_fn = lambda query, top_k=top_k: retriever.retrieve(query, top_k=top_k)
         per_example = score_examples(examples, retrieve_fn, top_k=top_k)
@@ -90,11 +97,17 @@ def compare_embedding_presets(
         results[preset] = {
             "embedding_provider": preset_settings.embedding_provider,
             "embedding_preset": preset,
-            "overall": evaluate_examples(examples, retrieve_fn, top_k=top_k),
-            "by_language": evaluate_examples_by_language(examples, retrieve_fn, top_k=top_k),
+            "overall": aggregate_scores(per_example, top_k=top_k),
+            "by_language": aggregate_scores_by_language(per_example, top_k=top_k),
         }
+        overall = results[preset]["overall"]
+        _log(
+            f"[eval-compare] preset={preset}: done "
+            f"(hit@{top_k}={overall[f'hit@{top_k}']:.3f}, mrr={overall['mrr']:.3f})"
+        )
 
     if baseline in presets and len(presets) > 1:
+        _log("[eval-compare] running bootstrap significance tests...")
         results["significance"] = _pairwise_significance(
             scores_by_preset,
             presets,

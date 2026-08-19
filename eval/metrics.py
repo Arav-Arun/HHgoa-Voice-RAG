@@ -33,6 +33,38 @@ def mrr(retrieved: list[ScoredChunk], expected_doc_ids: list[str]) -> float:
     return 0.0
 
 
+def aggregate_scores(
+    rows: list[dict[str, float | str]],
+    *,
+    top_k: int = 5,
+) -> dict[str, float]:
+    """Aggregate per-example score rows into hit/recall/mrr means."""
+    if not rows:
+        return {f"hit@{top_k}": 0.0, f"recall@{top_k}": 0.0, "mrr": 0.0, "count": 0.0}
+
+    n = len(rows)
+    return {
+        f"hit@{top_k}": sum(float(r["hit"]) for r in rows) / n,
+        f"recall@{top_k}": sum(float(r["recall"]) for r in rows) / n,
+        "mrr": sum(float(r["mrr"]) for r in rows) / n,
+        "count": float(n),
+    }
+
+
+def aggregate_scores_by_language(
+    rows: list[dict[str, float | str]],
+    *,
+    top_k: int = 5,
+) -> dict[str, dict[str, float]]:
+    by_language: dict[str, list[dict[str, float | str]]] = {}
+    for row in rows:
+        by_language.setdefault(str(row["language"]), []).append(row)
+    return {
+        language: aggregate_scores(lang_rows, top_k=top_k)
+        for language, lang_rows in sorted(by_language.items())
+    }
+
+
 def evaluate_examples(
     examples: list[EvalExample],
     retrieve_fn,

@@ -1,0 +1,138 @@
+{
+  "e5-small": {
+    "embedding_provider": "sentence_transformers",
+    "embedding_preset": "e5-small",
+    "overall": {
+      "hit@5": 0.6391129032258065,
+      "recall@5": 0.6253360215053764,
+      "mrr": 0.40188172043010756,
+      "count": 496.0
+    },
+    "by_language": {
+      "gu": {
+        "hit@5": 0.5201612903225806,
+        "recall@5": 0.5047043010752689,
+        "mrr": 0.2983198924731183,
+        "count": 248.0
+      },
+      "hi": {
+        "hit@5": 0.7580645161290323,
+        "recall@5": 0.7459677419354839,
+        "mrr": 0.5054435483870967,
+        "count": 248.0
+      }
+    }
+  },
+  "indic-sbert": {
+    "embedding_provider": "sentence_transformers",
+    "embedding_preset": "indic-sbert",
+    "overall": {
+      "hit@5": 0.39919354838709675,
+      "recall@5": 0.38306451612903225,
+      "mrr": 0.2340725806451613,
+      "count": 496.0
+    },
+    "by_language": {
+      "gu": {
+        "hit@5": 0.3870967741935484,
+        "recall@5": 0.3689516129032258,
+        "mrr": 0.22849462365591397,
+        "count": 248.0
+      },
+      "hi": {
+        "hit@5": 0.4112903225806452,
+        "recall@5": 0.3971774193548387,
+        "mrr": 0.23965053763440858,
+        "count": 248.0
+      }
+    }
+  },
+  "significance": {
+    "e5-small_vs_indic-sbert": {
+      "hit": {
+        "overall": {
+          "mean_a": 0.6391129032258065,
+          "mean_b": 0.39919354838709675,
+          "mean_diff": 0.23991935483870974,
+          "ci_low": 0.18951612903225806,
+          "ci_high": 0.29032258064516125,
+          "p_value": 0.0,
+          "n": 496.0,
+          "metric": "hit",
+          "baseline": "e5-small",
+          "challenger": "indic-sbert"
+        },
+        "by_language": {
+          "hi": {
+            "mean_a": 0.7580645161290323,
+            "mean_b": 0.4112903225806452,
+            "mean_diff": 0.34677419354838707,
+            "ci_low": 0.282258064516129,
+            "ci_high": 0.41129032258064524,
+            "p_value": 0.0,
+            "n": 248.0,
+            "metric": "hit",
+            "baseline": "e5-small",
+            "challenger": "indic-sbert",
+            "language": "hi"
+          },
+          "gu": {
+            "mean_a": 0.5201612903225806,
+            "mean_b": 0.3870967741935484,
+            "mean_diff": 0.13306451612903225,
+            "ci_low": 0.06048387096774194,
+            "ci_high": 0.2056451612903225,
+            "p_value": 0.0004,
+            "n": 248.0,
+            "metric": "hit",
+            "baseline": "e5-small",
+            "challenger": "indic-sbert",
+            "language": "gu"
+          }
+        }
+      },
+      "mrr": {
+        "overall": {
+          "mean_a": 0.40188172043010756,
+          "mean_b": 0.2340725806451613,
+          "mean_diff": 0.16780913978494627,
+          "ci_low": 0.12852822580645162,
+          "ci_high": 0.20638440860215054,
+          "p_value": 0.0,
+          "n": 496.0,
+          "metric": "mrr",
+          "baseline": "e5-small",
+          "challenger": "indic-sbert"
+        },
+        "by_language": {
+          "hi": {
+            "mean_a": 0.5054435483870967,
+            "mean_b": 0.23965053763440858,
+            "mean_diff": 0.26579301075268813,
+            "ci_low": 0.20994623655913974,
+            "ci_high": 0.3213709677419354,
+            "p_value": 0.0,
+            "n": 248.0,
+            "metric": "mrr",
+            "baseline": "e5-small",
+            "challenger": "indic-sbert",
+            "language": "hi"
+          },
+          "gu": {
+            "mean_a": 0.2983198924731183,
+            "mean_b": 0.22849462365591397,
+            "mean_diff": 0.06982526881720433,
+            "ci_low": 0.017473118279569877,
+            "ci_high": 0.12190860215053764,
+            "p_value": 0.0092,
+            "n": 248.0,
+            "metric": "mrr",
+            "baseline": "e5-small",
+            "challenger": "indic-sbert",
+            "language": "gu"
+          }
+        }
+      }
+    }
+  }
+}
