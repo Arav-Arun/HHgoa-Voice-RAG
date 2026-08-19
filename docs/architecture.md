@@ -29,7 +29,7 @@ query / api  →  core/retriever  →  core/llm  →  answer
 
 ## Components (defaults)
 
-- **Chunker:** `FixedSizeChunker` — character windows with overlap
+- **Chunker:** swappable via `CHUNKING_PROVIDER` — `fixed` (char windows), `semantic` (sentence boundaries), `metadata` (atomic passages + semantic fallback)
 - **Embedder:** `SentenceTransformerEmbedder` — local models via `EMBEDDING_PRESET` (`e5-small` default; applies `query:` / `passage:` prefixes for E5)
 - **Store:** `MemoryVectorStore` — numpy cosine search, persists under `data/index/`
 - **Retriever:** `DenseRetriever`

@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 from core.chunking.fixed import FixedSizeChunker
+from core.chunking.metadata import MetadataAwareChunker
+from core.chunking.presets import CHUNKING_PRESETS, DEFAULT_CHUNKING_PROVIDER
+from core.chunking.semantic import SemanticChunker
 from core.config import Settings, get_settings
 from core.embeddings.hash import HashEmbedder
 from core.embeddings.openai import OpenAIEmbedder
@@ -66,9 +69,28 @@ def build_vector_store(settings: Settings | None = None):
 
 def build_chunker(settings: Settings | None = None):
     settings = settings or get_settings()
-    return FixedSizeChunker(
-        chunk_size=settings.chunk_size,
-        overlap=settings.chunk_overlap,
+    provider = settings.chunking_provider.lower()
+
+    if provider == "fixed":
+        return FixedSizeChunker(
+            chunk_size=settings.chunk_size,
+            overlap=settings.chunk_overlap,
+        )
+    if provider == "semantic":
+        return SemanticChunker(
+            chunk_size=settings.chunk_size,
+            overlap=settings.chunk_overlap,
+        )
+    if provider in {"metadata", "metadata_aware"}:
+        return MetadataAwareChunker(
+            chunk_size=settings.chunk_size,
+            overlap=settings.chunk_overlap,
+        )
+
+    supported = ", ".join(sorted(CHUNKING_PRESETS))
+    raise ValueError(
+        f"Unknown CHUNKING_PROVIDER={settings.chunking_provider!r}. "
+        f"Supported: {supported}"
     )
 
 

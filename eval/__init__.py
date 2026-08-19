@@ -1,5 +1,5 @@
 from eval.build import build_and_write_held_out_eval, build_held_out_eval_set
-from eval.compare import compare_embedding_presets
+from eval.compare_chunking import compare_chunking_strategies
 from eval.metrics import (
     aggregate_scores,
     aggregate_scores_by_language,
@@ -35,6 +35,7 @@ __all__ = [
     "build_and_write_held_out_eval",
     "build_held_out_eval_set",
     "build_shuffle_permutation",
+    "compare_chunking_strategies",
     "compare_embedding_presets",
     "compare_preset_scores",
     "evaluate_examples",

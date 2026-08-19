@@ -45,7 +45,8 @@ With an LLM key set, drop `--template-llm` for generated answers.
 | `EMBEDDING_PRESET` | `e5-small` | `e5-small`, `indic-sbert`, `bge-m3` |
 | `EMBEDDING_MODEL` | — | Override HF model id (optional) |
 | `VECTOR_STORE` | `memory` | In-memory numpy store |
-| `CHUNK_SIZE` / `CHUNK_OVERLAP` | 512 / 64 | Chunking |
+| `CHUNKING_PROVIDER` | `fixed` | `fixed`, `semantic`, `metadata` |
+| `CHUNK_SIZE` / `CHUNK_OVERLAP` | 512 / 64 | Chunking limits |
 | `TOP_K` | 5 | Retrieval depth |
 | `LLM_API_KEY` | — | OpenAI-compatible chat API |
 | `LLM_MODEL` | `gpt-4o-mini` | Generation model |
@@ -70,6 +71,22 @@ Bootstrap significance (e5-small baseline): Hindi p≈0, Gujarati p=0.0004 on hi
 To try another preset later: set `EMBEDDING_PRESET` in `.env`, then re-ingest.
 
 **Held-out eval** for chunking/retrieval work: validation rows are **shuffled with seed 42** before slicing, so dev and eval are comparable random bags (not contiguous parquet blocks). Eval uses shuffled positions `[500, 1000)`; dev/embedder work used `[0, 500)`. See [data/eval/README.md](data/eval/README.md).
+
+Compare chunking strategies with bootstrap significance:
+
+```bash
+./hhgoa chunk-compare --strategies fixed semantic metadata
+```
+
+## Chunking (locked in)
+
+| Strategy | hi hit@5 | gu hit@5 | overall hit@5 |
+|----------|----------|----------|---------------|
+| **fixed** (default) | 0.74 | 0.54 | 0.64 |
+| semantic | 0.75 | 0.55 | 0.65 |
+| metadata | 0.75 | 0.55 | 0.65 |
+
+Held-out eval (530 queries, e5-small). Semantic and metadata tie — most MS MARCO passages fit in one chunk, so metadata-aware atomic splitting collapses to the same result as sentence packing. Both edge fixed by ~+0.9pp hit@5, but **bootstrap p=0.27 (not significant)**. Default stays **`fixed`** (simpler; no proven loss). Set `CHUNKING_PROVIDER=semantic` if you prefer sentence boundaries on principle.
 
 ## API
 

@@ -8,6 +8,7 @@ from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from core.embeddings.presets import DEFAULT_EMBEDDING_PRESET
+from core.chunking.presets import DEFAULT_CHUNKING_PROVIDER
 
 
 class Settings(BaseSettings):
@@ -27,6 +28,10 @@ class Settings(BaseSettings):
     supported_languages: tuple[str, ...] = ("hi", "gu")
 
     # Chunking — swap strategy in core/chunking/
+    chunking_provider: str = Field(
+        default=DEFAULT_CHUNKING_PROVIDER,
+        validation_alias="CHUNKING_PROVIDER",
+    )
     chunk_size: int = 512
     chunk_overlap: int = 64
 

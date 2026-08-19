@@ -33,3 +33,11 @@ Each `expected_doc_id` is `{lang}_{query_id}_p{idx}` — same IDs as ingest.
 ## Labels
 
 Relevance comes from MSMARCO-XI `is_selected` flags on translated passages. Examples with no selected passage are skipped.
+
+## Chunking comparison
+
+```bash
+./hhgoa chunk-compare --strategies fixed semantic metadata
+```
+
+Re-ingests the corpus slice with each `CHUNKING_PROVIDER`, scores held-out queries, and runs paired bootstrap vs baseline (`fixed`). Results saved to `data/eval/chunk-compare.json`.

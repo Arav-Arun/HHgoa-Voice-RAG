@@ -1,0 +1,245 @@
+{
+  "fixed": {
+    "chunking_provider": "fixed",
+    "overall": {
+      "hit@5": 0.6377358490566037,
+      "recall@5": 0.6276729559748428,
+      "mrr": 0.419748427672956,
+      "count": 530.0
+    },
+    "by_language": {
+      "gu": {
+        "hit@5": 0.5358490566037736,
+        "recall@5": 0.5251572327044025,
+        "mrr": 0.3532075471698113,
+        "count": 265.0
+      },
+      "hi": {
+        "hit@5": 0.7396226415094339,
+        "recall@5": 0.730188679245283,
+        "mrr": 0.48628930817610067,
+        "count": 265.0
+      }
+    }
+  },
+  "semantic": {
+    "chunking_provider": "semantic",
+    "overall": {
+      "hit@5": 0.6471698113207547,
+      "recall@5": 0.6361635220125786,
+      "mrr": 0.4228616352201258,
+      "count": 530.0
+    },
+    "by_language": {
+      "gu": {
+        "hit@5": 0.5471698113207547,
+        "recall@5": 0.5364779874213836,
+        "mrr": 0.35540880503144656,
+        "count": 265.0
+      },
+      "hi": {
+        "hit@5": 0.7471698113207547,
+        "recall@5": 0.7358490566037735,
+        "mrr": 0.490314465408805,
+        "count": 265.0
+      }
+    }
+  },
+  "metadata": {
+    "chunking_provider": "metadata",
+    "overall": {
+      "hit@5": 0.6471698113207547,
+      "recall@5": 0.6361635220125786,
+      "mrr": 0.4228616352201258,
+      "count": 530.0
+    },
+    "by_language": {
+      "gu": {
+        "hit@5": 0.5471698113207547,
+        "recall@5": 0.5364779874213836,
+        "mrr": 0.35540880503144656,
+        "count": 265.0
+      },
+      "hi": {
+        "hit@5": 0.7471698113207547,
+        "recall@5": 0.7358490566037735,
+        "mrr": 0.490314465408805,
+        "count": 265.0
+      }
+    }
+  },
+  "significance": {
+    "fixed_vs_semantic": {
+      "hit": {
+        "overall": {
+          "mean_a": 0.6377358490566037,
+          "mean_b": 0.6471698113207547,
+          "mean_diff": -0.009433962264150941,
+          "ci_low": -0.024528301886792447,
+          "ci_high": 0.005660377358490565,
+          "p_value": 0.2674,
+          "n": 530.0,
+          "metric": "hit",
+          "baseline": "fixed",
+          "challenger": "semantic"
+        },
+        "by_language": {
+          "hi": {
+            "mean_a": 0.7396226415094339,
+            "mean_b": 0.7471698113207547,
+            "mean_diff": -0.007547169811320753,
+            "ci_low": -0.030188679245283012,
+            "ci_high": 0.01132075471698124,
+            "p_value": 0.5998,
+            "n": 265.0,
+            "metric": "hit",
+            "baseline": "fixed",
+            "challenger": "semantic",
+            "language": "hi"
+          },
+          "gu": {
+            "mean_a": 0.5358490566037736,
+            "mean_b": 0.5471698113207547,
+            "mean_diff": -0.01132075471698113,
+            "ci_low": -0.03396226415094339,
+            "ci_high": 0.01132075471698113,
+            "p_value": 0.4012,
+            "n": 265.0,
+            "metric": "hit",
+            "baseline": "fixed",
+            "challenger": "semantic",
+            "language": "gu"
+          }
+        }
+      },
+      "mrr": {
+        "overall": {
+          "mean_a": 0.419748427672956,
+          "mean_b": 0.4228616352201258,
+          "mean_diff": -0.003113207547169816,
+          "ci_low": -0.011792452830188704,
+          "ci_high": 0.005471698113207524,
+          "p_value": 0.5018,
+          "n": 530.0,
+          "metric": "mrr",
+          "baseline": "fixed",
+          "challenger": "semantic"
+        },
+        "by_language": {
+          "hi": {
+            "mean_a": 0.48628930817610067,
+            "mean_b": 0.490314465408805,
+            "mean_diff": -0.004025157232704357,
+            "ci_low": -0.015597484276729523,
+            "ci_high": 0.0067924528301887,
+            "p_value": 0.495,
+            "n": 265.0,
+            "metric": "mrr",
+            "baseline": "fixed",
+            "challenger": "semantic",
+            "language": "hi"
+          },
+          "gu": {
+            "mean_a": 0.3532075471698113,
+            "mean_b": 0.35540880503144656,
+            "mean_diff": -0.002201257861635275,
+            "ci_low": -0.015723270440251513,
+            "ci_high": 0.011383647798742125,
+            "p_value": 0.7554,
+            "n": 265.0,
+            "metric": "mrr",
+            "baseline": "fixed",
+            "challenger": "semantic",
+            "language": "gu"
+          }
+        }
+      }
+    },
+    "fixed_vs_metadata": {
+      "hit": {
+        "overall": {
+          "mean_a": 0.6377358490566037,
+          "mean_b": 0.6471698113207547,
+          "mean_diff": -0.009433962264150941,
+          "ci_low": -0.024528301886792447,
+          "ci_high": 0.005660377358490565,
+          "p_value": 0.2674,
+          "n": 530.0,
+          "metric": "hit",
+          "baseline": "fixed",
+          "challenger": "metadata"
+        },
+        "by_language": {
+          "hi": {
+            "mean_a": 0.7396226415094339,
+            "mean_b": 0.7471698113207547,
+            "mean_diff": -0.007547169811320753,
+            "ci_low": -0.030188679245283012,
+            "ci_high": 0.01132075471698124,
+            "p_value": 0.5998,
+            "n": 265.0,
+            "metric": "hit",
+            "baseline": "fixed",
+            "challenger": "metadata",
+            "language": "hi"
+          },
+          "gu": {
+            "mean_a": 0.5358490566037736,
+            "mean_b": 0.5471698113207547,
+            "mean_diff": -0.01132075471698113,
+            "ci_low": -0.03396226415094339,
+            "ci_high": 0.01132075471698113,
+            "p_value": 0.4012,
+            "n": 265.0,
+            "metric": "hit",
+            "baseline": "fixed",
+            "challenger": "metadata",
+            "language": "gu"
+          }
+        }
+      },
+      "mrr": {
+        "overall": {
+          "mean_a": 0.419748427672956,
+          "mean_b": 0.4228616352201258,
+          "mean_diff": -0.003113207547169816,
+          "ci_low": -0.011792452830188704,
+          "ci_high": 0.005471698113207524,
+          "p_value": 0.5018,
+          "n": 530.0,
+          "metric": "mrr",
+          "baseline": "fixed",
+          "challenger": "metadata"
+        },
+        "by_language": {
+          "hi": {
+            "mean_a": 0.48628930817610067,
+            "mean_b": 0.490314465408805,
+            "mean_diff": -0.004025157232704357,
+            "ci_low": -0.015597484276729523,
+            "ci_high": 0.0067924528301887,
+            "p_value": 0.495,
+            "n": 265.0,
+            "metric": "mrr",
+            "baseline": "fixed",
+            "challenger": "metadata",
+            "language": "hi"
+          },
+          "gu": {
+            "mean_a": 0.3532075471698113,
+            "mean_b": 0.35540880503144656,
+            "mean_diff": -0.002201257861635275,
+            "ci_low": -0.015723270440251513,
+            "ci_high": 0.011383647798742125,
+            "p_value": 0.7554,
+            "n": 265.0,
+            "metric": "mrr",
+            "baseline": "fixed",
+            "challenger": "metadata",
+            "language": "gu"
+          }
+        }
+      }
+    }
+  }
+}

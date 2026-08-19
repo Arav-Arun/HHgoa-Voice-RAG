@@ -146,6 +146,22 @@ def _cmd_eval_compare(args: argparse.Namespace) -> None:
     print(json.dumps(results, indent=2))
 
 
+def _cmd_chunk_compare(args: argparse.Namespace) -> None:
+    from eval.compare_chunking import compare_chunking_strategies
+
+    if not args.eval_file.exists():
+        raise SystemExit(f"Eval file not found: {args.eval_file}")
+
+    results = compare_chunking_strategies(
+        tuple(args.strategies),
+        args.eval_file,
+        top_k=args.top_k,
+        baseline=args.baseline,
+        bootstrap_resamples=args.bootstrap_resamples,
+    )
+    print(json.dumps(results, indent=2))
+
+
 def _cmd_serve(args: argparse.Namespace) -> None:
     import uvicorn
 
@@ -291,6 +307,34 @@ def main(argv: list[str] | None = None) -> None:
         default="validation",
     )
     p_eval_compare.set_defaults(func=_cmd_eval_compare)
+
+    p_chunk_compare = sub.add_parser(
+        "chunk-compare",
+        help="Re-ingest and compare chunking strategies on held-out eval",
+    )
+    p_chunk_compare.add_argument(
+        "--strategies",
+        nargs="+",
+        default=["fixed", "semantic", "metadata"],
+        choices=["fixed", "semantic", "metadata"],
+    )
+    p_chunk_compare.add_argument(
+        "--eval-file",
+        type=Path,
+        default=Path("data/eval/queries.jsonl"),
+    )
+    p_chunk_compare.add_argument("--top-k", type=int, default=5)
+    p_chunk_compare.add_argument(
+        "--baseline",
+        default="fixed",
+        choices=["fixed", "semantic", "metadata"],
+    )
+    p_chunk_compare.add_argument(
+        "--bootstrap-resamples",
+        type=int,
+        default=10_000,
+    )
+    p_chunk_compare.set_defaults(func=_cmd_chunk_compare)
 
     p_bench = sub.add_parser("bench", help="Benchmark query latency")
     p_bench.add_argument("--query", default="भारत की राजधानी क्या है?")
