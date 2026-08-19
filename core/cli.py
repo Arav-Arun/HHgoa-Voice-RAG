@@ -110,6 +110,74 @@ def _cmd_eval_validate(args: argparse.Namespace) -> None:
     print(json.dumps(validate_eval_file(args.eval_file), indent=2))
 
 
+def _cmd_transcribe(args: argparse.Namespace) -> None:
+    from core.factory import build_stt
+
+    audio_path = args.audio
+    if not audio_path.exists():
+        raise SystemExit(f"Audio file not found: {audio_path}")
+
+    audio_bytes = audio_path.read_bytes()
+    content_type = {
+        ".wav": "audio/wav",
+        ".mp3": "audio/mpeg",
+        ".m4a": "audio/mp4",
+        ".ogg": "audio/ogg",
+        ".flac": "audio/flac",
+    }.get(audio_path.suffix.lower(), "application/octet-stream")
+
+    try:
+        result = build_stt().transcribe(
+            audio_bytes,
+            language=args.language,
+            content_type=content_type,
+            filename=audio_path.name,
+        )
+    except RuntimeError as exc:
+        raise SystemExit(str(exc)) from exc
+
+    print(json.dumps({"text": result.text, "language": result.language, "provider": result.provider}, ensure_ascii=False, indent=2))
+
+
+def _cmd_voice_query(args: argparse.Namespace) -> None:
+    from core.factory import build_rag_pipeline, build_stt
+
+    audio_path = args.audio
+    if not audio_path.exists():
+        raise SystemExit(f"Audio file not found: {audio_path}")
+
+    audio_bytes = audio_path.read_bytes()
+    content_type = {
+        ".wav": "audio/wav",
+        ".mp3": "audio/mpeg",
+        ".m4a": "audio/mp4",
+        ".ogg": "audio/ogg",
+        ".flac": "audio/flac",
+    }.get(audio_path.suffix.lower(), "application/octet-stream")
+
+    try:
+        transcription = build_stt().transcribe(
+            audio_bytes,
+            language=args.language,
+            content_type=content_type,
+            filename=audio_path.name,
+        )
+    except RuntimeError as exc:
+        raise SystemExit(str(exc)) from exc
+
+    pipeline = build_rag_pipeline(use_template_llm=args.template_llm)
+    response = pipeline.query(transcription.text, language=args.language, top_k=args.top_k)
+
+    print(f"\nTranscription ({response.language}): {transcription.text}\n")
+    print(f"Query ({response.language}): {response.query}\n")
+    print("Sources:")
+    for i, source in enumerate(response.sources, start=1):
+        preview = source.chunk.text[:120].replace("\n", " ")
+        print(f"  {i}. [{source.score:.3f}] {preview}...")
+    print("\nAnswer:\n")
+    print(response.answer)
+
+
 def _cmd_bench(args: argparse.Namespace) -> None:
     from bench.runner import bench_query
 
@@ -340,6 +408,22 @@ def main(argv: list[str] | None = None) -> None:
     p_bench.add_argument("--query", default="भारत की राजधानी क्या है?")
     p_bench.add_argument("--runs", type=int, default=10)
     p_bench.set_defaults(func=_cmd_bench)
+
+    p_transcribe = sub.add_parser("transcribe", help="Transcribe audio to text (hi/gu)")
+    p_transcribe.add_argument("audio", type=Path)
+    p_transcribe.add_argument("--language", choices=["hi", "gu"], default="hi")
+    p_transcribe.set_defaults(func=_cmd_transcribe)
+
+    p_voice_query = sub.add_parser("voice-query", help="Transcribe audio then run RAG")
+    p_voice_query.add_argument("audio", type=Path)
+    p_voice_query.add_argument("--language", choices=["hi", "gu"], default="hi")
+    p_voice_query.add_argument("--top-k", type=int, default=None)
+    p_voice_query.add_argument(
+        "--template-llm",
+        action="store_true",
+        help="Show retrieved passages only (no LLM API call)",
+    )
+    p_voice_query.set_defaults(func=_cmd_voice_query)
 
     p_serve = sub.add_parser("serve", help="Start HTTP API")
     p_serve.add_argument("--reload", action="store_true")

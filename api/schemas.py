@@ -24,3 +24,13 @@ class QueryResponse(BaseModel):
     answer: str
     language: str
     sources: list[SourceChunk]
+
+
+class TranscribeResponse(BaseModel):
+    text: str
+    language: str
+    provider: str
+
+
+class VoiceQueryResponse(QueryResponse):
+    transcription: str

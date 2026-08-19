@@ -8,8 +8,8 @@ Modular pipeline scoped to **Hindi** and **Gujarati**. Each layer has a base cla
 ingest/loaders  →  core/chunking  →  core/embeddings  →  core/vectorstore
                                                               ↓
 query / api  →  core/retriever  →  core/llm  →  answer
-                     ↑
-              eval/metrics, bench/runner
+     ↑              ↑
+core/stt (voice)   eval/metrics, bench/runner
 ```
 
 ## Where to tweak what
@@ -22,6 +22,7 @@ query / api  →  core/retriever  →  core/llm  →  answer
 | Retrieval logic | Subclass `BaseRetriever` in `core/retriever/` (e.g. hybrid BM25 + dense) |
 | Prompts / language tone | `core/rag/prompts.py` |
 | LLM provider | `core/llm/` + `core/factory.py` |
+| Speech-to-text | `core/stt/` + `core/factory.py` |
 | Data sources (MS MARCO-XI, etc.) | `ingest/loaders.py` |
 | Metrics | `eval/metrics.py` |
 | HTTP API | `api/app.py`, `api/schemas.py` |
@@ -34,6 +35,7 @@ query / api  →  core/retriever  →  core/llm  →  answer
 - **Store:** `MemoryVectorStore` — numpy cosine search, persists under `data/index/`
 - **Retriever:** `DenseRetriever`
 - **LLM:** `TemplateLLM` if no key; `OpenAICompatibleLLM` when `LLM_API_KEY` is set
+- **STT:** `ElevenLabsSTT` by default (`STT_PROVIDER=elevenlabs`); falls back to `StubSTT` without API key; optional `OpenAIWhisperSTT` when `STT_PROVIDER=openai`
 
 ## CLI entry points
 
@@ -42,7 +44,7 @@ query / api  →  core/retriever  →  core/llm  →  answer
 ./hhgoa query "question"       # run RAG query
 ./hhgoa eval [file]            # retrieval metrics
 ./hhgoa bench                  # latency benchmark
-./hhgoa serve                  # POST /query
+./hhgoa serve                  # POST /query, /transcribe, /voice-query
 ```
 
 ## Adding a new embedding provider

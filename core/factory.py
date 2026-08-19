@@ -15,6 +15,9 @@ from core.llm.openai_compat import OpenAICompatibleLLM
 from core.llm.template import TemplateLLM
 from core.rag.pipeline import RAGPipeline
 from core.retriever.dense import DenseRetriever
+from core.stt.elevenlabs import ElevenLabsSTT
+from core.stt.openai_whisper import OpenAIWhisperSTT
+from core.stt.stub import StubSTT
 from core.vectorstore.memory import MemoryVectorStore
 
 
@@ -104,6 +107,37 @@ def build_llm(settings: Settings | None = None, *, use_template: bool = False):
         base_url=settings.llm_base_url,
         temperature=settings.llm_temperature,
         max_tokens=settings.llm_max_tokens,
+    )
+
+
+def build_stt(settings: Settings | None = None):
+    settings = settings or get_settings()
+    provider = (settings.stt_provider or "elevenlabs").lower()
+
+    if provider in {"stub", "none", ""}:
+        return StubSTT()
+    if provider == "elevenlabs":
+        api_key = settings.stt_api_key
+        if not api_key:
+            return StubSTT()
+        base_url = settings.stt_base_url or "https://api.elevenlabs.io/v1"
+        return ElevenLabsSTT(
+            api_key=api_key,
+            model=settings.stt_model,
+            base_url=base_url,
+        )
+    if provider == "openai":
+        api_key = settings.stt_api_key or settings.llm_api_key
+        base_url = settings.stt_base_url or settings.llm_base_url
+        return OpenAIWhisperSTT(
+            api_key=api_key,
+            model=settings.stt_model,
+            base_url=base_url,
+        )
+
+    raise ValueError(
+        f"Unknown STT_PROVIDER={settings.stt_provider!r}. "
+        "Supported: elevenlabs, stub, openai"
     )
 
 

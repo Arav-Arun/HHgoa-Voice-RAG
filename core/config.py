@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from pydantic import Field
+from pydantic import AliasChoices, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from core.embeddings.presets import DEFAULT_EMBEDDING_PRESET
@@ -62,10 +62,17 @@ class Settings(BaseSettings):
     llm_temperature: float = 0.2
     llm_max_tokens: int = 1024
 
-    # STT (reserved for voice path)
-    stt_api_key: str = Field(default="", validation_alias="STT_API_KEY")
-    stt_provider: str = Field(default="", validation_alias="STT_PROVIDER")
-    stt_model: str = Field(default="", validation_alias="STT_MODEL")
+    # STT — speech-to-text for voice queries (hi | gu); spec requires Sarvam or ElevenLabs
+    stt_provider: str = Field(default="elevenlabs", validation_alias="STT_PROVIDER")
+    stt_api_key: str = Field(
+        default="",
+        validation_alias=AliasChoices("STT_API_KEY", "ELEVENLABS_API_KEY"),
+    )
+    stt_base_url: str = Field(
+        default="https://api.elevenlabs.io/v1",
+        validation_alias="STT_BASE_URL",
+    )
+    stt_model: str = Field(default="scribe_v2", validation_alias="STT_MODEL")
 
     # API
     api_host: str = "127.0.0.1"

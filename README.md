@@ -95,7 +95,15 @@ Held-out eval (530 queries, e5-small). Semantic and metadata tie — most MS MAR
 curl -X POST http://127.0.0.1:8000/query \
   -H 'Content-Type: application/json' \
   -d '{"question":"भारत की राजधानी क्या है?","language":"hi"}'
+
+# Voice (set STT_PROVIDER=elevenlabs + STT_API_KEY in .env)
+curl -X POST http://127.0.0.1:8000/transcribe \
+  -F language=hi -F audio=@sample.wav
+curl -X POST http://127.0.0.1:8000/voice-query \
+  -F language=hi -F audio=@sample.wav
 ```
+
+CLI: `./hhgoa transcribe sample.wav --language hi` · `./hhgoa voice-query sample.wav`
 
 ## Scope
 
