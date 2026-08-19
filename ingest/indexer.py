@@ -72,6 +72,7 @@ def ingest_msmarco_xi(
     *,
     languages: tuple[str, ...] = MSMARCO_XI_SCOPE_LANGUAGES,
     split: str = "validation",
+    offset: int = 0,
     limit: int | None = 100,
     batch_size: int = 256,
     save_index: bool = True,
@@ -86,6 +87,7 @@ def ingest_msmarco_xi(
     for batch in iter_msmarco_xi(
         languages=languages,
         split=split,
+        offset=offset,
         limit=limit,
         batch_size=batch_size,
     ):

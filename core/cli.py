@@ -11,20 +11,29 @@ from pathlib import Path
 def _cmd_ingest(args: argparse.Namespace) -> None:
     source = args.source
     if str(source).lower() == "msmarco":
+        from eval.split import load_split_config
         from ingest.indexer import ingest_msmarco_xi
 
+        config = load_split_config()
         languages = tuple(args.languages)
-        limit = None if args.all else args.limit
+        split = args.split or config.split
+        if args.all:
+            offset, limit = 0, None
+            slice_label = "full split"
+        else:
+            offset = config.corpus.offset
+            limit = config.corpus.limit
+            slice_label = f"corpus [{offset}:{offset + limit})"
         count = ingest_msmarco_xi(
             languages=languages,
-            split=args.split,
+            split=split,
+            offset=offset,
             limit=limit,
         )
         lang_label = ", ".join(languages)
-        limit_label = "all examples" if args.all else f"{limit} examples/lang"
         print(
             f"Ingested {count} chunks from ai4bharat/MSMARCO-XI "
-            f"({lang_label}, {args.split}, {limit_label})"
+            f"({lang_label}, {split}, {slice_label})"
         )
         return
 
@@ -61,25 +70,42 @@ def _cmd_eval(args: argparse.Namespace) -> None:
 
 
 def _cmd_eval_build(args: argparse.Namespace) -> None:
-    from eval.build import build_and_write_msmarco_eval_set
+    from eval.build import build_and_write_held_out_eval
+    from eval.split import DEFAULT_SPLIT_PATH, EvalSplitConfig, load_split_config
 
-    languages = tuple(args.languages)
-    limit = None if args.all else args.limit
-    examples = build_and_write_msmarco_eval_set(
+    config = load_split_config(args.split_file)
+    if tuple(args.languages) != config.languages:
+        config = EvalSplitConfig(
+            dataset=config.dataset,
+            split=config.split,
+            languages=tuple(args.languages),
+            corpus=config.corpus,
+            dev=config.dev,
+            eval=config.eval,
+        )
+    examples = build_and_write_held_out_eval(
         args.output,
-        languages=languages,
-        split=args.split,
-        limit=limit,
+        split_path=args.split_file,
+        config=config,
     )
     by_lang: dict[str, int] = {}
     for example in examples:
         by_lang[example.language] = by_lang.get(example.language, 0) + 1
     counts = ", ".join(f"{lang}={n}" for lang, n in sorted(by_lang.items())) or "none"
-    limit_label = "all examples" if args.all else f"{limit} examples/lang"
+    spec = config.eval
     print(
-        f"Wrote {len(examples)} eval queries to {args.output} "
-        f"({counts}; {args.split}, {limit_label})"
+        f"Wrote {len(examples)} held-out queries to {args.output} "
+        f"({counts}; eval slice [{spec.offset}:{spec.offset + spec.limit}))"
     )
+    print(f"Split config: {args.split_file}")
+
+
+def _cmd_eval_validate(args: argparse.Namespace) -> None:
+    from eval.validate import validate_eval_file
+
+    if not args.eval_file.exists():
+        raise SystemExit(f"Eval file not found: {args.eval_file}")
+    print(json.dumps(validate_eval_file(args.eval_file), indent=2))
 
 
 def _cmd_bench(args: argparse.Namespace) -> None:
@@ -158,19 +184,13 @@ def main(argv: list[str] | None = None) -> None:
     p_ingest.add_argument(
         "--split",
         choices=["train", "validation"],
-        default="validation",
-        help="MS MARCO-XI split (default: validation)",
-    )
-    p_ingest.add_argument(
-        "--limit",
-        type=int,
-        default=100,
-        help="Max query examples per language for msmarco (default: 100)",
+        default=None,
+        help="MS MARCO-XI split (default: from data/eval/split.json)",
     )
     p_ingest.add_argument(
         "--all",
         action="store_true",
-        help="Ingest the full msmarco split (no per-language limit)",
+        help="Ingest the full msmarco split (ignore corpus slice in split.json)",
     )
     p_ingest.set_defaults(func=_cmd_ingest)
 
@@ -197,7 +217,7 @@ def main(argv: list[str] | None = None) -> None:
 
     p_eval_build = sub.add_parser(
         "eval-build",
-        help="Build data/eval/queries.jsonl from MS MARCO-XI is_selected labels",
+        help="Build held-out data/eval/queries.jsonl + split.json from MSMARCO-XI",
     )
     p_eval_build.add_argument(
         "--output",
@@ -205,28 +225,29 @@ def main(argv: list[str] | None = None) -> None:
         default=Path("data/eval/queries.jsonl"),
     )
     p_eval_build.add_argument(
+        "--split-file",
+        type=Path,
+        default=Path("data/eval/split.json"),
+    )
+    p_eval_build.add_argument(
         "--languages",
         nargs="+",
         choices=["hi", "gu"],
         default=["hi", "gu"],
     )
-    p_eval_build.add_argument(
-        "--split",
-        choices=["train", "validation"],
-        default="validation",
-    )
-    p_eval_build.add_argument(
-        "--limit",
-        type=int,
-        default=500,
-        help="Max query examples per language (same slice as ingest default)",
-    )
-    p_eval_build.add_argument(
-        "--all",
-        action="store_true",
-        help="Use the full split (no per-language limit)",
-    )
     p_eval_build.set_defaults(func=_cmd_eval_build)
+
+    p_eval_validate = sub.add_parser(
+        "eval-validate",
+        help="Check held-out labels are present in the built index",
+    )
+    p_eval_validate.add_argument(
+        "eval_file",
+        type=Path,
+        nargs="?",
+        default=Path("data/eval/queries.jsonl"),
+    )
+    p_eval_validate.set_defaults(func=_cmd_eval_validate)
 
     p_eval_compare = sub.add_parser(
         "eval-compare",

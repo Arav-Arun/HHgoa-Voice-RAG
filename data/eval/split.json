@@ -1,0 +1,21 @@
+{
+  "dataset": "ai4bharat/MSMARCO-XI",
+  "split": "validation",
+  "languages": [
+    "hi",
+    "gu"
+  ],
+  "corpus": {
+    "offset": 0,
+    "limit": 1000
+  },
+  "dev": {
+    "offset": 0,
+    "limit": 500
+  },
+  "eval": {
+    "offset": 500,
+    "limit": 500
+  },
+  "notes": "corpus: passages indexed for retrieval; dev: queries used for embedder comparison; eval: held-out queries (disjoint from dev) with is_selected labels"
+}

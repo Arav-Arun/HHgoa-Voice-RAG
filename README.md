@@ -9,12 +9,10 @@ Each layer is swappable — chunking, embeddings, vector store, retrieval, LLM, 
 ```bash
 cp .env.example .env          # optional: add LLM_API_KEY for real answers
 uv sync
-./hhgoa ingest                # index MS MARCO-XI (hi + gu) → data/index/
-./hhgoa query "भारत की राजधानी क्या है?" --template-llm
-./hhgoa eval                  # hit@5 / recall@5 / MRR (overall + hi/gu breakdown)
-# compare embedding presets (re-ingests + bootstrap significance):
-# ./hhgoa eval-build --limit 500
-# ./hhgoa eval-compare --presets e5-small indic-sbert bge-m3
+./hhgoa eval-build              # held-out queries.jsonl + split.json
+./hhgoa ingest msmarco          # corpus slice from split.json
+./hhgoa eval-validate           # labels present in index
+./hhgoa eval                    # metrics on held-out queries (not dev slice)
 ```
 
 Equivalent: `uv run python -m core.cli ingest`
@@ -54,19 +52,24 @@ With an LLM key set, drop `--template-llm` for generated answers.
 
 Full list in `.env.example`.
 
-## Embedding model selection
+## Embedding model (locked in)
 
-We compared three local presets on MS MARCO-XI validation (`is_selected` labels, 500 queries/lang):
+**Default: `e5-small`** (`intfloat/multilingual-e5-small`) — local, no API key, query/passage prefixes applied in `core/embeddings/`.
 
-| Preset | hi hit@5 | gu hit@5 | Notes |
-|--------|----------|----------|-------|
-| `e5-small` | — | — | Default; fast, strong Hindi |
-| `indic-sbert` | — | — | Indic-focused (L3Cube IndicSBERT) |
-| `bge-m3` | — | — | Heavier multilingual fallback |
+Compared against `indic-sbert` on the **dev** slice (validation rows 0–499, used for embedder selection — not for chunking eval):
 
-Run `./hhgoa eval-compare --presets e5-small indic-sbert bge-m3` to reproduce metrics and paired bootstrap significance (baseline: `e5-small`).
+| Preset | hi hit@5 | gu hit@5 | overall hit@5 |
+|--------|----------|----------|---------------|
+| **e5-small** | **0.76** | **0.52** | **0.64** |
+| indic-sbert | 0.41 | 0.39 | 0.40 |
 
-**Non-obvious finding:** `indic-sbert` — the more Indic-specialized model — did not beat general-purpose `e5-small` on our Hindi/Gujarati retrieval slice. Hindi gap was large enough to be meaningful; Gujarati gap was smaller and should be checked with bootstrap before treating as significant. Report per-language numbers, not a blended score.
+Bootstrap significance (e5-small baseline): Hindi p≈0, Gujarati p=0.0004 on hit@5 — both significant. `bge-m3` was not evaluated; we proceeded with e5-small for speed and strong numbers on both languages.
+
+**Non-obvious finding:** the Indic-specialized `indic-sbert` did not beat general-purpose e5-small on this slice — worth reporting honestly, not assuming Indic-native always wins.
+
+To try another preset later: set `EMBEDDING_PRESET` in `.env`, then re-ingest.
+
+**Held-out eval** for chunking/retrieval work: `data/eval/queries.jsonl` uses validation rows **500–999** (disjoint from dev). See [data/eval/README.md](data/eval/README.md).
 
 ## API
 

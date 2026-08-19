@@ -1,4 +1,4 @@
-"""Build retrieval eval fixtures from MS MARCO-XI (is_selected = relevant)."""
+"""Build held-out retrieval eval fixtures from MS MARCO-XI."""
 
 from __future__ import annotations
 
@@ -6,17 +6,19 @@ import json
 from pathlib import Path
 
 from eval.dataset import EvalExample
-from ingest.loaders import (
-    MSMARCO_XI_SCOPE_LANGUAGES,
-    load_msmarco_xi_rows,
-    msmarco_passage_id,
-)
+from eval.split import DEFAULT_SPLIT, DEFAULT_SPLIT_PATH, EvalSplitConfig, write_split_config
+from ingest.loaders import load_msmarco_xi_rows, msmarco_passage_id
 
 DEFAULT_EVAL_PATH = Path("data/eval/queries.jsonl")
 
 
-def eval_example_from_msmarco_row(row: dict, *, language: str) -> EvalExample | None:
-    """Map one MS MARCO-XI example to an eval query using selected passages as labels."""
+def eval_example_from_msmarco_row(
+    row: dict,
+    *,
+    language: str,
+    split: str,
+) -> EvalExample | None:
+    """Map one MS MARCO-XI example to query → relevant passage labels."""
     query = str(row.get("query") or "").strip()
     if not query:
         return None
@@ -42,20 +44,29 @@ def eval_example_from_msmarco_row(row: dict, *, language: str) -> EvalExample | 
         query=query,
         expected_doc_ids=expected_doc_ids,
         language=language,
+        query_id=int(query_id),
+        split=split,
     )
 
 
-def build_msmarco_eval_set(
-    *,
-    languages: tuple[str, ...] = MSMARCO_XI_SCOPE_LANGUAGES,
-    split: str = "validation",
-    limit: int | None = 100,
+def build_held_out_eval_set(
+    config: EvalSplitConfig = DEFAULT_SPLIT,
 ) -> list[EvalExample]:
-    """Build eval examples from the same MS MARCO-XI slice ingest indexes by default."""
+    """Build eval queries from the held-out slice (disjoint from dev)."""
+    spec = config.eval
     examples: list[EvalExample] = []
-    for language in languages:
-        for row in load_msmarco_xi_rows(language, split, limit=limit):
-            example = eval_example_from_msmarco_row(row, language=language)
+    for language in config.languages:
+        for row in load_msmarco_xi_rows(
+            language,
+            config.split,
+            offset=spec.offset,
+            limit=spec.limit,
+        ):
+            example = eval_example_from_msmarco_row(
+                row,
+                language=language,
+                split=config.split,
+            )
             if example is not None:
                 examples.append(example)
     return examples
@@ -65,26 +76,18 @@ def write_eval_set(path: Path, examples: list[EvalExample]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as handle:
         for example in examples:
-            handle.write(
-                json.dumps(
-                    {
-                        "query": example.query,
-                        "language": example.language,
-                        "expected_doc_ids": example.expected_doc_ids,
-                    },
-                    ensure_ascii=False,
-                )
-                + "\n"
-            )
+            handle.write(json.dumps(example.to_dict(), ensure_ascii=False) + "\n")
 
 
-def build_and_write_msmarco_eval_set(
+def build_and_write_held_out_eval(
     path: Path = DEFAULT_EVAL_PATH,
     *,
-    languages: tuple[str, ...] = MSMARCO_XI_SCOPE_LANGUAGES,
-    split: str = "validation",
-    limit: int | None = 100,
+    split_path: Path = DEFAULT_SPLIT_PATH,
+    config: EvalSplitConfig | None = None,
 ) -> list[EvalExample]:
-    examples = build_msmarco_eval_set(languages=languages, split=split, limit=limit)
+    """Write split.json + held-out queries.jsonl."""
+    config = config or DEFAULT_SPLIT
+    write_split_config(split_path, config)
+    examples = build_held_out_eval_set(config)
     write_eval_set(path, examples)
     return examples

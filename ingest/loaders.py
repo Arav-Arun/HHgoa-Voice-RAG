@@ -108,7 +108,13 @@ def _msmarco_example_to_documents(row: dict, *, language: str, split: str) -> li
     return documents
 
 
-def load_msmarco_xi_rows(language: str, split: str, *, limit: int | None) -> list[dict]:
+def load_msmarco_xi_rows(
+    language: str,
+    split: str,
+    *,
+    offset: int = 0,
+    limit: int | None,
+) -> list[dict]:
     from datasets import load_dataset
 
     if language not in _MSMARCO_XI_FILES:
@@ -116,7 +122,10 @@ def load_msmarco_xi_rows(language: str, split: str, *, limit: int | None) -> lis
         raise ValueError(f"Unsupported MS MARCO-XI language {language!r}. Supported: {supported}")
 
     data_file = _MSMARCO_XI_FILES[language][split]
-    split_arg = split if limit is None else f"{split}[:{limit}]"
+    if limit is None:
+        split_arg = split if offset == 0 else f"{split}[{offset}:]"
+    else:
+        split_arg = f"{split}[{offset}:{offset + limit}]"
     dataset = load_dataset(
         MSMARCO_XI_DATASET,
         data_files={split: data_file},
@@ -129,19 +138,20 @@ def load_msmarco_xi(
     *,
     languages: tuple[str, ...] = MSMARCO_XI_SCOPE_LANGUAGES,
     split: str = "validation",
+    offset: int = 0,
     limit: int | None = 100,
 ) -> list[Document]:
     """Load Hindi/Gujarati passages from ai4bharat/MSMARCO-XI.
 
-    ``limit`` caps the number of query examples per language (each yields ~10 passages).
-    Pass ``limit=None`` to load the full split.
+    ``limit`` caps rows per language from ``offset`` (each row yields ~10 passages).
+    Pass ``limit=None`` to load from offset to end of split.
     """
     if split not in {"train", "validation"}:
         raise ValueError("split must be 'train' or 'validation'")
 
     documents: list[Document] = []
     for language in languages:
-        for row in load_msmarco_xi_rows(language, split, limit=limit):
+        for row in load_msmarco_xi_rows(language, split, offset=offset, limit=limit):
             documents.extend(_msmarco_example_to_documents(row, language=language, split=split))
     return documents
 
@@ -150,6 +160,7 @@ def iter_msmarco_xi(
     *,
     languages: tuple[str, ...] = MSMARCO_XI_SCOPE_LANGUAGES,
     split: str = "validation",
+    offset: int = 0,
     limit: int | None = 100,
     batch_size: int = 256,
 ) -> Iterator[list[Document]]:
@@ -158,7 +169,7 @@ def iter_msmarco_xi(
         raise ValueError("split must be 'train' or 'validation'")
 
     for language in languages:
-        rows = load_msmarco_xi_rows(language, split, limit=limit)
+        rows = load_msmarco_xi_rows(language, split, offset=offset, limit=limit)
         batch: list[Document] = []
         for row in rows:
             batch.extend(_msmarco_example_to_documents(row, language=language, split=split))
