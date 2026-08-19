@@ -11,6 +11,10 @@ from core.embeddings.hash import HashEmbedder
 from core.embeddings.openai import OpenAIEmbedder
 from core.embeddings.presets import DEFAULT_EMBEDDING_PRESET, EMBEDDING_PRESETS
 from core.embeddings.sentence_transformers import SentenceTransformerEmbedder
+from core.guardrails.composite import CompositeGuardrail
+from core.guardrails.grounding import GroundingGate
+from core.guardrails.input_intent import InputIntentFilter
+from core.guardrails.stub import StubGuardrail
 from core.llm.openai_compat import OpenAICompatibleLLM
 from core.llm.template import TemplateLLM
 from core.rag.pipeline import RAGPipeline
@@ -148,6 +152,34 @@ def build_retriever(settings: Settings | None = None) -> DenseRetriever:
     return DenseRetriever(embedder=embedder, store=store, top_k=settings.top_k)
 
 
+def build_guardrail(settings: Settings | None = None):
+    settings = settings or get_settings()
+    provider = (settings.guardrail_provider or "default").lower()
+
+    if provider in {"stub", "none", ""}:
+        return StubGuardrail()
+    if provider == "default":
+        return CompositeGuardrail(
+            input_filter=InputIntentFilter(
+                min_query_length=settings.guardrail_min_query_length,
+                supported_languages=settings.supported_languages,
+            ),
+            grounding_gate=GroundingGate(min_score=settings.guardrail_min_score),
+        )
+    if provider == "input":
+        return InputIntentFilter(
+            min_query_length=settings.guardrail_min_query_length,
+            supported_languages=settings.supported_languages,
+        )
+    if provider == "grounding":
+        return GroundingGate(min_score=settings.guardrail_min_score)
+
+    raise ValueError(
+        f"Unknown GUARDRAIL_PROVIDER={settings.guardrail_provider!r}. "
+        "Supported: default, stub, input, grounding"
+    )
+
+
 def build_rag_pipeline(
     settings: Settings | None = None,
     *,
@@ -158,4 +190,5 @@ def build_rag_pipeline(
         retriever=build_retriever(settings),
         llm=build_llm(settings, use_template=use_template_llm),
         default_language=settings.default_language,
+        guardrail=build_guardrail(settings),
     )

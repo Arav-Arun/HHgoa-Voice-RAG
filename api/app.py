@@ -28,6 +28,7 @@ def get_stt():
 
 
 def _to_query_response(response) -> QueryResponse:
+    guardrail = response.metadata.get("guardrail", {})
     return QueryResponse(
         query=response.query,
         answer=response.answer,
@@ -42,6 +43,8 @@ def _to_query_response(response) -> QueryResponse:
             )
             for s in response.sources
         ],
+        abstained=bool(guardrail.get("blocked")),
+        guardrail_reason=guardrail.get("reason"),
     )
 
 
@@ -52,6 +55,7 @@ def health() -> dict[str, str]:
         "status": "ok",
         "languages": ",".join(settings.supported_languages),
         "stt_provider": settings.stt_provider,
+        "guardrail_provider": settings.guardrail_provider,
     }
 
 

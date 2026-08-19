@@ -60,6 +60,9 @@ def _cmd_query(args: argparse.Namespace) -> None:
         print(f"  {i}. [{source.score:.3f}] {preview}...")
     print("\nAnswer:\n")
     print(response.answer)
+    guardrail = response.metadata.get("guardrail")
+    if guardrail:
+        print(f"\n[guardrail] stage={guardrail.get('stage')} reason={guardrail.get('reason')}")
 
 
 def _cmd_eval(args: argparse.Namespace) -> None:

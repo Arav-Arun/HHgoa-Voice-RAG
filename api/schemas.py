@@ -24,6 +24,8 @@ class QueryResponse(BaseModel):
     answer: str
     language: str
     sources: list[SourceChunk]
+    abstained: bool = False
+    guardrail_reason: str | None = None
 
 
 class TranscribeResponse(BaseModel):

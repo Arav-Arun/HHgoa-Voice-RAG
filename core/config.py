@@ -74,6 +74,11 @@ class Settings(BaseSettings):
     )
     stt_model: str = Field(default="scribe_v2", validation_alias="STT_MODEL")
 
+    # Guardrails — input intent filter + grounding/abstain gate
+    guardrail_provider: str = Field(default="default", validation_alias="GUARDRAIL_PROVIDER")
+    guardrail_min_score: float = Field(default=0.30, validation_alias="GUARDRAIL_MIN_SCORE")
+    guardrail_min_query_length: int = Field(default=3, validation_alias="GUARDRAIL_MIN_QUERY_LENGTH")
+
     # API
     api_host: str = "127.0.0.1"
     api_port: int = 8000
