@@ -115,6 +115,7 @@ def load_msmarco_xi_rows(
     offset: int = 0,
     limit: int | None,
 ) -> list[dict]:
+    """Load a contiguous row range (legacy). Prefer load_msmarco_xi_rows_by_indices."""
     from datasets import load_dataset
 
     if language not in _MSMARCO_XI_FILES:
@@ -132,6 +133,41 @@ def load_msmarco_xi_rows(
         split=split_arg,
     )
     return list(dataset)
+
+
+def msmarco_validation_row_count(language: str, split: str) -> int:
+    from datasets import load_dataset
+
+    data_file = _MSMARCO_XI_FILES[language][split]
+    dataset = load_dataset(
+        MSMARCO_XI_DATASET,
+        data_files={split: data_file},
+        split=split,
+    )
+    return len(dataset)
+
+
+def load_msmarco_xi_rows_by_indices(
+    language: str,
+    split: str,
+    indices: list[int],
+) -> list[dict]:
+    """Load specific validation rows after a seeded shuffle."""
+    from datasets import load_dataset
+
+    if not indices:
+        return []
+    if language not in _MSMARCO_XI_FILES:
+        supported = ", ".join(sorted(_MSMARCO_XI_FILES))
+        raise ValueError(f"Unsupported MS MARCO-XI language {language!r}. Supported: {supported}")
+
+    data_file = _MSMARCO_XI_FILES[language][split]
+    dataset = load_dataset(
+        MSMARCO_XI_DATASET,
+        data_files={split: data_file},
+        split=split,
+    )
+    return list(dataset.select(indices))
 
 
 def load_msmarco_xi(
@@ -162,6 +198,7 @@ def iter_msmarco_xi(
     split: str = "validation",
     offset: int = 0,
     limit: int | None = 100,
+    row_indices: list[int] | None = None,
     batch_size: int = 256,
 ) -> Iterator[list[Document]]:
     """Yield MS MARCO-XI documents in batches (for large full-split ingests)."""
@@ -169,7 +206,10 @@ def iter_msmarco_xi(
         raise ValueError("split must be 'train' or 'validation'")
 
     for language in languages:
-        rows = load_msmarco_xi_rows(language, split, offset=offset, limit=limit)
+        if row_indices is not None:
+            rows = load_msmarco_xi_rows_by_indices(language, split, row_indices)
+        else:
+            rows = load_msmarco_xi_rows(language, split, offset=offset, limit=limit)
         batch: list[Document] = []
         for row in rows:
             batch.extend(_msmarco_example_to_documents(row, language=language, split=split))

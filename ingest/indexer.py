@@ -74,6 +74,7 @@ def ingest_msmarco_xi(
     split: str = "validation",
     offset: int = 0,
     limit: int | None = 100,
+    row_indices: list[int] | None = None,
     batch_size: int = 256,
     save_index: bool = True,
 ) -> int:
@@ -89,6 +90,7 @@ def ingest_msmarco_xi(
         split=split,
         offset=offset,
         limit=limit,
+        row_indices=row_indices,
         batch_size=batch_size,
     ):
         batch_chunks = []

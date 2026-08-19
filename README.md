@@ -56,7 +56,7 @@ Full list in `.env.example`.
 
 **Default: `e5-small`** (`intfloat/multilingual-e5-small`) — local, no API key, query/passage prefixes applied in `core/embeddings/`.
 
-Compared against `indic-sbert` on the **dev** slice (validation rows 0–499, used for embedder selection — not for chunking eval):
+Compared against `indic-sbert` on the **dev** slice (first 500 rows after seeded shuffle, used for embedder selection — not for chunking eval):
 
 | Preset | hi hit@5 | gu hit@5 | overall hit@5 |
 |--------|----------|----------|---------------|
@@ -69,7 +69,7 @@ Bootstrap significance (e5-small baseline): Hindi p≈0, Gujarati p=0.0004 on hi
 
 To try another preset later: set `EMBEDDING_PRESET` in `.env`, then re-ingest.
 
-**Held-out eval** for chunking/retrieval work: `data/eval/queries.jsonl` uses validation rows **500–999** (disjoint from dev). See [data/eval/README.md](data/eval/README.md).
+**Held-out eval** for chunking/retrieval work: validation rows are **shuffled with seed 42** before slicing, so dev and eval are comparable random bags (not contiguous parquet blocks). Eval uses shuffled positions `[500, 1000)`; dev/embedder work used `[0, 500)`. See [data/eval/README.md](data/eval/README.md).
 
 ## API
 

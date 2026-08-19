@@ -11,25 +11,26 @@ from pathlib import Path
 def _cmd_ingest(args: argparse.Namespace) -> None:
     source = args.source
     if str(source).lower() == "msmarco":
-        from eval.split import load_split_config
+        from eval.split import get_corpus_row_indices, load_split_config
         from ingest.indexer import ingest_msmarco_xi
 
         config = load_split_config()
         languages = tuple(args.languages)
         split = args.split or config.split
         if args.all:
-            offset, limit = 0, None
+            count = ingest_msmarco_xi(languages=languages, split=split, offset=0, limit=None)
             slice_label = "full split"
         else:
-            offset = config.corpus.offset
-            limit = config.corpus.limit
-            slice_label = f"corpus [{offset}:{offset + limit})"
-        count = ingest_msmarco_xi(
-            languages=languages,
-            split=split,
-            offset=offset,
-            limit=limit,
-        )
+            corpus_indices = get_corpus_row_indices(config)
+            count = ingest_msmarco_xi(
+                languages=languages,
+                split=split,
+                row_indices=corpus_indices,
+            )
+            slice_label = (
+                f"corpus shuffle[{config.corpus.shuffle_start}:"
+                f"{config.corpus.shuffle_start + config.corpus.limit}), seed={config.shuffle_seed}"
+            )
         lang_label = ", ".join(languages)
         print(
             f"Ingested {count} chunks from ai4bharat/MSMARCO-XI "
@@ -95,7 +96,8 @@ def _cmd_eval_build(args: argparse.Namespace) -> None:
     spec = config.eval
     print(
         f"Wrote {len(examples)} held-out queries to {args.output} "
-        f"({counts}; eval slice [{spec.offset}:{spec.offset + spec.limit}))"
+        f"({counts}; eval shuffle[{spec.shuffle_start}:{spec.shuffle_start + spec.limit}), "
+        f"seed={config.shuffle_seed})"
     )
     print(f"Split config: {args.split_file}")
 

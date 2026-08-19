@@ -5,17 +5,19 @@
     "hi",
     "gu"
   ],
+  "shuffle_seed": 42,
   "corpus": {
-    "offset": 0,
+    "shuffle_start": 0,
     "limit": 1000
   },
   "dev": {
-    "offset": 0,
+    "shuffle_start": 0,
     "limit": 500
   },
   "eval": {
-    "offset": 500,
+    "shuffle_start": 500,
     "limit": 500
   },
-  "notes": "corpus: passages indexed for retrieval; dev: queries used for embedder comparison; eval: held-out queries (disjoint from dev) with is_selected labels"
+  "notes": "Rows are shuffled with shuffle_seed before slicing (not raw parquet order). corpus: passages indexed for retrieval; dev: queries used for embedder comparison; eval: held-out queries (disjoint from dev) with is_selected labels",
+  "validation_rows": 97941
 }

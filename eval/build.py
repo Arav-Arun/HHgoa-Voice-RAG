@@ -3,11 +3,19 @@
 from __future__ import annotations
 
 import json
+from dataclasses import replace
 from pathlib import Path
 
 from eval.dataset import EvalExample
-from eval.split import DEFAULT_SPLIT, DEFAULT_SPLIT_PATH, EvalSplitConfig, write_split_config
-from ingest.loaders import load_msmarco_xi_rows, msmarco_passage_id
+from eval.split import (
+    DEFAULT_SPLIT,
+    DEFAULT_SPLIT_PATH,
+    EvalSplitConfig,
+    get_eval_row_indices,
+    get_validation_rows,
+    write_split_config,
+)
+from ingest.loaders import load_msmarco_xi_rows_by_indices, msmarco_passage_id
 
 DEFAULT_EVAL_PATH = Path("data/eval/queries.jsonl")
 
@@ -52,16 +60,11 @@ def eval_example_from_msmarco_row(
 def build_held_out_eval_set(
     config: EvalSplitConfig = DEFAULT_SPLIT,
 ) -> list[EvalExample]:
-    """Build eval queries from the held-out slice (disjoint from dev)."""
-    spec = config.eval
+    """Build eval queries from the held-out shuffled slice (disjoint from dev)."""
+    eval_indices = get_eval_row_indices(config)
     examples: list[EvalExample] = []
     for language in config.languages:
-        for row in load_msmarco_xi_rows(
-            language,
-            config.split,
-            offset=spec.offset,
-            limit=spec.limit,
-        ):
+        for row in load_msmarco_xi_rows_by_indices(language, config.split, eval_indices):
             example = eval_example_from_msmarco_row(
                 row,
                 language=language,
@@ -87,6 +90,8 @@ def build_and_write_held_out_eval(
 ) -> list[EvalExample]:
     """Write split.json + held-out queries.jsonl."""
     config = config or DEFAULT_SPLIT
+    validation_rows = get_validation_rows(config)
+    config = replace(config, validation_rows=validation_rows)
     write_split_config(split_path, config)
     examples = build_held_out_eval_set(config)
     write_eval_set(path, examples)
