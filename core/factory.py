@@ -13,11 +13,11 @@ from core.chunking.semantic import SemanticChunker
 from core.chunking.token_window import TokenWindowChunker
 from core.config import Settings, get_settings
 from core.embeddings.hash import HashEmbedder
-from core.english import FILENAME as _EN_FILE
-from core.english import EnglishSources
 from core.embeddings.openai import OpenAIEmbedder
 from core.embeddings.presets import EMBEDDING_PRESETS
 from core.embeddings.sentence_transformers import SentenceTransformerEmbedder
+from core.english import FILENAME as _EN_FILE
+from core.english import EnglishSources
 from core.guardrails.composite import CompositeGuardrail
 from core.guardrails.confidence import ConfidenceGate
 from core.guardrails.cross_encoder import CrossEncoderScorer

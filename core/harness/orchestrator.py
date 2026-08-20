@@ -183,7 +183,7 @@ class Orchestrator:
                     language=envelope.language,
                 )
                 rec["detail"] = {"candidates": len(sources)}
-        except Exception:
+        except Exception:  # noqa: BLE001 - any retrieval failure must abstain, not raise
             # Retrieval is the one stage with no meaningful fallback: without
             # context there is nothing to ground an answer on, so abstain.
             trace.path = "error"
@@ -222,7 +222,7 @@ class Orchestrator:
                 fast_answer = self.fast_answerer.answer_with_context(
                     envelope.text, sources, language=envelope.language
                 )
-        except Exception:
+        except Exception:  # noqa: BLE001 - any answerer failure falls back to raw context
             with self._stage(trace, "answer_fast_fallback") as rec:
                 rec["status"] = "fallback"
                 fast_answer = sources[0].chunk.text if sources else ""

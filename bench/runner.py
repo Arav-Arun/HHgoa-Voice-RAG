@@ -119,7 +119,7 @@ def _host_info(settings: Settings, chunk_count: int) -> dict:
         import torch
 
         info["torch_threads"] = torch.get_num_threads()
-    except Exception as exc:  # pragma: no cover - torch always present in practice
+    except Exception as exc:  # noqa: BLE001  # pragma: no cover - torch always present
         # Thread count is reporting metadata, not required for the benchmark;
         # record why it is missing rather than dropping it silently.
         info["torch_threads"] = f"unavailable: {type(exc).__name__}"

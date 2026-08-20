@@ -1,6 +1,7 @@
-# Cold start is ~13 s: two transformers plus a 288 MB index. Free and hobby
-# tiers idle a service out after ~15 minutes, so without this the first visitor
-# after a quiet period pays that. A ping every 10 minutes keeps it resident.
+# Cold start is ~17 s locally (docs/latency.md): two transformers plus a 320 MB
+# index, and a deploy adds the index download on top. Free and hobby tiers idle
+# a service out after ~15 minutes, so without this the first visitor after a
+# quiet period pays all of it. A ping every 10 minutes keeps it resident.
 name: keep-warm
 
 on:

@@ -11,4 +11,6 @@ if [ -n "$INDEX_URL" ] && [ ! -f "${INDEX_DIR:-data/index}/chunks.json" ]; then
     || echo "[entrypoint] index fetch failed; serving without one"
 fi
 
-exec uv run python -m core.cli serve
+# --no-sync: the venv is already built into the image, and re-syncing on
+# every boot rebuilds the project and needs a writable /app.
+exec uv run --no-sync python -m core.cli serve

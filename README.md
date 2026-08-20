@@ -845,20 +845,31 @@ uv sync --extra dev
 ### Deploying it
 
 ```bash
-uv run python scripts/package_index.py   # data/index.tar.gz, 179 MB
-# upload it anywhere that serves a plain HTTPS GET, then:
-#   INDEX_URL=<that url>  STT_API_KEY=<key>
+uv run python scripts/package_index.py   # data/index.tar.gz, 190 MB
+# upload it anywhere that serves a plain HTTPS GET, then check the image locally:
+docker build -t hhgoa:cpu .
+docker run --rm -p 7860:7860 -e INDEX_URL=<that url> -e STT_API_KEY=<key> hhgoa:cpu
+curl -s localhost:7860/health   # ready: true, indexed_chunks: 109082
 ```
+
+Then point Render at the repo. `render.yaml` is a Blueprint it reads directly,
+so the only manual step is filling in `INDEX_URL`, `STT_API_KEY`, and optionally
+`LLM_API_KEY`. Render injects `$PORT`; the app reads it ahead of `API_PORT`.
 
 `Dockerfile` bakes both models into the image (downloading them at boot would
 add ~60 s to every cold start and make the service depend on Hugging Face being
-up) and fetches the index at boot, because it is 288 MB, gitignored, and
-container disks are ephemeral. `render.yaml` is a Blueprint Render reads
-directly.
+up) and fetches the index at boot, because it is 320 MB, gitignored, and
+container disks are ephemeral.
 
-The plan matters: measured peak RSS is **~1.2 GB**, so a 512 MB free tier cannot
-hold this. Vercel is not an option either, since torch alone is 507 MB against
-its 250 MB function limit. A 2 GB container is the smallest thing that fits.
+Two sizing decisions are load-bearing. torch resolves from PyTorch's CPU index
+rather than PyPI: the default Linux wheel pulls 2.2 GB of CUDA that never loads,
+since `TORCH_DEVICE` is `cpu` everywhere this runs. And the plan has to be at
+least 2 GB, because measured peak RSS in the container is **1.19 GB** against a
+512 MB free tier. Vercel is out regardless, since torch alone unpacks to 606 MB
+against its 250 MB function limit.
+
+Verified on the built image: 1.12 GB compressed, `torch==2.13.0+cpu`, zero CUDA
+packages, both languages answering and the guardrail abstaining.
 
 ---
 

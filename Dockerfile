@@ -1,9 +1,14 @@
 # Linux CPU image. TORCH_DEVICE defaults to cpu, which is both what this box has
 # and what measured fastest locally, so container numbers match the docs.
+# torch resolves to the +cpu wheel here, see the pytorch-cpu index in
+# pyproject.toml. The default Linux wheel drags in 2.2 GB of CUDA it never loads.
 FROM python:3.12-slim
 
 ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
+    # Without this the wheel cache is baked into the layer alongside the venv
+    # it built. Nothing reinstalls at runtime, so the cache is dead weight.
+    UV_NO_CACHE=1 \
     HF_HOME=/models \
     TORCH_DEVICE=cpu \
     # Bind the container, not loopback, or nothing outside can reach it.
@@ -32,6 +37,10 @@ RUN uv run python -c "\
 from sentence_transformers import CrossEncoder, SentenceTransformer; \
 SentenceTransformer('intfloat/multilingual-e5-small', device='cpu'); \
 CrossEncoder('cross-encoder/mmarco-mMiniLMv2-L12-H384-v1', max_length=256, device='cpu')"
+
+# Set after the bake, not before, or the download above would have nothing to
+# reach. Both models are on disk now, so the hub check at boot is pure latency.
+ENV HF_HUB_OFFLINE=1
 
 # The index is gitignored and container disks are ephemeral, so it is fetched at
 # boot from INDEX_URL. Missing index degrades to a clear /health error rather

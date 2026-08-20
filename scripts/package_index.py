@@ -1,6 +1,6 @@
 """Package the built index into a tarball for INDEX_URL.
 
-The index is gitignored (288 MB) and container disks are ephemeral, so a
+The index is gitignored (320 MB) and container disks are ephemeral, so a
 deployment fetches it at boot instead of rebuilding it, which would take ~24
 minutes on a shared CPU. Upload the tarball anywhere that serves a plain HTTPS
 GET (a GitHub release asset, S3, a Hugging Face dataset repo) and point

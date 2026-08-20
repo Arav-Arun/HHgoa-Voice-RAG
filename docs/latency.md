@@ -129,7 +129,7 @@ Two other decisions matter:
 
 ## Cold start
 
-**17,445 ms** to ready, loading e5-small, the cross-encoder,, torch init, and reading a 288 MB index.
+**17,445 ms** to ready, loading e5-small, the cross-encoder, torch init, and reading a 320 MB index.
 
 Reported separately rather than folded into the percentiles: including it would
 report a one-time artifact as steady-state latency, and hiding it would omit a
