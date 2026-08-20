@@ -164,6 +164,31 @@ Fixtures are synthetic TTS, so they are cleaner than human speech. They verify
 the pipeline; they are not a WER benchmark. See
 [data/samples/audio/README.md](data/samples/audio/README.md).
 
+### Streaming was measured and rejected
+
+STT is ~1,090 ms and, once the pipeline reached 9.6 ms, **99% of what a user
+actually waits for**. ElevenLabs ships a realtime WebSocket model, so it was
+the obvious next win. Streamed against the same fixtures it returns a final
+transcript **238 ms after the last audio chunk instead of 1,090 ms**, a 4.6x
+improvement.
+
+It is not shipped, because it cannot tell the two languages apart:
+
+| speech-to-text path | language correct | final transcript |
+|---|---:|---:|
+| realtime WebSocket, auto-detect | **53%** | 238 ms |
+| **batch, auto-detect (shipped)** | **94%** | 1,090 ms |
+
+Measured over 32 synthesized clips from held-out queries, 16 per language.
+Realtime transcribes Gujarati audio into Devanagari ("સૌથી વધુ" comes back as
+"सौ तीन वधु"), and one partial arrived in Arabic. Passing `language_code=gu`
+fixes it completely, but that means asking the speaker to declare their
+language, which is the thing the next section removes.
+
+Transcribing both ways and letting retrieval pick the better transcript scored
+**59%**, barely above chance, so that idea was dropped too. A 4.6x latency win
+is not worth a coin flip on which language the user is speaking.
+
 ### Nobody should have to declare their language
 
 Devanagari (U+0900-U+097F) and Gujarati (U+0A80-U+0AFF) are disjoint Unicode
@@ -171,11 +196,19 @@ blocks, so the script a question is written in *is* its language. There is no
 model and no ambiguity, which is why the UI has no language selector:
 
 ```
-बीमा समाधान क्या है      -> hi
+बीमा समाधान क्या है       -> hi
 વીમા સમાધાન શું છે        -> gu
 2026 में World Cup कहाँ   -> hi   (Latin loanwords ignored)
-bima samadhan kya hai   -> None -> falls back to DEFAULT_LANGUAGE
+bima samadhan kya hai    -> None -> falls back to DEFAULT_LANGUAGE
+USA टपाल टिकटની કિંમત     -> gu   (mixed script, Devanagari in the majority)
 ```
+
+That last case is why this is **not a majority vote**. Scribe regularly returns
+a transcript mixing both scripts for Gujarati audio, and Devanagari can hold the
+majority in one while the utterance is plainly Gujarati. Hindi is never written
+in the Gujarati block, so a meaningful share of Gujarati characters settles it.
+Measured on the 32 clips above, majority scores **87.5%** against **93.8%** for
+the share rule, with Hindi unaffected at 16/16.
 
 For voice, Scribe is asked to detect the language rather than being told it, and
 the transcript's script then settles it. A provider's language label can be
@@ -515,7 +548,32 @@ Reported separately, never folded in:
 Cold start is excluded from the percentiles and reported on its own: folding it
 in would report a one-time artifact as steady-state, and hiding it would omit a
 real cost. The API eliminates it from request latency by warming in the FastAPI
-lifespan.
+lifespan, and `.github/workflows/keep-warm.yml` pings `/health` every 10 minutes
+so an idled deployment does not hand that 13 s to a visitor.
+
+### The tier-2 answer is cached, nothing else is
+
+Tier 2 costs 2 to 6 seconds against a 9.6 ms fast path, so it is the only stage
+where caching changes anything a user notices. Repeating a question, which a
+demo does constantly, turns it into a lookup:
+
+```
+first  quality query : 3829.8 ms  path=quality
+repeat quality query :   26.6 ms  path=quality_cached   (144x)
+```
+
+The key is the question, the language, **and the ids of the retrieved
+passages**, so re-ingesting the corpus invalidates entries rather than serving
+an answer built from passages that are no longer top-ranked. Only a genuinely
+generated answer is stored: caching a `fast_fallback` would pin a provider
+outage in memory.
+
+It is an in-process LRU, not Redis, and that is a measured decision rather than
+a preference. The lookup is nanoseconds; a Redis round trip is 1-5 ms locally
+and 10-50 ms across a region. For a pipeline whose entire budget is 9.6 ms, the
+network hop would cost more than most of what it protects. Redis earns its place
+when several instances need to share a cache, which is a scaling decision, not a
+latency one.
 
 **These numbers assume an otherwise idle machine.** Retrieval is one dense
 matmul over the whole index, so it is CPU-bound and scales with whatever else is
@@ -738,6 +796,26 @@ uv sync --extra dev
 
 ---
 
+### Deploying it
+
+```bash
+uv run python scripts/package_index.py   # data/index.tar.gz, 179 MB
+# upload it anywhere that serves a plain HTTPS GET, then:
+#   INDEX_URL=<that url>  STT_API_KEY=<key>
+```
+
+`Dockerfile` bakes both models into the image (downloading them at boot would
+add ~60 s to every cold start and make the service depend on Hugging Face being
+up) and fetches the index at boot, because it is 288 MB, gitignored, and
+container disks are ephemeral. `render.yaml` is a Blueprint Render reads
+directly.
+
+The plan matters: measured peak RSS is **~1.2 GB**, so a 512 MB free tier cannot
+hold this. Vercel is not an option either, since torch alone is 507 MB against
+its 250 MB function limit. A 2 GB container is the smallest thing that fits.
+
+---
+
 ## Layout
 
 | path | what |
@@ -752,6 +830,7 @@ uv sync --extra dev
 | `eval/` | metrics, bootstrap significance, calibration |
 | `bench/` | P50/P70/P100 latency harness |
 | `api/` | FastAPI service + static demo UI (the live link) |
+| `Dockerfile`, `render.yaml` | container + Render blueprint for deployment |
 
 Docs: [architecture](docs/architecture.md) · [harness](docs/harness.md) ·
 [latency](docs/latency.md) · [scope](docs/scope.md)

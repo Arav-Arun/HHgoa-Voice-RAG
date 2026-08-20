@@ -24,6 +24,7 @@ import uuid
 from contextlib import contextmanager
 
 from core.guardrails.base import BaseGuardrail, GuardrailDecision
+from core.harness.cache import AnswerCache
 from core.harness.contracts import (
     ANSWER_JSON_SCHEMA,
     AnswerPayload,
@@ -57,6 +58,7 @@ class Orchestrator:
         retry_policy: RetryPolicy | None = None,
         default_language: str = "hi",
         top_k: int = 5,
+        answer_cache: AnswerCache | None = None,
     ) -> None:
         self.retriever = retriever
         self.guardrail = guardrail
@@ -67,6 +69,8 @@ class Orchestrator:
         self.retry_policy = retry_policy or RetryPolicy()
         self.default_language = default_language
         self.top_k = top_k
+        # Only the quality path is cached; see core.harness.cache.
+        self.answer_cache = answer_cache or AnswerCache(0)
 
     # ------------------------------------------------------------ plumbing
 
@@ -229,9 +233,27 @@ class Orchestrator:
 
         # 5. Quality path (optional) --------------------------------------
         if envelope.mode == "quality" and self.chat_clients:
-            answer, citations, quality_meta = self._quality_path(
-                envelope, sources, trace, deadline, fallback_answer=fast_answer
+            cache_key = self.answer_cache.key(
+                envelope.text, envelope.language, [s.chunk.id for s in sources]
             )
+            cached = self.answer_cache.get(cache_key)
+            if cached is not None:
+                with self._stage(trace, "answer_quality_cached") as rec:
+                    rec["detail"] = {"cache": "hit"}
+                # The answer really was generated, just not on this request.
+                # Reporting it as "fast" would misattribute it to the
+                # extractive path.
+                trace.path = "quality_cached"
+                answer, citations, quality_meta = cached
+            else:
+                answer, citations, quality_meta = self._quality_path(
+                    envelope, sources, trace, deadline, fallback_answer=fast_answer
+                )
+                # Only a real generated answer is worth keeping. `trace.path`
+                # is "fast_fallback" when the provider failed, and caching that
+                # would pin a transient outage in memory.
+                if trace.path == "quality":
+                    self.answer_cache.put(cache_key, (answer, citations, quality_meta))
 
         # 6. Faithfulness --------------------------------------------------
         with self._stage(trace, "faithfulness") as rec:

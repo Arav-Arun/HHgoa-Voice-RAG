@@ -50,6 +50,9 @@ _SCRIPT_BLOCKS = {
     "hi": (0x0900, 0x097F),  # Devanagari
     "gu": (0x0A80, 0x0AFF),  # Gujarati
 }
+# Share of Indic characters that must be Gujarati for the text to count as
+# Gujarati. See detect_language for why this is not a majority vote.
+_GUJARATI_SHARE = 0.15
 
 
 def detect_language(text: str) -> str | None:
@@ -60,8 +63,13 @@ def detect_language(text: str) -> str | None:
     their configured default rather than guessing, because a wrong language
     picks the wrong fusion weights and answers in the wrong script.
 
-    Shared punctuation and digits are ignored: only characters inside a script
-    block count, so "500 रुपये?" is Hindi and a bare "500?" is neither.
+    Not a majority vote. Speech-to-text on Gujarati audio regularly returns a
+    transcript mixing both scripts ("USA टपाल टिकटની કિંમત"), and Devanagari can
+    hold the majority in one of those while the utterance is plainly Gujarati.
+    Since Hindi is never written in the Gujarati block, a meaningful share of
+    Gujarati characters settles it. Measured over 32 synthesized clips, a
+    majority vote scores 87.5% against 93.8% for this rule, with Hindi
+    unaffected at 16/16.
     """
     counts = dict.fromkeys(_SCRIPT_BLOCKS, 0)
     for char in text:
@@ -70,8 +78,13 @@ def detect_language(text: str) -> str | None:
             if low <= code <= high:
                 counts[language] += 1
                 break
-    best = max(counts, key=lambda lang: counts[lang])
-    return best if counts[best] else None
+    total = sum(counts.values())
+    if not total:
+        return None
+    # A share rather than "any Gujarati character at all", so one stray glyph in
+    # a long Hindi transcript cannot flip the result. Every threshold from 0.10
+    # to 0.30 scored identically on the measured set.
+    return "gu" if counts["gu"] / total >= _GUJARATI_SHARE else "hi"
 
 
 def normalize_digits(text: str) -> str:

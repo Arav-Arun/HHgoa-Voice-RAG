@@ -23,6 +23,7 @@ from core.guardrails.grounding import GroundingGate
 from core.guardrails.hallucination import HallucinationChecker
 from core.guardrails.input_intent import InputIntentFilter
 from core.guardrails.stub import StubGuardrail
+from core.harness.cache import AnswerCache
 from core.harness.orchestrator import Orchestrator
 from core.llm.chat import ChatClient
 from core.llm.extractive import ExtractiveAnswerer
@@ -357,6 +358,7 @@ def build_orchestrator(settings: Settings | None = None) -> Orchestrator:
         chat_clients=build_chat_clients(settings),
         default_language=settings.default_language,
         top_k=settings.top_k,
+        answer_cache=AnswerCache(settings.answer_cache_size),
     )
 
 

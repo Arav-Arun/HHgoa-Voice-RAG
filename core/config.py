@@ -139,9 +139,19 @@ class Settings(BaseSettings):
         validation_alias="GUARDRAIL_CROSS_ENCODER",
     )
 
+    # Tier-2 answer cache. 0 disables it. Only the LLM path is cached: the
+    # fast path is cheaper than the bookkeeping.
+    answer_cache_size: int = Field(default=256, validation_alias="ANSWER_CACHE_SIZE")
+
     # API
-    api_host: str = "127.0.0.1"
-    api_port: int = 8000
+    # Loopback by default so a local run is not exposed on the network. A
+    # container overrides both: it must bind 0.0.0.0, and hosting platforms
+    # assign the port through $PORT rather than letting the app choose.
+    api_host: str = Field(default="127.0.0.1", validation_alias="API_HOST")
+    api_port: int = Field(
+        default=8000,
+        validation_alias=AliasChoices("PORT", "API_PORT"),
+    )
 
 
 def get_settings() -> Settings:

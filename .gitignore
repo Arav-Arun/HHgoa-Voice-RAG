@@ -67,6 +67,7 @@ data/*
 *.npy
 *.npz
 *.parquet
+data/index.tar.gz
 *.arrow
 *.mmap
 *.sqlite

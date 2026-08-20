@@ -1,0 +1,32 @@
+# Render Blueprint. Connect the repo at dashboard.render.com/blueprints and
+# Render reads this instead of asking you to fill in forms.
+#
+# Plan: measured peak RSS is ~1.2 GB (vector store 1,059 MB + BM25 83 MB + two
+# transformers), so the 512 MB free plan cannot hold it. `standard` is 2 GB.
+# Dropping to a smaller corpus slice would fit a smaller plan; the numbers in
+# the README are measured on the full 109k-chunk index and would no longer
+# describe what is deployed.
+services:
+  - type: web
+    name: hhgoa-voice-rag
+    runtime: docker
+    plan: standard
+    healthCheckPath: /health
+    envVars:
+      # Bind the container, not loopback. Render supplies PORT itself.
+      - key: API_HOST
+        value: 0.0.0.0
+      # Both models are small and run one item at a time, where CPU beats GPU
+      # dispatch overhead. Also what this box has.
+      - key: TORCH_DEVICE
+        value: cpu
+      # Prebuilt index, fetched once at boot. Rebuilding it here would take
+      # ~24 minutes on a shared CPU.
+      - key: INDEX_URL
+        sync: false
+      - key: STT_API_KEY
+        sync: false
+      # Optional: enables the tier-2 LLM rewrite. Without it the service still
+      # answers, from the extractive fast path.
+      - key: LLM_API_KEY
+        sync: false
