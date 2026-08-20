@@ -55,6 +55,7 @@ def build_embedder(settings: Settings | None = None):
             query_prefix=preset.query_prefix if preset else "",
             passage_prefix=preset.passage_prefix if preset else "",
             batch_size=settings.embedding_batch_size,
+            device=settings.torch_device,
         )
     if provider == "openai":
         return OpenAIEmbedder(
@@ -241,7 +242,7 @@ def build_cross_scorer(settings: Settings | None = None) -> CrossEncoderScorer |
     """The gate's cross-encoder, or None when it is switched off."""
     settings = settings or get_settings()
     name = (settings.guardrail_cross_encoder or "").strip()
-    return CrossEncoderScorer(name) if name else None
+    return CrossEncoderScorer(name, device=settings.torch_device) if name else None
 
 
 def _build_grounding_gate(settings: Settings):

@@ -81,6 +81,11 @@ class Settings(BaseSettings):
     )
     embedding_model: str = Field(default="", validation_alias="EMBEDDING_MODEL")
     embedding_batch_size: int = Field(default=32, validation_alias="EMBEDDING_BATCH_SIZE")
+    # Torch device for the query encoder and the gate's cross-encoder. Both
+    # models are small and run one item at a time, where GPU dispatch overhead
+    # costs more than it saves: measured 7.46 ms on MPS against 5.32 ms on CPU.
+    # Empty string hands the choice back to sentence-transformers.
+    torch_device: str = Field(default="cpu", validation_alias="TORCH_DEVICE")
 
     # Vector store, set VECTOR_STORE=memory|faiss (faiss stub for now)
     vector_store: str = "memory"

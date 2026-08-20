@@ -145,10 +145,11 @@ def bench_pipeline(
     if not queries:
         return {"error": "no queries"}
 
-    # Cold start = first real query, measured once and excluded from percentiles.
-    cold_query, cold_lang, _ = queries[0]
+    # Cold start = time until the service can answer at steady-state speed, so
+    # it must force every lazily-loaded model, not just the ones the first
+    # query happens to touch. Measured once and excluded from the percentiles.
     cold_start = time.perf_counter()
-    pipeline.query(cold_query, language=cold_lang, mode=mode)
+    pipeline.warm()
     cold_ms = (time.perf_counter() - cold_start) * 1000.0
 
     for query, language, _ in queries[:warmup]:

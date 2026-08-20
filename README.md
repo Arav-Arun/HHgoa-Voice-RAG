@@ -2,7 +2,7 @@
 
 Speak a question in Hindi or Gujarati; get a grounded, cited answer from a
 109,082-chunk [MS MARCO-XI](https://huggingface.co/datasets/ai4bharat/MSMARCO-XI)
-index in **21.8 ms at P50**.
+index in **9.6 ms at P50**.
 
 Built for **HH Goa 2026 Shortlisting Task 2** by **Team Deploy For Good**.
 
@@ -18,9 +18,9 @@ warm process:
 
 | Metric | Value | Budget |
 |---|---:|---|
-| **P50** | **21.81 ms** | 200 ms |
-| **P70** | **25.41 ms** | 200 ms |
-| **P100** | **49.73 ms** | 200 ms |
+| **P50** | **9.55 ms** | 200 ms |
+| **P70** | **9.84 ms** | 200 ms |
+| **P100** | **39.60 ms** | 200 ms |
 | Queries inside budget | **450 / 450** | |
 
 The measured window is **transcript in, answer out**, matching the task's
@@ -51,7 +51,7 @@ flowchart TD
     TXT["⌨️ Typed question"] --> G1
     STT -->|transcript| G1
 
-    subgraph BUDGET["⏱️ 200ms BUDGET, measured window · P50 21.8ms · P100 49.7ms"]
+    subgraph BUDGET["⏱️ 200ms BUDGET, measured window · P50 9.6ms · P100 39.6ms"]
         G1["🛡️ Input guardrail<br/>unsafe + injection · 0.01ms"]
         G1 -->|"unsafe / injection"| REFUSE["❌ Refuse<br/>never touches the index"]
         G1 -->|allowed| EMB["🔢 Embed query<br/>e5-small · 384-dim"]
@@ -136,7 +136,7 @@ Two rules fall out of it, and both cost us results we would rather have shown:
 |---|---|---|---|
 | 1 | Speech-to-text (Sarvam / ElevenLabs) | `core/stt/elevenlabs.py` | ElevenLabs **Scribe v2**, verified live in hi + gu |
 | 2 | Chunking must be vast | `core/chunking/` | 6 strategies, [ablation](#2-chunking) with bootstrap |
-| 3 | Under 200 ms | `core/harness/orchestrator.py` | **P100 49.7 ms, 450/450 inside budget** |
+| 3 | Under 200 ms | `core/harness/orchestrator.py` | **P100 39.6 ms, 450/450 inside budget** |
 | 4 | P50 / P70 / P100 | `bench/runner.py` | [below](#34-latency) |
 | 5 | Harness | `core/harness/` | tool calls, retries, typed I/O, failover |
 | 6 | Guardrails | `core/guardrails/` | [below](#6-guardrails), 54/54 adversarial caught |
@@ -457,20 +457,33 @@ Speed was not a reason to do it either: retrieval already uses 6% of the budget.
 
 ## 3-4. Latency
 
-**P50 21.81 ms · P70 25.41 ms · P100 49.73 ms**, 450 queries.
+**P50 9.55 ms · P70 9.84 ms · P100 39.60 ms**, 450 queries.
 
 | stage | P50 | P70 | P100 |
 |---|---:|---:|---:|
-| input_guard | 0.01 ms | 0.02 ms | 0.45 ms |
-| retrieve | 11.47 ms | 12.10 ms | 27.34 ms |
-| grounding_guard | 10.03 ms | 13.54 ms | 31.01 ms |
-| answer_fast | 0.13 ms | 0.14 ms | 0.40 ms |
-| faithfulness | 0.26 ms | 0.29 ms | 0.80 ms |
+| input_guard | 0.01 ms | 0.01 ms | 0.46 ms |
+| retrieve | 8.98 ms | 9.19 ms | 38.34 ms |
+| grounding_guard | 0.05 ms | 0.06 ms | 17.71 ms |
+| answer_fast | 0.12 ms | 0.13 ms | 0.25 ms |
+| faithfulness | 0.26 ms | 0.29 ms | 0.52 ms |
 
-Two stages dominate and both are transformer forward passes: `retrieve` is the
-query embedding (BM25 scoring is ~0.1 ms, dense search ~2.5 ms at 109k chunks),
-and `grounding_guard` is the cross-encoder reading query and passage together.
-Everything else totals under 0.5 ms.
+`retrieve` is the whole budget, and inside it the query embedding is 5.3 ms
+against 2.4 ms for the dense matmul and 0.2 ms for BM25. `grounding_guard`
+reads 0.05 ms at the median and 17.7 ms at P100 because the cross-encoder only
+runs on the 22.7% of queries the cheap features cannot decide.
+
+Two measurements cut this from 21.8 ms, and both came from profiling rather
+than guessing:
+
+- **CPU beats the GPU here.** These models are small and run one item at a
+  time, so dispatching to Apple's MPS costs more than the parallelism returns:
+  the query encoder measures 5.32 ms on CPU against 7.46 ms on MPS, the
+  cross-encoder 9.11 ms against 13.74 ms. `TORCH_DEVICE` defaults to `cpu`,
+  which is also what a deployment box has.
+- **The gate cascades.** The three cheap features decide most queries on their
+  own; the cross-encoder is consulted only inside the confidence band where
+  they disagree with it. On the calibration set that band covers 22.7% of
+  queries and **changes 0 of 626 decisions**, so it is a pure latency saving.
 
 Ranking passages instead of chunks costs **+0.5 ms at P50**. It widens the
 candidate fetch by the index's fan-out, but `argpartition` is linear in the
@@ -494,10 +507,10 @@ Reported separately, never folded in:
 
 | track | P50 | note |
 |---|---:|---|
-| pipeline (the budget) | 21.81 ms | local, no network |
+| pipeline (the budget) | 9.55 ms | local, no network |
 | STT round trip | 899.7 ms | mandated hosted API, measured separately |
 | LLM tier 2 | ~2-6 s | optional, falls back to tier 1 |
-| cold start | 16,362 ms | two models + index load, excluded from percentiles |
+| cold start | 13,031 ms | time to ready: both models + index, excluded from percentiles |
 
 Cold start is excluded from the percentiles and reported on its own: folding it
 in would report a one-time artifact as steady-state, and hiding it would omit a
@@ -579,7 +592,7 @@ Three layers, each catching what the others cannot:
 | layer | catches | cost |
 |---|---|---:|
 | input intent | unsafe content, prompt injection, empty | 0.01 ms, **pre-retrieval** |
-| grounding gate | off-topic, nonsense, unanswerable | 10.03 ms, cross-encoder |
+| grounding gate | off-topic, nonsense, unanswerable | 0.05 ms median, cross-encoder on 22.7% |
 | faithfulness | ungrounded answers, invented numbers, fake citations | 0.26 ms |
 
 Unsafe and injection queries are refused **before retrieval**. A corpus lookup
@@ -632,8 +645,14 @@ A cross-encoder reads query and passage together, so it sees the contradiction:
 | **`cross_score`** | **+2.54** | **-3.57** | **6.11** |
 
 Adding it lifts abstain recall **0.306 to 0.379 at an unchanged false-abstain
-rate**, for +9.6 ms. `mmarco-mMiniLMv2` scored on the top passage only, one pair,
+rate**. `mmarco-mMiniLMv2`, scored on the top passage only, one pair,
 verification rather than reranking.
+
+It is also nearly free, because it cascades: the three cheap features decide
+first, and the cross-encoder is consulted only inside the confidence band where
+they would disagree with it. That band covers **22.7% of queries and changes 0
+of 626 decisions**, so the median query never loads it and the gate costs
+0.05 ms at P50.
 
 ### What it still does not fix
 

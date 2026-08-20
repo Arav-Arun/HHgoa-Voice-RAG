@@ -41,7 +41,7 @@ async def lifespan(app: FastAPI):
     # Warm the transformer and the index so request #1 is representative.
     warm_start = time.perf_counter()
     try:
-        _state["pipeline"].query("warmup", language=settings.default_language, mode="fast")
+        _state["pipeline"].warm(settings.default_language)
         _state["ready"] = True
     except Exception as exc:  # noqa: BLE001 - serve degraded rather than refuse to boot
         _state["ready"] = False

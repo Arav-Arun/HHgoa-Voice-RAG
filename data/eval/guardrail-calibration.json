@@ -87,6 +87,35 @@
       "false_positives": 45
     }
   },
+  "cascade": {
+    "features": [
+      "top1_dense",
+      "margin",
+      "lexical_overlap"
+    ],
+    "coefficients": [
+      1.0997117079588044,
+      -0.456116188519532,
+      1.3646186080179223
+    ],
+    "intercept": 0.957938239275327,
+    "feature_mean": [
+      0.8813899386043366,
+      0.019429293398659068,
+      0.5922652782077703
+    ],
+    "feature_scale": [
+      0.026733566446273917,
+      0.013267678456169725,
+      0.24810289046148762
+    ],
+    "threshold": 0.11,
+    "band": [
+      0.03826542085062276,
+      0.3447275904449233
+    ],
+    "cross_encoder_rate": 0.2268
+  },
   "multi_feature_gate": {
     "coefficients": {
       "top1_dense": 0.8015,

@@ -32,18 +32,24 @@ MAX_TEXT_CHARS = 600
 class CrossEncoderScorer:
     """Scores how well a passage answers a query. Higher is better."""
 
-    _models: ClassVar[dict[str, object]] = {}
+    _models: ClassVar[dict[tuple[str, str | None], object]] = {}
 
-    def __init__(self, model_name: str = DEFAULT_MODEL) -> None:
+    def __init__(self, model_name: str = DEFAULT_MODEL, device: str = "cpu") -> None:
         self.model_name = model_name
+        # Same reasoning as the embedder: one pair at a time is faster on CPU
+        # than on MPS (9.11 ms against 13.74 ms measured).
+        self.device = device or None
 
     @property
     def model(self):
-        if self.model_name not in self._models:
+        key = (self.model_name, self.device)
+        if key not in self._models:
             from sentence_transformers import CrossEncoder
 
-            self._models[self.model_name] = CrossEncoder(self.model_name, max_length=MAX_LENGTH)
-        return self._models[self.model_name]
+            self._models[key] = CrossEncoder(
+                self.model_name, max_length=MAX_LENGTH, device=self.device
+            )
+        return self._models[key]
 
     def score(self, query: str, text: str) -> float:
         if not query or not text:

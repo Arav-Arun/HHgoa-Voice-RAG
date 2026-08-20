@@ -162,6 +162,28 @@ def _pick_operating_point(
     return best
 
 
+def _pick_cascade_band(
+    cheap_probs: np.ndarray,
+    full_probs: np.ndarray,
+    cheap_threshold: float,
+    full_threshold: float,
+) -> tuple[float, float]:
+    """Widest band of cheap-model confidence outside which it already agrees.
+
+    Outside the band the cheap model's decision matches the full model's, so
+    running the cross-encoder there would change nothing and only cost time.
+    """
+    cheap_decision = cheap_probs >= cheap_threshold
+    full_decision = full_probs >= full_threshold
+    disagree = cheap_probs[cheap_decision != full_decision]
+    if disagree.size == 0:
+        return (cheap_threshold, cheap_threshold)
+    # Pad outward so unseen queries near the edges still get verified.
+    low = max(0.0, float(disagree.min()) - 0.05)
+    high = min(1.0, float(disagree.max()) + 0.05)
+    return (low, high)
+
+
 def repeated_holdout(
     X: np.ndarray,
     y: np.ndarray,
@@ -262,6 +284,37 @@ def calibrate_and_write(
     # split above; these repeated splits are what the numbers are quoted from.
     repeated = repeated_holdout(X, y, seed=seed)
 
+    # Cheap pre-gate for the cascade: the same fit without the cross-encoder
+    # feature. At serving, a decisive verdict from this model means the
+    # cross-encoder is never run. The band is chosen so the cascade's decisions
+    # match the full model's; see the sweep in the report.
+    cascade_payload = None
+    if CROSS_FEATURE in feature_order:
+        cheap_cols = [i for i, n in enumerate(feature_order) if n != CROSS_FEATURE]
+        Xc_fit, Xc_hold = X_fit[:, cheap_cols], X_hold[:, cheap_cols]
+        c_mean, c_scale = Xc_fit.mean(axis=0), Xc_fit.std(axis=0)
+        c_scale[c_scale == 0.0] = 1.0
+        cheap = LogisticRegression(max_iter=2000, class_weight="balanced").fit(
+            (Xc_fit - c_mean) / c_scale, y_fit
+        )
+        p_cheap_fit = cheap.predict_proba((Xc_fit - c_mean) / c_scale)[:, 1]
+        t_cheap, _ = _pick_operating_point(
+            p_cheap_fit, y_fit, np.round(np.arange(0.01, 1.0, 0.005), 4)
+        )
+        band = _pick_cascade_band(p_cheap_fit, p_fit, t_cheap, t_model)
+        p_cheap_hold = cheap.predict_proba((Xc_hold - c_mean) / c_scale)[:, 1]
+        undecided = (p_cheap_hold > band[0]) & (p_cheap_hold < band[1])
+        cascade_payload = {
+            "features": [feature_order[i] for i in cheap_cols],
+            "coefficients": [float(c) for c in cheap.coef_[0]],
+            "intercept": float(cheap.intercept_[0]),
+            "feature_mean": [float(v) for v in c_mean],
+            "feature_scale": [float(v) for v in c_scale],
+            "threshold": float(t_cheap),
+            "band": [float(band[0]), float(band[1])],
+            "cross_encoder_rate": round(float(undecided.mean()), 4),
+        }
+
     model_payload = {
         "model": "logistic_regression",
         "features": list(feature_order),
@@ -274,6 +327,8 @@ def calibrate_and_write(
         "calibration_metrics": model_fit_metrics,
         "held_out_metrics": model_hold_metrics,
     }
+    if cascade_payload:
+        model_payload["cascade"] = cascade_payload
     model_path.parent.mkdir(parents=True, exist_ok=True)
     model_path.write_text(json.dumps(model_payload, indent=2), encoding="utf-8")
 
@@ -307,6 +362,7 @@ def calibrate_and_write(
             "calibration": cosine_fit_metrics,
             "held_out": cosine_hold_metrics,
         },
+        "cascade": cascade_payload,
         "multi_feature_gate": {
             "coefficients": dict(
                 zip(feature_order, [round(float(c), 4) for c in model.coef_[0]], strict=True)

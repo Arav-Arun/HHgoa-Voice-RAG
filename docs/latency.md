@@ -10,14 +10,14 @@ a reasonable number of queries.
 
 | percentile | latency |
 |---|---|
-| **P50** | **21.81 ms** |
-| **P70** | **25.41 ms** |
-| P90 | 30.63 ms |
-| P95 | 34.49 ms |
-| **P100** | **49.73 ms** |
-| mean ± sd | 21.59 ± 9.39 ms |
+| **P50** | **9.55 ms** |
+| **P70** | **9.84 ms** |
+| P90 | 19.86 ms |
+| P95 | 21.55 ms |
+| **P100** | **39.60 ms** |
+| mean ± sd | 10.52 ± 5.93 ms |
 
-**P100 is 49.7 ms against a 200 ms budget, 4× headroom, worst case.**
+**P100 is 39.6 ms against a 200 ms budget, 5× headroom, worst case.**
 
 The mean sits *below* P50 because 54 unsafe and prompt-injection queries are
 refused by the input filter in ~0.02 ms without touching the index. That is the
@@ -34,7 +34,7 @@ into one number would misrepresent it in both directions. So:
 
 | track | what it covers | P50 | P100 |
 |---|---|---|---|
-| **fast path** (headline) | text in → answer out, fully local | 21.81 ms | 49.73 ms |
+| **fast path** (headline) | text in → answer out, fully local | 9.55 ms | 39.60 ms |
 | **voice end-to-end** | + ElevenLabs STT round trip | 938.5 ms | 1021.0 ms |
 | **quality path** | + remote LLM tool-calling | ~3,700 ms | |
 
@@ -82,11 +82,11 @@ component broken out rather than hidden.
 
 | stage | P50 | P70 | P100 | notes |
 |---|---|---|---|---|
-| input_guard | 0.01 ms | 0.02 ms | 0.45 ms | regex over the query |
-| retrieve | 11.47 ms | 12.10 ms | 27.34 ms | query embedding + fusion |
-| grounding_guard | 10.03 ms | 13.54 ms | 31.01 ms | cross-encoder + 4 features |
-| answer_fast | 0.13 ms | 0.14 ms | 0.40 ms | extractive sentence selection |
-| faithfulness | 0.26 ms | 0.29 ms | 0.80 ms | token overlap + numeric check |
+| input_guard | 0.01 ms | 0.01 ms | 0.46 ms | regex over the query |
+| retrieve | 8.98 ms | 9.19 ms | 38.34 ms | **the whole budget lives here** |
+| grounding_guard | 0.05 ms | 0.06 ms | 17.71 ms | cross-encoder on 22.7% of queries |
+| answer_fast | 0.12 ms | 0.13 ms | 0.25 ms | extractive sentence selection |
+| faithfulness | 0.26 ms | 0.29 ms | 0.52 ms | token overlap + numeric check |
 
 The two transformer stages are the whole budget: the query embedding inside
 `retrieve`, and the cross-encoder inside `grounding_guard`. BM25 scoring is
@@ -129,7 +129,7 @@ Two other decisions matter:
 
 ## Cold start
 
-**16,362 ms**, loading e5-small, the cross-encoder,, torch init, and reading a 288 MB index.
+**13,031 ms** to ready, loading e5-small, the cross-encoder,, torch init, and reading a 288 MB index.
 
 Reported separately rather than folded into the percentiles: including it would
 report a one-time artifact as steady-state latency, and hiding it would omit a
@@ -150,9 +150,11 @@ the first real request is already warm.
 - **P100 is the maximum**, by definition. Nearest-rank percentiles throughout.
 - Path mix in the run: 348 answered, 102 abstained.
 
-Latency is flat across languages (gu 20.72 ms, hi 22.34 ms at P50) and across
-the query kinds that actually reach retrieval (answerable 23.42 ms, off-topic
-21.35 ms, in-domain unanswerable 20.81 ms, nonsense 23.32 ms) - abstaining at
+Latency is flat across languages (gu 9.58 ms, hi 9.55 ms at P50). Across query
+kinds it is not, and the shape is the cascade working: answerable 9.55 ms and
+off-topic 9.86 ms decide on the cheap features, while nonsense 16.85 ms and
+in-domain-unanswerable 19.57 ms land in the undecided band and pay for the
+cross-encoder. The system spends its time on the queries it is unsure about - abstaining at
 the grounding gate is not a shortcut that flatters the numbers. Only unsafe and
 prompt-injection queries are fast (0.02 ms), because they are refused before
 retrieval by design.

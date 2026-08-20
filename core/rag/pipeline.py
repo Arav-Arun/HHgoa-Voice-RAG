@@ -41,6 +41,23 @@ class RAGPipeline:
     def guardrail(self):
         return self.orchestrator.guardrail
 
+    def warm(self, language: str | None = None) -> None:
+        """Force every lazily-loaded model to load before the first request.
+
+        A warmup query alone is not enough once the grounding gate cascades:
+        that query may take the cheap path and leave the cross-encoder
+        unloaded, so the first query that actually needs it pays a multi-second
+        model load inside a request. Measured as a 4.7 s P100 before this
+        existed.
+        """
+        scorer = getattr(self.orchestrator.guardrail, "cross_scorer", None)
+        if scorer is None:
+            gate = getattr(self.orchestrator.guardrail, "grounding_gate", None)
+            scorer = getattr(gate, "cross_scorer", None)
+        if scorer is not None:
+            scorer.warm()
+        self.query("warmup", language=language or self.default_language, mode="fast")
+
     def query(
         self,
         question: str,

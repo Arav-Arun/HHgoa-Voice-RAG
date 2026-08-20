@@ -56,6 +56,45 @@ CROSS_FEATURE = "cross_score"
 FEATURE_ORDER = BASE_FEATURES
 
 
+class _LogisticModel:
+    """A fitted logistic gate: standardize, dot, sigmoid."""
+
+    def __init__(
+        self,
+        features: tuple[str, ...],
+        coefficients: list[float],
+        intercept: float,
+        threshold: float,
+        mean: list[float] | None = None,
+        scale: list[float] | None = None,
+    ) -> None:
+        self.features = features
+        self.coefficients = coefficients
+        self.intercept = intercept
+        self.threshold = threshold
+        self.mean = mean or [0.0] * len(features)
+        self.scale = scale or [1.0] * len(features)
+
+    @classmethod
+    def from_dict(cls, data: dict) -> _LogisticModel:
+        return cls(
+            features=tuple(data.get("features", FEATURE_ORDER)),
+            coefficients=[float(c) for c in data["coefficients"]],
+            intercept=float(data["intercept"]),
+            threshold=float(data["threshold"]),
+            mean=data.get("feature_mean"),
+            scale=data.get("feature_scale"),
+        )
+
+    def confidence(self, features: dict[str, float]) -> float:
+        z = self.intercept
+        for coef, name, mu, sd in zip(
+            self.coefficients, self.features, self.mean, self.scale, strict=False
+        ):
+            z += coef * ((features.get(name, 0.0) - mu) / (sd or 1.0))
+        return 1.0 / (1.0 + math.exp(-max(min(z, 60.0), -60.0)))
+
+
 def extract_features(
     query: str,
     sources: list[ScoredChunk],
@@ -99,6 +138,8 @@ class ConfidenceGate(BaseGuardrail):
         feature_order: tuple[str, ...] = FEATURE_ORDER,
         feature_mean: list[float] | None = None,
         feature_scale: list[float] | None = None,
+        cascade: _LogisticModel | None = None,
+        cascade_band: tuple[float, float] = (0.0, 1.0),
         cross_scorer=None,
     ) -> None:
         self.coefficients = coefficients
@@ -114,6 +155,11 @@ class ConfidenceGate(BaseGuardrail):
         # Only consulted when the fitted model actually uses the feature, so a
         # 3-feature model never pays for a forward pass it will ignore.
         self.cross_scorer = cross_scorer if CROSS_FEATURE in feature_order else None
+        # Cheap pre-gate. When its verdict is already decisive the cross-encoder
+        # is skipped entirely; measured, this halves how often it runs and
+        # changes none of the gate's metrics.
+        self.cascade = cascade
+        self.cascade_band = cascade_band
 
     @classmethod
     def from_file(
@@ -126,6 +172,7 @@ class ConfidenceGate(BaseGuardrail):
         if not path.exists():
             return cls(min_score=min_score)
         data = json.loads(path.read_text(encoding="utf-8"))
+        cascade_data = data.get("cascade")
         return cls(
             coefficients=[float(c) for c in data["coefficients"]],
             intercept=float(data["intercept"]),
@@ -134,6 +181,8 @@ class ConfidenceGate(BaseGuardrail):
             feature_order=tuple(data.get("features", FEATURE_ORDER)),
             feature_mean=data.get("feature_mean"),
             feature_scale=data.get("feature_scale"),
+            cascade=_LogisticModel.from_dict(cascade_data) if cascade_data else None,
+            cascade_band=tuple(cascade_data["band"]) if cascade_data else (0.0, 1.0),
             cross_scorer=cross_scorer,
         )
 
@@ -145,13 +194,36 @@ class ConfidenceGate(BaseGuardrail):
         """P(answerable). Falls back to a pass/fail on cosine when unfitted."""
         if self.coefficients is None:
             return 1.0 if features["top1_dense"] >= self.min_score else 0.0
-        z = self.intercept
-        for c, name, mu, sd in zip(
-            self.coefficients, self.feature_order, self.feature_mean, self.feature_scale,
-            strict=False,
-        ):
-            z += c * ((features.get(name, 0.0) - mu) / (sd or 1.0))
-        return 1.0 / (1.0 + math.exp(-max(min(z, 60.0), -60.0)))
+        return _LogisticModel(
+            self.feature_order,
+            self.coefficients,
+            self.intercept,
+            self.threshold,
+            self.feature_mean,
+            self.feature_scale,
+        ).confidence(features)
+
+    def score(self, query: str, sources: list[ScoredChunk]) -> tuple[float, float, dict]:
+        """Confidence, the threshold it must clear, and the features used.
+
+        Runs the cheap features first. The cross-encoder is only consulted when
+        their verdict is inside the undecided band, which is what keeps the
+        median query from paying for a second transformer pass.
+        """
+        features = extract_features(query, sources)
+        if self.cascade is None or self.cross_scorer is None:
+            if self.cross_scorer is not None:
+                features[CROSS_FEATURE] = self.cross_scorer.score(query, sources[0].chunk.text)
+            return self.confidence(features), self.threshold, features
+
+        cheap = self.cascade.confidence(features)
+        low, high = self.cascade_band
+        if not (low < cheap < high):
+            features["cascade"] = 1.0
+            return cheap, self.cascade.threshold, features
+
+        features[CROSS_FEATURE] = self.cross_scorer.score(query, sources[0].chunk.text)
+        return self.confidence(features), self.threshold, features
 
     def check_input(self, query: str, *, language: str = "hi") -> GuardrailDecision:
         return GuardrailDecision(blocked=False, stage="input_intent")
@@ -172,16 +244,15 @@ class ConfidenceGate(BaseGuardrail):
                 stage="grounding",
             )
 
-        features = extract_features(query, sources, cross_scorer=self.cross_scorer)
-        confidence = self.confidence(features)
+        confidence, threshold, features = self.score(query, sources)
         detail = {
             "confidence": round(confidence, 4),
-            "threshold": self.threshold if self.fitted else self.min_score,
+            "threshold": threshold if self.fitted else self.min_score,
             "model": "logistic" if self.fitted else "threshold",
             **{k: round(v, 4) for k, v in features.items()},
         }
 
-        if confidence < self.threshold:
+        if confidence < threshold:
             return GuardrailDecision(
                 blocked=True,
                 answer=message_for(language, ABSTAIN_LOW_CONFIDENCE),
