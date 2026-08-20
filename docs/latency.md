@@ -10,14 +10,14 @@ a reasonable number of queries.
 
 | percentile | latency |
 |---|---|
-| **P50** | **9.55 ms** |
-| **P70** | **9.84 ms** |
-| P90 | 19.86 ms |
-| P95 | 21.55 ms |
-| **P100** | **39.60 ms** |
-| mean ± sd | 10.52 ± 5.93 ms |
+| **P50** | **10.72 ms** |
+| **P70** | **11.61 ms** |
+| P90 | 23.31 ms |
+| P95 | 25.33 ms |
+| **P100** | **43.85 ms** |
+| mean ± sd | 12.09 ± 7.08 ms |
 
-**P100 is 39.6 ms against a 200 ms budget, 5× headroom, worst case.**
+**P100 is 43.9 ms against a 200 ms budget, 4.6× headroom, worst case.**
 
 The mean sits *below* P50 because 54 unsafe and prompt-injection queries are
 refused by the input filter in ~0.02 ms without touching the index. That is the
@@ -34,8 +34,8 @@ into one number would misrepresent it in both directions. So:
 
 | track | what it covers | P50 | P100 |
 |---|---|---|---|
-| **fast path** (headline) | text in → answer out, fully local | 9.55 ms | 39.60 ms |
-| **voice end-to-end** | + ElevenLabs STT round trip | 938.5 ms | 1021.0 ms |
+| **fast path** (headline) | text in → answer out, fully local | 10.72 ms | 43.85 ms |
+| **voice end-to-end** | + ElevenLabs STT, 32 clips | 1109.3 ms | 1958.3 ms |
 | **quality path** | + remote LLM tool-calling | ~3,700 ms | |
 
 The voice and quality rows come from a separate run against the live providers;
@@ -82,11 +82,11 @@ component broken out rather than hidden.
 
 | stage | P50 | P70 | P100 | notes |
 |---|---|---|---|---|
-| input_guard | 0.01 ms | 0.01 ms | 0.46 ms | regex over the query |
-| retrieve | 8.98 ms | 9.19 ms | 38.34 ms | **the whole budget lives here** |
-| grounding_guard | 0.05 ms | 0.06 ms | 17.71 ms | cross-encoder on 22.7% of queries |
-| answer_fast | 0.12 ms | 0.13 ms | 0.25 ms | extractive sentence selection |
-| faithfulness | 0.26 ms | 0.29 ms | 0.52 ms | token overlap + numeric check |
+| input_guard | 0.01 ms | 0.02 ms | 0.49 ms | regex over the query |
+| retrieve | 10.04 ms | 10.48 ms | 42.47 ms | **the whole budget lives here** |
+| grounding_guard | 0.06 ms | 0.07 ms | 26.83 ms | cross-encoder on 22.7% of queries |
+| answer_fast | 0.12 ms | 0.14 ms | 0.30 ms | extractive sentence selection |
+| faithfulness | 0.27 ms | 0.30 ms | 0.49 ms | token overlap + numeric check |
 
 The two transformer stages are the whole budget: the query embedding inside
 `retrieve`, and the cross-encoder inside `grounding_guard`. BM25 scoring is
@@ -129,7 +129,7 @@ Two other decisions matter:
 
 ## Cold start
 
-**13,031 ms** to ready, loading e5-small, the cross-encoder,, torch init, and reading a 288 MB index.
+**17,445 ms** to ready, loading e5-small, the cross-encoder,, torch init, and reading a 288 MB index.
 
 Reported separately rather than folded into the percentiles: including it would
 report a one-time artifact as steady-state latency, and hiding it would omit a

@@ -27,7 +27,7 @@ API does, so published numbers come from shipping code.
 ## Two paths
 
 - **fast** (default), input guard → hybrid retrieve → grounding gate →
-  extractive answer → faithfulness. Fully local, P100 39.6 ms.
+  extractive answer → faithfulness. Fully local, P100 43.9 ms.
 - **quality** (`mode=quality`), the fast path, then LLM tool-calling with
   structured output, retries, and provider failover. Degrades to the fast
   answer on any failure.

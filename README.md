@@ -2,7 +2,7 @@
 
 Speak a question in Hindi or Gujarati; get a grounded, cited answer from a
 109,082-chunk [MS MARCO-XI](https://huggingface.co/datasets/ai4bharat/MSMARCO-XI)
-index in **9.6 ms at P50**.
+index in **10.7 ms at P50**.
 
 Built for **HH Goa 2026 Shortlisting Task 2** by **Team Deploy For Good**.
 
@@ -18,9 +18,9 @@ warm process:
 
 | Metric | Value | Budget |
 |---|---:|---|
-| **P50** | **9.55 ms** | 200 ms |
-| **P70** | **9.84 ms** | 200 ms |
-| **P100** | **39.60 ms** | 200 ms |
+| **P50** | **10.72 ms** | 200 ms |
+| **P70** | **11.61 ms** | 200 ms |
+| **P100** | **43.85 ms** | 200 ms |
 | Queries inside budget | **450 / 450** | |
 
 The measured window is **transcript in, answer out**, matching the task's
@@ -51,7 +51,7 @@ flowchart TD
     TXT["⌨️ Typed question"] --> G1
     STT -->|transcript| G1
 
-    subgraph BUDGET["⏱️ 200ms BUDGET, measured window · P50 9.6ms · P100 39.6ms"]
+    subgraph BUDGET["⏱️ 200ms BUDGET, measured window · P50 10.7ms · P100 43.9ms"]
         G1["🛡️ Input guardrail<br/>unsafe + injection · 0.01ms"]
         G1 -->|"unsafe / injection"| REFUSE["❌ Refuse<br/>never touches the index"]
         G1 -->|allowed| EMB["🔢 Embed query<br/>e5-small · 384-dim"]
@@ -136,7 +136,7 @@ Two rules fall out of it, and both cost us results we would rather have shown:
 |---|---|---|---|
 | 1 | Speech-to-text (Sarvam / ElevenLabs) | `core/stt/elevenlabs.py` | ElevenLabs **Scribe v2**, verified live in hi + gu |
 | 2 | Chunking must be vast | `core/chunking/` | 6 strategies, [ablation](#2-chunking) with bootstrap |
-| 3 | Under 200 ms | `core/harness/orchestrator.py` | **P100 39.6 ms, 450/450 inside budget** |
+| 3 | Under 200 ms | `core/harness/orchestrator.py` | **P100 43.9 ms, 450/450 inside budget** |
 | 4 | P50 / P70 / P100 | `bench/runner.py` | [below](#34-latency) |
 | 5 | Harness | `core/harness/` | tool calls, retries, typed I/O, failover |
 | 6 | Guardrails | `core/guardrails/` | [below](#6-guardrails), 54/54 adversarial caught |
@@ -512,17 +512,17 @@ Speed was not a reason to do it either: retrieval already uses 6% of the budget.
 
 ## 3-4. Latency
 
-**P50 9.55 ms · P70 9.84 ms · P100 39.60 ms**, 450 queries.
+**P50 10.72 ms · P70 11.61 ms · P100 43.85 ms**, 450 queries.
 
 | stage | P50 | P70 | P100 |
 |---|---:|---:|---:|
-| input_guard | 0.01 ms | 0.01 ms | 0.46 ms |
-| retrieve | 8.98 ms | 9.19 ms | 38.34 ms |
-| grounding_guard | 0.05 ms | 0.06 ms | 17.71 ms |
-| answer_fast | 0.12 ms | 0.13 ms | 0.25 ms |
-| faithfulness | 0.26 ms | 0.29 ms | 0.52 ms |
+| input_guard | 0.01 ms | 0.02 ms | 0.49 ms |
+| retrieve | 10.04 ms | 10.48 ms | 42.47 ms |
+| grounding_guard | 0.06 ms | 0.07 ms | 26.83 ms |
+| answer_fast | 0.12 ms | 0.14 ms | 0.30 ms |
+| faithfulness | 0.27 ms | 0.30 ms | 0.49 ms |
 
-`retrieve` is the whole budget, and inside it the query embedding is 5.3 ms
+`retrieve` is the whole budget, and inside it the query embedding is ~5 ms
 against 2.4 ms for the dense matmul and 0.2 ms for BM25. `grounding_guard`
 reads 0.05 ms at the median and 17.7 ms at P100 because the cross-encoder only
 runs on the 22.7% of queries the cheap features cannot decide.
@@ -558,14 +558,38 @@ longer partition and a slightly bigger dict, not another model call.
 
 The first two together: **21.89 ms to 2.44 ms, a 9x speedup.**
 
+### The voice path, measured the same way
+
+Requirement 4 asks for P50/P70/P100 across a reasonable number of queries, not a
+single best-case run, so the voice path gets the same treatment as the text
+path: **32 spoken clips**, real microphone-format audio through the real
+ElevenLabs round trip, not one demo recording.
+
+| | P50 | P70 | P100 |
+|---|---:|---:|---:|
+| speech-to-text (hosted, mandated) | 1,065.6 ms | 1,192.7 ms | 1,929.8 ms |
+| **our pipeline** | **31.3 ms** | **33.2 ms** | **44.1 ms** |
+| voice end to end | 1,109.3 ms | 1,221.2 ms | 1,958.3 ms |
+
+Two things worth reading off this. The provider is **97%** of the wall clock, and
+its P100 is nearly 2x its P50, so almost all the variance a user feels is
+network, not us. And our own stage is slower on voice (31.3 ms) than on typed
+text (10.7 ms), which is the guardrail cascade behaving correctly: transcripts
+are noisier than typed questions, land in the undecided confidence band more
+often, and so pay for the cross-encoder.
+
+```bash
+./hhgoa bench --queries 300 --audio-dir data/samples/audio
+```
+
 Reported separately, never folded in:
 
 | track | P50 | note |
 |---|---:|---|
-| pipeline (the budget) | 9.55 ms | local, no network |
-| STT round trip | 899.7 ms | mandated hosted API, measured separately |
+| pipeline (the budget) | 10.72 ms | local, no network |
+| STT round trip | 1,065.6 ms | mandated hosted API, 32 clips |
 | LLM tier 2 | ~2-6 s | optional, falls back to tier 1 |
-| cold start | 13,031 ms | time to ready: both models + index, excluded from percentiles |
+| cold start | 17,445 ms | time to ready: both models + index, excluded from percentiles |
 
 Cold start is excluded from the percentiles and reported on its own: folding it
 in would report a one-time artifact as steady-state, and hiding it would omit a
