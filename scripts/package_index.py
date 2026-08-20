@@ -17,6 +17,9 @@ import tarfile
 from pathlib import Path
 
 REQUIRED = ("chunks.json", "embeddings.npy", "bm25.npz", "bm25_vocab.json", "bm25_idf.npy")
+# Display-only English source text. The service runs without it, so a missing
+# file is not an error, but a deployment that has it shows English translations.
+OPTIONAL = ("passages_en.json",)
 
 
 def package(index_dir: Path, output: Path) -> Path:
@@ -30,6 +33,9 @@ def package(index_dir: Path, output: Path) -> Path:
     with tarfile.open(output, "w:gz") as tar:
         for name in REQUIRED:
             tar.add(index_dir / name, arcname=f"{index_dir.name}/{name}")
+        for name in OPTIONAL:
+            if (index_dir / name).exists():
+                tar.add(index_dir / name, arcname=f"{index_dir.name}/{name}")
     return output
 
 

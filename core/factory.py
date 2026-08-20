@@ -13,6 +13,8 @@ from core.chunking.semantic import SemanticChunker
 from core.chunking.token_window import TokenWindowChunker
 from core.config import Settings, get_settings
 from core.embeddings.hash import HashEmbedder
+from core.english import FILENAME as _EN_FILE
+from core.english import EnglishSources
 from core.embeddings.openai import OpenAIEmbedder
 from core.embeddings.presets import EMBEDDING_PRESETS
 from core.embeddings.sentence_transformers import SentenceTransformerEmbedder
@@ -86,6 +88,12 @@ def build_vector_store(settings: Settings | None = None):
     raise ValueError(
         f"Unknown VECTOR_STORE={settings.vector_store!r}. Supported: memory"
     )
+
+
+def build_english_sources(settings: Settings | None = None) -> EnglishSources:
+    """Original English passage text, for display. Absent file is fine."""
+    settings = settings or get_settings()
+    return EnglishSources(settings.index_dir / _EN_FILE)
 
 
 def build_chunker(settings: Settings | None = None):

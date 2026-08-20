@@ -18,8 +18,11 @@ class QueryRequest(BaseModel):
 
 
 class SourceChunk(BaseModel):
+    # `text_en` is the passage's original English from MS MARCO-XI, not a
+    # translation of `text`. None when the side file is absent.
     id: str
     text: str
+    text_en: str | None = None
     document_id: str
     score: float
     language: str

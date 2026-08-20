@@ -25,7 +25,12 @@ from api.schemas import (
 )
 from api.stats import collect_stats
 from core.config import get_settings
-from core.factory import build_bm25_index, build_rag_pipeline, build_stt
+from core.factory import (
+    build_bm25_index,
+    build_english_sources,
+    build_rag_pipeline,
+    build_stt,
+)
 
 _state: dict = {}
 
@@ -37,6 +42,8 @@ async def lifespan(app: FastAPI):
     _state["pipeline"] = build_rag_pipeline(settings)
     _state["stt"] = build_stt(settings)
     _state["bm25_terms"] = len(build_bm25_index(settings).vocab)
+    # Display-only English source text; absent file just means none is shown.
+    _state["english"] = build_english_sources(settings)
 
     # Warm the transformer and the index so request #1 is representative.
     warm_start = time.perf_counter()
@@ -93,6 +100,13 @@ def get_pipeline():
     return pipeline
 
 
+def _english():
+    english = _state.get("english")
+    if english is None:
+        english = _state["english"] = build_english_sources()
+    return english
+
+
 def get_stt():
     stt = _state.get("stt")
     if stt is None:  # pragma: no cover
@@ -114,6 +128,7 @@ def _to_query_response(response) -> QueryResponse:
                 document_id=s.chunk.document_id,
                 score=s.score,
                 language=s.chunk.language,
+                text_en=_english().get(s.chunk.document_id),
                 components=s.components,
             )
             for s in response.sources

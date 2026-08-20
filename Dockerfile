@@ -5,7 +5,11 @@ FROM python:3.12-slim
 ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
     HF_HOME=/models \
-    TORCH_DEVICE=cpu
+    TORCH_DEVICE=cpu \
+    # Bind the container, not loopback, or nothing outside can reach it.
+    API_HOST=0.0.0.0 \
+    # Overridden by $PORT where the platform sets one (Render, Cloud Run).
+    API_PORT=7860
 
 WORKDIR /app
 
@@ -14,10 +18,13 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/*
 
 # Dependencies first: this layer only rebuilds when the lockfile changes.
-COPY pyproject.toml uv.lock ./
-RUN pip install uv && uv sync --frozen --no-dev
+# --no-install-project because the source is not copied yet, and building the
+# project itself here would fail with nothing to build.
+COPY pyproject.toml uv.lock README.md ./
+RUN pip install uv && uv sync --frozen --no-dev --no-install-project
 
 COPY . .
+RUN uv sync --frozen --no-dev
 
 # Bake the models into the image. Downloading them at boot would add ~60s to
 # every cold start and make the service depend on Hugging Face being reachable.
@@ -29,4 +36,6 @@ CrossEncoder('cross-encoder/mmarco-mMiniLMv2-L12-H384-v1', max_length=256, devic
 # The index is gitignored and container disks are ephemeral, so it is fetched at
 # boot from INDEX_URL. Missing index degrades to a clear /health error rather
 # than a container that will not start.
+EXPOSE 7860
+
 ENTRYPOINT ["/app/scripts/entrypoint.sh"]

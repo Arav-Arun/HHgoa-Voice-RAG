@@ -22,6 +22,7 @@ const el = {
   result: $("#result"),
   transcript: $("#transcript"),
   answer: $("#answer"),
+  answerEn: $("#answer-en"),
   refusal: $("#refusal"),
   stages: $("#stages"),
   stagesHead: $("#stages-head"),
@@ -159,9 +160,15 @@ function renderSources(sources, citations) {
       if (c.dense_score !== undefined) parts.push(`dense ${c.dense_score.toFixed(3)}`);
       if (c.sparse_score !== undefined) parts.push(`bm25 ${c.sparse_score.toFixed(2)}`);
       if (cited.has(s.id)) parts.push(`<span class="cited">cited</span>`);
+      // The English is the passage's source text from MS MARCO-XI, not a
+      // translation of what is shown above it.
+      const en = s.text_en
+        ? `<div class="source-en">${esc(s.text_en.slice(0, 260))}${s.text_en.length > 260 ? "..." : ""}</div>`
+        : "";
       return `<div class="source">
         <div class="source-head">${parts.join(" · ")}</div>
         <div>${esc(s.text.slice(0, 260))}${s.text.length > 260 ? "..." : ""}</div>
+        ${en}
       </div>`;
     })
     .join("");
@@ -185,6 +192,15 @@ function renderFast(data, transcript) {
     el.answer.textContent = data.answer || "";
   }
 
+  // English source of the passage the answer was quoted from.
+  const cited = (data.sources || [])[0];
+  const showEn = !abstained && cited && cited.text_en;
+  el.answerEn.hidden = !showEn;
+  if (showEn) {
+    el.answerEn.innerHTML =
+      `<b>English source of the cited passage</b>${esc(cited.text_en)}`;
+  }
+
   el.badgePath.textContent = abstained ? "Declined" : "Grounded";
   el.badgePath.className = abstained ? "tag tag-pink" : "tag";
   el.badgeLang.textContent = LANGUAGE_NAMES[data.language] || data.language || "";
@@ -205,6 +221,11 @@ function renderGenerated(data, elapsedMs) {
     return;
   }
   el.answer.textContent = data.answer;
+  const top = (data.sources || [])[0];
+  el.answerEn.hidden = !(top && top.text_en);
+  if (top && top.text_en) {
+    el.answerEn.innerHTML = `<b>English source of the cited passage</b>${esc(top.text_en)}`;
+  }
   el.badgePath.textContent = "Generated";
   setTier(el.tier2, el.tier2Ms, data.path === "quality" ? "done" : "skipped", elapsedMs);
   renderSources(data.sources, data.citations);

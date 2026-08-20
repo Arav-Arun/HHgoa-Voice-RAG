@@ -280,6 +280,37 @@ textarea:focus { outline: 3px solid var(--pink); outline-offset: 2px; }
   margin: 0 0 8px;
 }
 
+/* The passage's original English, shown under the answer. Set apart so it
+   never reads as part of the answer itself. */
+.answer-en {
+  font-family: var(--display);
+  font-variation-settings: "SOFT" 20, "WONK" 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--muted);
+  border-left: 3px solid var(--rule);
+  padding-left: 14px;
+  margin: 0 0 8px;
+}
+.answer-en b {
+  display: block;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.source-en {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--rule);
+  font-family: var(--display);
+  font-size: 14px;
+  color: var(--muted);
+}
+
 /* A refusal must not be mistakable for an answer. */
 .refusal {
   background: var(--pink);

@@ -189,6 +189,28 @@ Transcribing both ways and letting retrieval pick the better transcript scored
 **59%**, barely above chance, so that idea was dropped too. A 4.6x latency win
 is not worth a coin flip on which language the user is speaking.
 
+### The English shown beside an answer is not a translation
+
+MS MARCO-XI is a translation *of* English MS MARCO, and every row ships
+`English_passages` index-aligned with `Translated_passages`. So the English
+under each answer is the text the passage was translated **from**, pulled
+straight from the dataset:
+
+```
+अपस्फीत शिराएँ ऐसी शिराएँ हैं जो रक्त से सूजी हुई हैं ...
+What are varicose veins? Varicose veins are veins that have become swollen ...
+```
+
+Nothing is generated, so nothing can drift from what the corpus says, and it
+costs no latency. It lives in a side file rather than the index, because the
+indexer deliberately does not persist English text: it would roughly double a
+105 MB `chunks.json` and the RAM behind it, and retrieval never reads it.
+Missing file simply means no English is shown.
+
+```bash
+uv run python scripts/build_english_map.py   # data/index/passages_en.json, 32 MB
+```
+
 ### Nobody should have to declare their language
 
 Devanagari (U+0900-U+097F) and Gujarati (U+0A80-U+0AFF) are disjoint Unicode
