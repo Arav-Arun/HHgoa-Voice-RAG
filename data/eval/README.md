@@ -36,7 +36,7 @@ MS MARCO-XI parquets).
 | `fusion-sweep.json` | per-language dense-weight sweep (dev slice) |
 | `child-size-sweep.json` | parent_child window size, selected on dev |
 | `guardrail-calibration.json` | gate comparison report |
-| `guardrail-model.json` | fitted gate coefficients, loaded at serving time |
+| `guardrail-model.json` | fitted gate coefficients + standardization, loaded at serving |
 | `stage1-e5-vs-indic.json` | embedder selection (dev slice) |
 
 `dev_queries.jsonl` and `queries.jsonl` share **zero** query ids. Each

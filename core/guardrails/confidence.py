@@ -15,9 +15,18 @@ half, cuts the false-abstain rate from 16.2% to 4.5%. It gives up some abstain
 recall to do it (0.417 to 0.333), which is the intended trade: refusing a real
 question is the more damaging error here. Balanced accuracy rises 0.627 -> 0.644.
 
+A fourth feature, ``cross_score``, comes from a cross-encoder that reads the
+query and the top passage together (see :mod:`core.guardrails.cross_encoder`).
+It is the only feature that separates strongly: +2.54 answerable against -3.57
+should-abstain, where the dense cosine separates by 0.02. Adding it lifts
+abstain recall from 0.306 to 0.379 at the same false-abstain rate.
+
 ``margin`` survives as a feature but carries almost no weight. It mattered more
 when retrieval ranked chunks, because sibling chunks of one passage produced
 near-identical top scores; ranking passages removed that artifact.
+
+Metrics are averaged over 30 random half-splits: one split leaves ~48 abstain
+examples and its balanced accuracy swings by +/-0.03 between seeds.
 
 Coefficients live in ``data/eval/guardrail-model.json``, written by
 ``./hhgoa guardrail-calibrate``. If that file is absent the gate degrades to the
@@ -40,17 +49,28 @@ from core.text import token_set
 from core.types import ScoredChunk
 
 DEFAULT_MODEL_PATH = Path("data/eval/guardrail-model.json")
-FEATURE_ORDER = ("top1_dense", "margin", "lexical_overlap")
+BASE_FEATURES = ("top1_dense", "margin", "lexical_overlap")
+# `cross_score` is appended only when a cross-encoder is configured, so a fitted
+# model records which set it was trained on and a fresh checkout still runs.
+CROSS_FEATURE = "cross_score"
+FEATURE_ORDER = BASE_FEATURES
 
 
-def extract_features(query: str, sources: list[ScoredChunk]) -> dict[str, float]:
-    """The three signals the gate is calibrated on.
+def extract_features(
+    query: str,
+    sources: list[ScoredChunk],
+    *,
+    cross_scorer=None,
+) -> dict[str, float]:
+    """The signals the gate is calibrated on.
 
     Shared by the runtime gate and the calibration script so the features can
-    never drift apart between fitting and serving.
+    never drift apart between fitting and serving. Passing ``cross_scorer``
+    adds the cross-encoder relevance score for the top passage.
     """
     if not sources:
-        return {"top1_dense": 0.0, "margin": 0.0, "lexical_overlap": 0.0}
+        base = {"top1_dense": 0.0, "margin": 0.0, "lexical_overlap": 0.0}
+        return {**base, CROSS_FEATURE: 0.0} if cross_scorer else base
 
     dense = [s.dense_score for s in sources]
     top1 = max(dense)
@@ -58,11 +78,14 @@ def extract_features(query: str, sources: list[ScoredChunk]) -> dict[str, float]
     query_tokens = token_set(query)
     top_tokens = token_set(sources[0].chunk.text)
     overlap = len(query_tokens & top_tokens) / len(query_tokens) if query_tokens else 0.0
-    return {
+    features = {
         "top1_dense": top1,
         "margin": top1 - (sum(rest) / len(rest)),
         "lexical_overlap": overlap,
     }
+    if cross_scorer is not None:
+        features[CROSS_FEATURE] = cross_scorer.score(query, sources[0].chunk.text)
+    return features
 
 
 class ConfidenceGate(BaseGuardrail):
@@ -74,6 +97,9 @@ class ConfidenceGate(BaseGuardrail):
         threshold: float = 0.5,
         min_score: float = 0.86,
         feature_order: tuple[str, ...] = FEATURE_ORDER,
+        feature_mean: list[float] | None = None,
+        feature_scale: list[float] | None = None,
+        cross_scorer=None,
     ) -> None:
         self.coefficients = coefficients
         self.intercept = intercept
@@ -81,6 +107,13 @@ class ConfidenceGate(BaseGuardrail):
         # Used only when no fitted model is available.
         self.min_score = min_score
         self.feature_order = feature_order
+        # Standardization fitted alongside the coefficients; identity when the
+        # model predates it.
+        self.feature_mean = feature_mean or [0.0] * len(feature_order)
+        self.feature_scale = feature_scale or [1.0] * len(feature_order)
+        # Only consulted when the fitted model actually uses the feature, so a
+        # 3-feature model never pays for a forward pass it will ignore.
+        self.cross_scorer = cross_scorer if CROSS_FEATURE in feature_order else None
 
     @classmethod
     def from_file(
@@ -88,6 +121,7 @@ class ConfidenceGate(BaseGuardrail):
         path: Path = DEFAULT_MODEL_PATH,
         *,
         min_score: float = 0.86,
+        cross_scorer=None,
     ) -> ConfidenceGate:
         if not path.exists():
             return cls(min_score=min_score)
@@ -98,6 +132,9 @@ class ConfidenceGate(BaseGuardrail):
             threshold=float(data["threshold"]),
             min_score=min_score,
             feature_order=tuple(data.get("features", FEATURE_ORDER)),
+            feature_mean=data.get("feature_mean"),
+            feature_scale=data.get("feature_scale"),
+            cross_scorer=cross_scorer,
         )
 
     @property
@@ -108,10 +145,12 @@ class ConfidenceGate(BaseGuardrail):
         """P(answerable). Falls back to a pass/fail on cosine when unfitted."""
         if self.coefficients is None:
             return 1.0 if features["top1_dense"] >= self.min_score else 0.0
-        z = self.intercept + sum(
-            c * features.get(name, 0.0)
-            for c, name in zip(self.coefficients, self.feature_order, strict=False)
-        )
+        z = self.intercept
+        for c, name, mu, sd in zip(
+            self.coefficients, self.feature_order, self.feature_mean, self.feature_scale,
+            strict=False,
+        ):
+            z += c * ((features.get(name, 0.0) - mu) / (sd or 1.0))
         return 1.0 / (1.0 + math.exp(-max(min(z, 60.0), -60.0)))
 
     def check_input(self, query: str, *, language: str = "hi") -> GuardrailDecision:
@@ -133,7 +172,7 @@ class ConfidenceGate(BaseGuardrail):
                 stage="grounding",
             )
 
-        features = extract_features(query, sources)
+        features = extract_features(query, sources, cross_scorer=self.cross_scorer)
         confidence = self.confidence(features)
         detail = {
             "confidence": round(confidence, 4),

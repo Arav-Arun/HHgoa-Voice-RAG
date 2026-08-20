@@ -3,40 +3,54 @@
   "features": [
     "top1_dense",
     "margin",
-    "lexical_overlap"
+    "lexical_overlap",
+    "cross_score"
   ],
   "coefficients": [
-    0.901131765004478,
-    -0.045247449711263946,
-    4.441407005159553
+    0.8015379136924404,
+    -0.3380964764130324,
+    1.0612062193874943,
+    0.7634812795335109
   ],
-  "intercept": -2.952104379282612,
-  "threshold": 0.255,
+  "intercept": 1.1170128989912103,
+  "feature_mean": [
+    0.8813899386043366,
+    0.019429293398659068,
+    0.5922652782077698,
+    1.908948662467658
+  ],
+  "feature_scale": [
+    0.02673356644627391,
+    0.013267678456169723,
+    0.24810289046148745,
+    5.516094575144146
+  ],
+  "threshold": 0.16,
   "target_answerable_recall": 0.95,
   "calibration_metrics": {
-    "answerable_recall": 0.9509,
-    "abstain_recall": 0.3125,
-    "answerable_precision": 0.8842,
-    "answerable_f1": 0.9164,
-    "balanced_accuracy": 0.6317,
-    "worst_class_recall": 0.3125,
-    "false_abstain_rate": 0.0491,
-    "true_positives": 252,
-    "false_negatives": 13,
-    "true_negatives": 15,
-    "false_positives": 33
+    "answerable_recall": 0.9623,
+    "abstain_recall": 0.4583,
+    "answerable_precision": 0.9075,
+    "answerable_f1": 0.9341,
+    "balanced_accuracy": 0.7103,
+    "worst_class_recall": 0.4583,
+    "false_abstain_rate": 0.0377,
+    "true_positives": 255,
+    "false_negatives": 10,
+    "true_negatives": 22,
+    "false_positives": 26
   },
   "held_out_metrics": {
-    "answerable_recall": 0.9547,
-    "abstain_recall": 0.3333,
-    "answerable_precision": 0.8877,
-    "answerable_f1": 0.92,
-    "balanced_accuracy": 0.644,
-    "worst_class_recall": 0.3333,
-    "false_abstain_rate": 0.0453,
-    "true_positives": 253,
-    "false_negatives": 12,
-    "true_negatives": 16,
-    "false_positives": 32
+    "answerable_recall": 0.9434,
+    "abstain_recall": 0.3125,
+    "answerable_precision": 0.8834,
+    "answerable_f1": 0.9124,
+    "balanced_accuracy": 0.6279,
+    "worst_class_recall": 0.3125,
+    "false_abstain_rate": 0.0566,
+    "true_positives": 250,
+    "false_negatives": 15,
+    "true_negatives": 15,
+    "false_positives": 33
   }
 }

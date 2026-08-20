@@ -126,6 +126,13 @@ class Settings(BaseSettings):
         default=Path("data/eval/guardrail-model.json"),
         validation_alias="GUARDRAIL_MODEL_PATH",
     )
+    # Cross-encoder relevance check for the grounding gate. Reads the query and
+    # the top passage together, which is the only feature that catches a
+    # passage about the wrong variant of the right subject. Empty disables it.
+    guardrail_cross_encoder: str = Field(
+        default="cross-encoder/mmarco-mMiniLMv2-L12-H384-v1",
+        validation_alias="GUARDRAIL_CROSS_ENCODER",
+    )
 
     # API
     api_host: str = "127.0.0.1"

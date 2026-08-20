@@ -2,7 +2,7 @@
 
 Speak a question in Hindi or Gujarati; get a grounded, cited answer from a
 109,082-chunk [MS MARCO-XI](https://huggingface.co/datasets/ai4bharat/MSMARCO-XI)
-index in **12.2 ms at P50**.
+index in **21.8 ms at P50**.
 
 Built for **HH Goa 2026 Shortlisting Task 2** by **Team Deploy For Good**.
 
@@ -18,9 +18,9 @@ warm process:
 
 | Metric | Value | Budget |
 |---|---:|---|
-| **P50** | **12.19 ms** | 200 ms |
-| **P70** | **12.75 ms** | 200 ms |
-| **P100** | **32.86 ms** | 200 ms |
+| **P50** | **21.81 ms** | 200 ms |
+| **P70** | **25.41 ms** | 200 ms |
+| **P100** | **49.73 ms** | 200 ms |
 | Queries inside budget | **450 / 450** | |
 
 The measured window is **transcript in, answer out**, matching the task's
@@ -51,7 +51,7 @@ flowchart TD
     TXT["⌨️ Typed question"] --> G1
     STT -->|transcript| G1
 
-    subgraph BUDGET["⏱️ 200ms BUDGET, measured window · P50 12.2ms · P100 32.9ms"]
+    subgraph BUDGET["⏱️ 200ms BUDGET, measured window · P50 21.8ms · P100 49.7ms"]
         G1["🛡️ Input guardrail<br/>unsafe + injection · 0.01ms"]
         G1 -->|"unsafe / injection"| REFUSE["❌ Refuse<br/>never touches the index"]
         G1 -->|allowed| EMB["🔢 Embed query<br/>e5-small · 384-dim"]
@@ -59,7 +59,7 @@ flowchart TD
         EMB --> SPARSE["Sparse search<br/>BM25, precomputed CSC"]
         DENSE --> RRF["⚖️ Weighted RRF fusion<br/>per-language weights<br/>ranks passages, not chunks"]
         SPARSE --> RRF
-        RRF --> G2["🛡️ Grounding gate<br/>3-feature logistic"]
+        RRF --> G2["🛡️ Grounding gate<br/>4-feature logistic<br/>+ cross-encoder"]
         G2 -->|"low confidence"| ABSTAIN["🤷 Abstain"]
         G2 -->|grounded| EXT["✂️ Extractive answer<br/>IDF-weighted sentence pick"]
         EXT --> G3["🛡️ Faithfulness<br/>token overlap + numeric grounding"]
@@ -136,7 +136,7 @@ Two rules fall out of it, and both cost us results we would rather have shown:
 |---|---|---|---|
 | 1 | Speech-to-text (Sarvam / ElevenLabs) | `core/stt/elevenlabs.py` | ElevenLabs **Scribe v2**, verified live in hi + gu |
 | 2 | Chunking must be vast | `core/chunking/` | 6 strategies, [ablation](#2-chunking) with bootstrap |
-| 3 | Under 200 ms | `core/harness/orchestrator.py` | **P100 32.9 ms, 450/450 inside budget** |
+| 3 | Under 200 ms | `core/harness/orchestrator.py` | **P100 49.7 ms, 450/450 inside budget** |
 | 4 | P50 / P70 / P100 | `bench/runner.py` | [below](#34-latency) |
 | 5 | Harness | `core/harness/` | tool calls, retries, typed I/O, failover |
 | 6 | Guardrails | `core/guardrails/` | [below](#6-guardrails), 54/54 adversarial caught |
@@ -457,18 +457,20 @@ Speed was not a reason to do it either: retrieval already uses 6% of the budget.
 
 ## 3-4. Latency
 
-**P50 12.19 ms · P70 12.75 ms · P100 32.86 ms**, 450 queries.
+**P50 21.81 ms · P70 25.41 ms · P100 49.73 ms**, 450 queries.
 
 | stage | P50 | P70 | P100 |
 |---|---:|---:|---:|
-| input_guard | 0.01 ms | 0.01 ms | 0.47 ms |
-| retrieve | 11.91 ms | 12.38 ms | 31.53 ms |
-| grounding_guard | 0.05 ms | 0.06 ms | 0.18 ms |
-| answer_fast | 0.12 ms | 0.13 ms | 0.26 ms |
-| faithfulness | 0.27 ms | 0.30 ms | 0.46 ms |
+| input_guard | 0.01 ms | 0.02 ms | 0.45 ms |
+| retrieve | 11.47 ms | 12.10 ms | 27.34 ms |
+| grounding_guard | 10.03 ms | 13.54 ms | 31.01 ms |
+| answer_fast | 0.13 ms | 0.14 ms | 0.40 ms |
+| faithfulness | 0.26 ms | 0.29 ms | 0.80 ms |
 
-Retrieval is ~97% of the total; within it the query embedding dominates, since
-BM25 scoring is ~0.1 ms and dense search ~2.5 ms at 109k chunks.
+Two stages dominate and both are transformer forward passes: `retrieve` is the
+query embedding (BM25 scoring is ~0.1 ms, dense search ~2.5 ms at 109k chunks),
+and `grounding_guard` is the cross-encoder reading query and passage together.
+Everything else totals under 0.5 ms.
 
 Ranking passages instead of chunks costs **+0.5 ms at P50**. It widens the
 candidate fetch by the index's fan-out, but `argpartition` is linear in the
@@ -492,10 +494,10 @@ Reported separately, never folded in:
 
 | track | P50 | note |
 |---|---:|---|
-| pipeline (the budget) | 12.19 ms | local, no network |
+| pipeline (the budget) | 21.81 ms | local, no network |
 | STT round trip | 899.7 ms | mandated hosted API, measured separately |
 | LLM tier 2 | ~2-6 s | optional, falls back to tier 1 |
-| cold start | 8,643 ms | model + index load, excluded from percentiles |
+| cold start | 16,362 ms | two models + index load, excluded from percentiles |
 
 Cold start is excluded from the percentiles and reported on its own: folding it
 in would report a one-time artifact as steady-state, and hiding it would omit a
@@ -577,8 +579,8 @@ Three layers, each catching what the others cannot:
 | layer | catches | cost |
 |---|---|---:|
 | input intent | unsafe content, prompt injection, empty | 0.01 ms, **pre-retrieval** |
-| grounding gate | off-topic, nonsense, unanswerable | 0.05 ms |
-| faithfulness | ungrounded answers, invented numbers, fake citations | 0.27 ms |
+| grounding gate | off-topic, nonsense, unanswerable | 10.03 ms, cross-encoder |
+| faithfulness | ungrounded answers, invented numbers, fake citations | 0.26 ms |
 
 Unsafe and injection queries are refused **before retrieval**. A corpus lookup
 cannot make "how do I build a bomb" safe to answer, so a confidence threshold is
@@ -600,16 +602,55 @@ on the held-out half:
 |---|---:|---:|---:|---:|
 | cosine 0.860 (default when uncalibrated) | 0.838 | **16.2%** | 0.417 | 0.627 |
 | cosine, swept to >=95% recall (0.843) | 0.977 | 2.3% | 0.063 | 0.520 |
-| **multi-feature logistic** | **0.955** | **4.5%** | **0.333** | **0.644** |
+| logistic, 3 lexical/dense features | 0.952 | 4.8% | 0.306 | 0.629 |
+| **+ cross-encoder relevance** | **0.951** | **4.9%** | **0.379** | **0.665** |
 
 The middle row is the point: the *best* single-threshold operating point that
 meets the answerable-recall floor catches almost nothing (abstain recall 0.063).
 The gate has to look at more than cosine.
 
-Fitted coefficients: `lexical_overlap` 4.44, `top1_dense` 0.90, `margin` -0.05.
-Overlap does nearly all the work, and `margin` is now worth ~nothing: ranking
-passages instead of chunks removed the near-duplicate siblings whose identical
-scores used to make a small margin a signal of anything.
+Numbers are averaged over **30 random half-splits**, not one. With only ~48
+abstain examples per half, a single split swings balanced accuracy by ±0.03, and
+an early version of this table quoted a lucky draw.
+
+### The feature that reads, rather than counts
+
+The first three features are bag-of-words counts and a bi-encoder cosine. None
+can tell that a passage is about the **wrong variant of the right thing**.
+Measured case: *"how much sodium in **red** pepper"* against a passage giving the
+sodium content of **green** pepper scores 0.876 dense and 0.714 lexical overlap,
+both inside the answerable range, because every token matches. The one word that
+decides the question is an adjective, and to a bag of words it weighs the same
+as "is".
+
+A cross-encoder reads query and passage together, so it sees the contradiction:
+
+| feature | answerable mean | should-abstain mean | separation |
+|---|---:|---:|---:|
+| `top1_dense` | 0.884 | 0.864 | 0.02 |
+| `lexical_overlap` | 0.617 | 0.333 | 0.28 |
+| **`cross_score`** | **+2.54** | **-3.57** | **6.11** |
+
+Adding it lifts abstain recall **0.306 to 0.379 at an unchanged false-abstain
+rate**, for +9.6 ms. `mmarco-mMiniLMv2` scored on the top passage only, one pair,
+verification rather than reranking.
+
+### What it still does not fix
+
+The red-pepper query above scores `cross_score` 0.93 against 5.59 for the same
+question asked about green pepper, so the signal is real. It is still answered,
+because catching it needs a confidence threshold of 0.78:
+
+| threshold | answerable kept | unanswerable caught |
+|---:|---:|---:|
+| **0.16 (shipped)** | **95.7%** | **39.6%** |
+| 0.50 | 78.1% | 83.3% |
+| 0.78 (catches red pepper) | **54.3%** | 95.8% |
+
+Refusing 46% of real questions to catch it is not a trade worth making. The
+honest position is that this gate catches about two unanswerable questions in
+five, and that specific failure is in the three it misses. Reported rather than
+tuned away.
 
 Two methodology fixes went in alongside. Calibration now uses only the abstain
 categories that actually *reach* the grounding gate, since unsafe and injection

@@ -24,7 +24,7 @@ always get a response.
 | Stages | input guard → retrieve → grounding gate → extractive answer → faithfulness | the fast path, then LLM tool-calling with structured output |
 | Network | none | one or more provider calls |
 | Budget | 200 ms | best-effort |
-| Measured | P50 12.2 ms / P100 32.9 ms | reported separately |
+| Measured | P50 21.8 ms / P100 49.7 ms | reported separately |
 
 The fast path runs **first even in quality mode**. That is deliberate: it means
 a grounded answer already exists before the first network call, so any quality

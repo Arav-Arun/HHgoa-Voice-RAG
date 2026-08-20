@@ -18,6 +18,7 @@ from core.embeddings.presets import EMBEDDING_PRESETS
 from core.embeddings.sentence_transformers import SentenceTransformerEmbedder
 from core.guardrails.composite import CompositeGuardrail
 from core.guardrails.confidence import ConfidenceGate
+from core.guardrails.cross_encoder import CrossEncoderScorer
 from core.guardrails.grounding import GroundingGate
 from core.guardrails.hallucination import HallucinationChecker
 from core.guardrails.input_intent import InputIntentFilter
@@ -236,6 +237,13 @@ def build_retriever(
     )
 
 
+def build_cross_scorer(settings: Settings | None = None) -> CrossEncoderScorer | None:
+    """The gate's cross-encoder, or None when it is switched off."""
+    settings = settings or get_settings()
+    name = (settings.guardrail_cross_encoder or "").strip()
+    return CrossEncoderScorer(name) if name else None
+
+
 def _build_grounding_gate(settings: Settings):
     """Multi-feature gate when calibrated, plain cosine threshold otherwise."""
     if (settings.guardrail_mode or "auto").lower() == "threshold":
@@ -243,6 +251,7 @@ def _build_grounding_gate(settings: Settings):
     return ConfidenceGate.from_file(
         settings.guardrail_model_path,
         min_score=settings.guardrail_min_score,
+        cross_scorer=build_cross_scorer(settings),
     )
 
 

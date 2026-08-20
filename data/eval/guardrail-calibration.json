@@ -34,6 +34,10 @@
     "lexical_overlap": {
       "answerable_mean": 0.6171,
       "abstain_mean": 0.3329
+    },
+    "cross_score": {
+      "answerable_mean": 2.5358,
+      "abstain_mean": -3.5748
     }
   },
   "shipping_default": {
@@ -85,37 +89,46 @@
   },
   "multi_feature_gate": {
     "coefficients": {
-      "top1_dense": 0.9011,
-      "margin": -0.0452,
-      "lexical_overlap": 4.4414
+      "top1_dense": 0.8015,
+      "margin": -0.3381,
+      "lexical_overlap": 1.0612,
+      "cross_score": 0.7635
     },
-    "intercept": -2.9521,
-    "threshold": 0.255,
+    "intercept": 1.117,
+    "threshold": 0.16,
     "calibration": {
-      "answerable_recall": 0.9509,
+      "answerable_recall": 0.9623,
+      "abstain_recall": 0.4583,
+      "answerable_precision": 0.9075,
+      "answerable_f1": 0.9341,
+      "balanced_accuracy": 0.7103,
+      "worst_class_recall": 0.4583,
+      "false_abstain_rate": 0.0377,
+      "true_positives": 255,
+      "false_negatives": 10,
+      "true_negatives": 22,
+      "false_positives": 26
+    },
+    "held_out": {
+      "answerable_recall": 0.9434,
       "abstain_recall": 0.3125,
-      "answerable_precision": 0.8842,
-      "answerable_f1": 0.9164,
-      "balanced_accuracy": 0.6317,
+      "answerable_precision": 0.8834,
+      "answerable_f1": 0.9124,
+      "balanced_accuracy": 0.6279,
       "worst_class_recall": 0.3125,
-      "false_abstain_rate": 0.0491,
-      "true_positives": 252,
-      "false_negatives": 13,
+      "false_abstain_rate": 0.0566,
+      "true_positives": 250,
+      "false_negatives": 15,
       "true_negatives": 15,
       "false_positives": 33
     },
-    "held_out": {
-      "answerable_recall": 0.9547,
-      "abstain_recall": 0.3333,
-      "answerable_precision": 0.8877,
-      "answerable_f1": 0.92,
-      "balanced_accuracy": 0.644,
-      "worst_class_recall": 0.3333,
-      "false_abstain_rate": 0.0453,
-      "true_positives": 253,
-      "false_negatives": 12,
-      "true_negatives": 16,
-      "false_positives": 32
+    "repeated_holdout": {
+      "answerable_recall": 0.9509,
+      "false_abstain_rate": 0.0491,
+      "abstain_recall": 0.3785,
+      "balanced_accuracy": 0.6647,
+      "balanced_accuracy_stdev": 0.0303,
+      "splits": 30.0
     }
   },
   "model_path": "data/eval/guardrail-model.json",

@@ -26,8 +26,8 @@ from pathlib import Path
 import numpy as np
 
 from core.config import Settings, get_settings
-from core.factory import build_retriever
-from core.guardrails.confidence import FEATURE_ORDER, extract_features
+from core.factory import build_cross_scorer, build_retriever
+from core.guardrails.confidence import BASE_FEATURES, CROSS_FEATURE, extract_features
 from eval.dataset import load_eval_set
 
 DEFAULT_ANSWERABLE_PATH = Path("data/eval/queries.jsonl")
@@ -48,8 +48,8 @@ class FeatureSample:
     label: int  # 1 = answerable, 0 = should abstain
     features: dict[str, float]
 
-    def vector(self) -> list[float]:
-        return [self.features[name] for name in FEATURE_ORDER]
+    def vector(self, feature_order: tuple[str, ...]) -> list[float]:
+        return [self.features[name] for name in feature_order]
 
 
 def _load_abstain_rows(path: Path) -> list[dict]:
@@ -67,9 +67,13 @@ def collect_samples(
     abstain_path: Path = DEFAULT_ABSTAIN_PATH,
     settings: Settings | None = None,
     top_k: int = 5,
-) -> list[FeatureSample]:
+) -> tuple[list[FeatureSample], tuple[str, ...]]:
     settings = settings or get_settings()
     retriever = build_retriever(settings)
+    # The cross-encoder is only a gate feature if it is configured, so the
+    # fitted feature set is decided here and recorded with the model.
+    cross_scorer = build_cross_scorer(settings)
+    feature_order = BASE_FEATURES + ((CROSS_FEATURE,) if cross_scorer else ())
     samples: list[FeatureSample] = []
 
     for example in load_eval_set(answerable_path):
@@ -80,7 +84,7 @@ def collect_samples(
                 language=example.language,
                 category="answerable",
                 label=1,
-                features=extract_features(example.query, sources),
+                features=extract_features(example.query, sources, cross_scorer=cross_scorer),
             )
         )
 
@@ -95,11 +99,11 @@ def collect_samples(
                 language=language,
                 category=row["category"],
                 label=0,
-                features=extract_features(row["query"], sources),
+                features=extract_features(row["query"], sources, cross_scorer=cross_scorer),
             )
         )
 
-    return samples
+    return samples, feature_order
 
 
 def classification_metrics(pred: np.ndarray, truth: np.ndarray) -> dict[str, float]:
@@ -158,6 +162,43 @@ def _pick_operating_point(
     return best
 
 
+def repeated_holdout(
+    X: np.ndarray,
+    y: np.ndarray,
+    *,
+    splits: int = 30,
+    seed: int = 42,
+) -> dict[str, float]:
+    """Mean held-out metrics over repeated random half-splits."""
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.model_selection import train_test_split
+
+    runs: list[dict[str, float]] = []
+    for offset in range(splits):
+        X_fit, X_hold, y_fit, y_hold = train_test_split(
+            X, y, test_size=0.5, random_state=seed + offset, stratify=y
+        )
+        mean = X_fit.mean(axis=0)
+        scale = X_fit.std(axis=0)
+        scale[scale == 0.0] = 1.0
+        model = LogisticRegression(max_iter=2000, class_weight="balanced").fit(
+            (X_fit - mean) / scale, y_fit
+        )
+        threshold, _ = _pick_operating_point(
+            model.predict_proba((X_fit - mean) / scale)[:, 1],
+            y_fit,
+            np.round(np.arange(0.01, 1.0, 0.005), 4),
+        )
+        predictions = (model.predict_proba((X_hold - mean) / scale)[:, 1] >= threshold).astype(int)
+        runs.append(classification_metrics(predictions, y_hold))
+
+    keys = ("answerable_recall", "false_abstain_rate", "abstain_recall", "balanced_accuracy")
+    summary = {k: round(float(np.mean([r[k] for r in runs])), 4) for k in keys}
+    summary["balanced_accuracy_stdev"] = round(float(np.std([r["balanced_accuracy"] for r in runs])), 4)
+    summary["splits"] = float(splits)
+    return summary
+
+
 def calibrate_and_write(
     *,
     answerable_path: Path = DEFAULT_ANSWERABLE_PATH,
@@ -172,7 +213,7 @@ def calibrate_and_write(
     from sklearn.model_selection import train_test_split
 
     settings = settings or get_settings()
-    samples = collect_samples(
+    samples, feature_order = collect_samples(
         answerable_path=answerable_path,
         abstain_path=abstain_path,
         settings=settings,
@@ -181,13 +222,13 @@ def calibrate_and_write(
     if not any(s.label == 1 for s in samples) or not any(s.label == 0 for s in samples):
         raise ValueError("need both answerable and abstain samples to calibrate")
 
-    X = np.array([s.vector() for s in samples], dtype=float)
+    X = np.array([s.vector(feature_order) for s in samples], dtype=float)
     y = np.array([s.label for s in samples], dtype=int)
     X_fit, X_hold, y_fit, y_hold = train_test_split(
         X, y, test_size=0.5, random_state=seed, stratify=y
     )
 
-    # Baseline: threshold the top-1 cosine alone (index 0 of FEATURE_ORDER).
+    # Baseline: threshold the top-1 cosine alone (the first feature).
     cosine_grid = np.round(np.arange(0.60, 0.99, 0.001), 4)
     t_cosine, cosine_fit_metrics = _pick_operating_point(X_fit[:, 0], y_fit, cosine_grid)
     cosine_hold_metrics = classification_metrics((X_hold[:, 0] >= t_cosine).astype(int), y_hold)
@@ -199,20 +240,35 @@ def calibrate_and_write(
         (X_hold[:, 0] >= t_default).astype(int), y_hold
     )
 
-    # Multi-feature logistic gate.
-    model = LogisticRegression(max_iter=2000, class_weight="balanced").fit(X_fit, y_fit)
-    p_fit = model.predict_proba(X_fit)[:, 1]
-    p_hold = model.predict_proba(X_hold)[:, 1]
+    # Multi-feature logistic gate. Features are standardized first: the cosine
+    # and overlap live in [0, 1] while the cross-encoder score spans roughly
+    # [-11, +11], and sklearn's L2 penalty is scale-sensitive, so without this
+    # the widest feature is the one most shrunk. Mean and scale ship with the
+    # model so serving applies the identical transform.
+    mean = X_fit.mean(axis=0)
+    scale = X_fit.std(axis=0)
+    scale[scale == 0.0] = 1.0
+    model = LogisticRegression(max_iter=2000, class_weight="balanced").fit(
+        (X_fit - mean) / scale, y_fit
+    )
+    p_fit = model.predict_proba((X_fit - mean) / scale)[:, 1]
+    p_hold = model.predict_proba((X_hold - mean) / scale)[:, 1]
     t_model, model_fit_metrics = _pick_operating_point(
         p_fit, y_fit, np.round(np.arange(0.01, 1.0, 0.005), 4)
     )
     model_hold_metrics = classification_metrics((p_hold >= t_model).astype(int), y_hold)
+    # One half-split leaves ~48 abstain examples to score, so its metrics swing
+    # by several points between seeds. The shipped coefficients come from the
+    # split above; these repeated splits are what the numbers are quoted from.
+    repeated = repeated_holdout(X, y, seed=seed)
 
     model_payload = {
         "model": "logistic_regression",
-        "features": list(FEATURE_ORDER),
+        "features": list(feature_order),
         "coefficients": [float(c) for c in model.coef_[0]],
         "intercept": float(model.intercept_[0]),
+        "feature_mean": [float(v) for v in mean],
+        "feature_scale": [float(v) for v in scale],
         "threshold": float(t_model),
         "target_answerable_recall": TARGET_ANSWERABLE_RECALL,
         "calibration_metrics": model_fit_metrics,
@@ -238,27 +294,28 @@ def calibrate_and_write(
                 "answerable_mean": round(float(X[y == 1][:, i].mean()), 4),
                 "abstain_mean": round(float(X[y == 0][:, i].mean()), 4),
             }
-            for i, name in enumerate(FEATURE_ORDER)
+            for i, name in enumerate(feature_order)
         },
         "shipping_default": {
-            "feature": FEATURE_ORDER[0],
+            "feature": feature_order[0],
             "threshold": t_default,
             "held_out": default_hold_metrics,
         },
         "threshold_baseline": {
-            "feature": FEATURE_ORDER[0],
+            "feature": feature_order[0],
             "threshold": t_cosine,
             "calibration": cosine_fit_metrics,
             "held_out": cosine_hold_metrics,
         },
         "multi_feature_gate": {
             "coefficients": dict(
-                zip(FEATURE_ORDER, [round(float(c), 4) for c in model.coef_[0]], strict=True)
+                zip(feature_order, [round(float(c), 4) for c in model.coef_[0]], strict=True)
             ),
             "intercept": round(float(model.intercept_[0]), 4),
             "threshold": t_model,
             "calibration": model_fit_metrics,
             "held_out": model_hold_metrics,
+            "repeated_holdout": repeated,
         },
         "model_path": str(model_path),
         "note": (

@@ -10,14 +10,14 @@ a reasonable number of queries.
 
 | percentile | latency |
 |---|---|
-| **P50** | **12.19 ms** |
-| **P70** | **12.75 ms** |
-| P90 | 15.96 ms |
-| P95 | 18.87 ms |
-| **P100** | **32.86 ms** |
-| mean ± sd | 11.57 ± 4.95 ms |
+| **P50** | **21.81 ms** |
+| **P70** | **25.41 ms** |
+| P90 | 30.63 ms |
+| P95 | 34.49 ms |
+| **P100** | **49.73 ms** |
+| mean ± sd | 21.59 ± 9.39 ms |
 
-**P100 is 32.9 ms against a 200 ms budget, 6× headroom, worst case.**
+**P100 is 49.7 ms against a 200 ms budget, 4× headroom, worst case.**
 
 The mean sits *below* P50 because 54 unsafe and prompt-injection queries are
 refused by the input filter in ~0.02 ms without touching the index. That is the
@@ -34,7 +34,7 @@ into one number would misrepresent it in both directions. So:
 
 | track | what it covers | P50 | P100 |
 |---|---|---|---|
-| **fast path** (headline) | text in → answer out, fully local | 12.19 ms | 32.86 ms |
+| **fast path** (headline) | text in → answer out, fully local | 21.81 ms | 49.73 ms |
 | **voice end-to-end** | + ElevenLabs STT round trip | 938.5 ms | 1021.0 ms |
 | **quality path** | + remote LLM tool-calling | ~3,700 ms | |
 
@@ -82,15 +82,20 @@ component broken out rather than hidden.
 
 | stage | P50 | P70 | P100 | notes |
 |---|---|---|---|---|
-| input_guard | 0.01 ms | 0.01 ms | 0.47 ms | regex over the query |
-| retrieve | 11.91 ms | 12.38 ms | 31.53 ms | **the whole budget lives here** |
-| grounding_guard | 0.05 ms | 0.06 ms | 0.18 ms | 3 features + a sigmoid |
-| answer_fast | 0.12 ms | 0.13 ms | 0.26 ms | extractive sentence selection |
-| faithfulness | 0.27 ms | 0.30 ms | 0.46 ms | token overlap + numeric check |
+| input_guard | 0.01 ms | 0.02 ms | 0.45 ms | regex over the query |
+| retrieve | 11.47 ms | 12.10 ms | 27.34 ms | query embedding + fusion |
+| grounding_guard | 10.03 ms | 13.54 ms | 31.01 ms | cross-encoder + 4 features |
+| answer_fast | 0.13 ms | 0.14 ms | 0.40 ms | extractive sentence selection |
+| faithfulness | 0.26 ms | 0.29 ms | 0.80 ms | token overlap + numeric check |
 
-Retrieval is ~97% of the total, and within it the query embedding dominates -
-BM25 scoring is ~0.1 ms and the dense search ~2.5 ms at 109k chunks. Everything
-after retrieval costs under 0.5 ms combined.
+The two transformer stages are the whole budget: the query embedding inside
+`retrieve`, and the cross-encoder inside `grounding_guard`. BM25 scoring is
+~0.1 ms and the dense search ~2.5 ms at 109k chunks. Every non-model stage
+totals under 0.5 ms.
+
+The cross-encoder costs **+9.6 ms at P50** and buys +7 points of abstain recall
+at an unchanged false-abstain rate. It runs on one pair, the top passage, not on
+all five: verification, not reranking.
 
 Ranking passages rather than chunks (see `core/retriever/base.py`) added
 **+0.5 ms at P50**. It widens the candidate fetch by the index's fan-out, but
@@ -124,7 +129,7 @@ Two other decisions matter:
 
 ## Cold start
 
-**8,643 ms**, loading e5-small, torch init, and reading a 288 MB index.
+**16,362 ms**, loading e5-small, the cross-encoder,, torch init, and reading a 288 MB index.
 
 Reported separately rather than folded into the percentiles: including it would
 report a one-time artifact as steady-state latency, and hiding it would omit a
@@ -143,11 +148,11 @@ the first real request is already warm.
 - **Per-stage timings come from the harness trace**, the same code path that
   serves API requests, not a separate measurement harness.
 - **P100 is the maximum**, by definition. Nearest-rank percentiles throughout.
-- Path mix in the run: 346 answered, 104 abstained.
+- Path mix in the run: 348 answered, 102 abstained.
 
-Latency is flat across languages (gu 11.77 ms, hi 12.35 ms at P50) and across
-the query kinds that actually reach retrieval (answerable 12.51 ms, off-topic
-12.16 ms, in-domain unanswerable 12.13 ms, nonsense 11.62 ms) - abstaining at
+Latency is flat across languages (gu 20.72 ms, hi 22.34 ms at P50) and across
+the query kinds that actually reach retrieval (answerable 23.42 ms, off-topic
+21.35 ms, in-domain unanswerable 20.81 ms, nonsense 23.32 ms) - abstaining at
 the grounding gate is not a shortcut that flatters the numbers. Only unsafe and
 prompt-injection queries are fast (0.02 ms), because they are refused before
 retrieval by design.

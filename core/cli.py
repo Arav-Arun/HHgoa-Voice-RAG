@@ -238,6 +238,16 @@ def _cmd_guardrail_calibrate(args: argparse.Namespace) -> None:
         "answerable_f1",
     ):
         print(f"{key:24} {default[key]:15.4f} {base[key]:15.4f} {gate[key]:15.4f}")
+    rep = report["multi_feature_gate"].get("repeated_holdout")
+    if rep:
+        print(
+            f"\nover {int(rep['splits'])} random half-splits (what the docs quote, since one\n"
+            f"split leaves ~48 abstain examples and swings by several points):\n"
+            f"  answerable_recall {rep['answerable_recall']:.4f}   "
+            f"false_abstain {rep['false_abstain_rate']:.4f}   "
+            f"abstain_recall {rep['abstain_recall']:.4f}   "
+            f"balanced_accuracy {rep['balanced_accuracy']:.4f} +/- {rep['balanced_accuracy_stdev']:.4f}"
+        )
     print(f"\ncoefficients: {report['multi_feature_gate']['coefficients']}")
     print(f"operating threshold: {report['multi_feature_gate']['threshold']}")
     print(f"wrote {args.output} and {report['model_path']}")
