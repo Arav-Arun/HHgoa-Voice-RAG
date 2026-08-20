@@ -1,0 +1,15 @@
+# The index arrives at boot from INDEX_URL, so baking it in would add 288 MB to
+# the image and pin it to one corpus build.
+data/
+.venv/
+.git/
+.github/
+.pytest_cache/
+.ruff_cache/
+__pycache__/
+**/__pycache__/
+*.pyc
+.env
+.claude/
+docs/
+tests/

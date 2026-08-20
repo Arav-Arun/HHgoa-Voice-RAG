@@ -14,7 +14,11 @@ from typing import Any
 
 RETRIEVER_PATH = Path("data/eval/retriever-compare.json")
 BENCH_PATH = Path("data/bench/latency.json")
-GUARDRAIL_PATH = Path("data/eval/guardrail-model.json")
+# The calibration *report*, not the fitted model. The model file records one
+# half-split, which swings by several points between seeds; the report carries
+# the 30-split average that the README quotes. The page must not disagree with
+# the docs.
+GUARDRAIL_PATH = Path("data/eval/guardrail-calibration.json")
 
 
 def _load(path: Path) -> dict[str, Any] | None:
@@ -41,7 +45,7 @@ def collect_stats() -> dict[str, Any]:
     hybrid = _dig(retriever, "hybrid", "overall")
     dense = _dig(retriever, "dense", "overall")
     latency = _dig(bench, "tracks", "fast", "total")
-    gate = _dig(guardrail, "held_out_metrics")
+    gate = _dig(guardrail, "multi_feature_gate", "repeated_holdout")
 
     return {
         "retrieval": {

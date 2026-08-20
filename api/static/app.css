@@ -331,6 +331,53 @@ textarea:focus { outline: 3px solid var(--pink); outline-offset: 2px; }
 }
 .source-head .cited { color: var(--pink); }
 
+/* How it works */
+.lede { margin: -8px 0 22px; max-width: 66ch; color: var(--muted); }
+
+.diagram { overflow-x: auto; }
+.diagram svg { display: block; width: 100%; min-width: 700px; height: auto; }
+
+.d-node rect {
+  fill: #fff;
+  stroke: var(--ink);
+  stroke-width: 2.5;
+}
+.d-node text {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  fill: var(--ink);
+  text-anchor: middle;
+}
+.d-node .d-sub { font-size: 11px; font-weight: 400; fill: var(--muted); }
+
+/* The two stages doing the real work. */
+.d-accent rect { fill: var(--yellow); }
+/* Anything on the network, and so outside the measured window. */
+.d-outside rect { fill: #eee7cd; stroke-dasharray: 6 4; }
+.d-outside text { fill: var(--muted); }
+.d-decline rect { fill: var(--pink); }
+.d-decline text, .d-decline .d-sub { fill: var(--cream); }
+
+.d-budget {
+  fill: rgba(18, 105, 60, 0.07);
+  stroke: var(--green);
+  stroke-width: 2.5;
+}
+
+.diagram line { stroke: var(--ink); stroke-width: 2.5; }
+.diagram .d-divider { stroke: var(--rule); stroke-width: 2; stroke-dasharray: 7 5; }
+
+.d-phase {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  fill: var(--muted);
+}
+.d-onlight { fill: var(--green); }
+.d-note { font-family: var(--mono); font-size: 11px; fill: var(--muted); }
+
 /* Measured results */
 .metrics {
   display: grid;

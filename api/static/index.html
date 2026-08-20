@@ -82,6 +82,142 @@
     <div id="sources" class="sources"></div>
   </section>
 
+
+  <!-- How it works. Values match the shipped config; the alternatives named
+       under chunking and fusion are the ones actually measured, see README. -->
+  <section class="card">
+    <h2 class="card-title">How it works</h2>
+    <p class="lede">
+      Chunking and indexing happen once, offline. Everything below the dashed
+      line runs per question, and is what the 200&nbsp;ms budget measures.
+    </p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 920 560" role="img" aria-labelledby="flow-title">
+        <title id="flow-title">RAG pipeline: offline indexing, then per-query retrieval and answering</title>
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+                  markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#07301b"/>
+          </marker>
+        </defs>
+
+        <!-- ---------------- offline: build the index ---------------- -->
+        <text x="12" y="22" class="d-phase">BUILT ONCE, OFFLINE</text>
+
+        <g class="d-node">
+          <rect x="12" y="34" width="186" height="66"/>
+          <text x="105" y="60">MS MARCO-XI</text>
+          <text x="105" y="80" class="d-sub">5,000 rows per language</text>
+        </g>
+
+        <g class="d-node d-accent">
+          <rect x="236" y="34" width="220" height="66"/>
+          <text x="346" y="58">Chunking</text>
+          <text x="346" y="78" class="d-sub">fixed 512 chars, 64 overlap</text>
+        </g>
+
+        <g class="d-node">
+          <rect x="494" y="34" width="186" height="66"/>
+          <text x="587" y="60">109,082 chunks</text>
+          <text x="587" y="80" class="d-sub">99,772 passages</text>
+        </g>
+
+        <g class="d-node">
+          <rect x="718" y="34" width="190" height="66"/>
+          <text x="813" y="52">Vector DB</text>
+          <text x="813" y="70" class="d-sub">e5-small, 384-dim</text>
+          <text x="813" y="86" class="d-sub">+ BM25 sparse matrix</text>
+        </g>
+
+        <line x1="198" y1="67" x2="230" y2="67" marker-end="url(#arrow)"/>
+        <line x1="456" y1="67" x2="488" y2="67" marker-end="url(#arrow)"/>
+        <line x1="680" y1="67" x2="712" y2="67" marker-end="url(#arrow)"/>
+
+        <text x="236" y="120" class="d-note">5 alternatives measured: semantic · metadata · recursive · parent_child · token_window</text>
+
+        <line x1="12" y1="140" x2="908" y2="140" class="d-divider"/>
+
+        <!-- ---------------- online: answer a question ---------------- -->
+        <text x="12" y="168" class="d-phase">PER QUESTION</text>
+
+        <g class="d-node">
+          <rect x="12" y="180" width="150" height="62"/>
+          <text x="87" y="205">Voice or text</text>
+          <text x="87" y="224" class="d-sub">script sets language</text>
+        </g>
+
+        <g class="d-node d-outside">
+          <rect x="12" y="262" width="150" height="58"/>
+          <text x="87" y="285">Speech-to-text</text>
+          <text x="87" y="303" class="d-sub">~840 ms, outside budget</text>
+        </g>
+        <line x1="87" y1="242" x2="87" y2="256" marker-end="url(#arrow)"/>
+
+        <!-- the measured budget -->
+        <rect x="196" y="176" width="712" height="242" class="d-budget"/>
+        <text x="210" y="198" class="d-phase d-onlight">INSIDE THE 200 ms BUDGET &#183; measured P50 9.55 ms</text>
+
+        <g class="d-node">
+          <rect x="210" y="212" width="150" height="58"/>
+          <text x="285" y="235">Safety check</text>
+          <text x="285" y="253" class="d-sub">before any search</text>
+        </g>
+
+        <g class="d-node d-accent">
+          <rect x="394" y="212" width="212" height="106"/>
+          <text x="500" y="234">Retrieval</text>
+          <text x="500" y="254" class="d-sub">dense cosine, top 50</text>
+          <text x="500" y="271" class="d-sub">BM25 lexical, top 50</text>
+          <text x="500" y="292" class="d-sub">weighted RRF fusion</text>
+          <text x="500" y="309" class="d-sub">hi 0.95 &#183; gu 0.50</text>
+        </g>
+
+        <g class="d-node">
+          <rect x="640" y="212" width="150" height="58"/>
+          <text x="715" y="235">Grounding check</text>
+          <text x="715" y="253" class="d-sub">4 features</text>
+        </g>
+
+        <g class="d-node">
+          <rect x="640" y="298" width="150" height="58"/>
+          <text x="715" y="321">Answer</text>
+          <text x="715" y="339" class="d-sub">extractive, cited</text>
+        </g>
+
+        <g class="d-node">
+          <rect x="394" y="342" width="212" height="58"/>
+          <text x="500" y="365">Hallucination check</text>
+          <text x="500" y="383" class="d-sub">overlap + numbers must match</text>
+        </g>
+
+        <line x1="360" y1="241" x2="388" y2="241" marker-end="url(#arrow)"/>
+        <line x1="606" y1="241" x2="634" y2="241" marker-end="url(#arrow)"/>
+        <line x1="715" y1="270" x2="715" y2="292" marker-end="url(#arrow)"/>
+        <line x1="640" y1="327" x2="612" y2="327" marker-end="url(#arrow)"/>
+        <line x1="162" y1="291" x2="196" y2="291" marker-end="url(#arrow)"/>
+        <line x1="162" y1="211" x2="196" y2="211" marker-end="url(#arrow)"/>
+
+        <!-- declines leave the budget -->
+        <g class="d-node d-decline">
+          <rect x="210" y="298" width="150" height="58"/>
+          <text x="285" y="321">Declined</text>
+          <text x="285" y="339" class="d-sub">no answer invented</text>
+        </g>
+        <line x1="285" y1="270" x2="285" y2="292" marker-end="url(#arrow)"/>
+        <line x1="394" y1="371" x2="362" y2="371" marker-end="url(#arrow)"/>
+
+        <!-- optional tier 2 -->
+        <g class="d-node d-outside">
+          <rect x="394" y="440" width="352" height="58"/>
+          <text x="570" y="463">Optional LLM rewrite</text>
+          <text x="570" y="481" class="d-sub">2 to 6 s, outside budget; falls back to the answer above</text>
+        </g>
+        <line x1="500" y1="400" x2="500" y2="434" marker-end="url(#arrow)"/>
+      </svg>
+    </div>
+  </section>
+
   <!-- Measured results. Every value is read from a run artifact by /stats. -->
   <section class="card">
     <h2 class="card-title">Measured results</h2>

@@ -48,6 +48,39 @@ const el = {
 
 const state = { busy: false };
 
+/* Display names. The trace keys stay as they are, because every published
+ * number in docs/latency.md is keyed on them; only the labels change, and they
+ * use the vocabulary of the task brief rather than internal stage names. */
+const STAGE_LABELS = {
+  input_guard: "Safety check",
+  retrieve: "Retrieval · vector DB",
+  grounding_guard: "Grounding check",
+  answer_fast: "Answer generation",
+  answer_fast_fallback: "Answer generation · fallback",
+  answer_quality_cached: "LLM rewrite · cached",
+  faithfulness: "Hallucination check",
+  verify_citations: "Citation check",
+};
+
+// answer_quality carries the provider, e.g. "answer_quality[openai]".
+const stageLabel = (name) =>
+  STAGE_LABELS[name] ||
+  (name.startsWith("answer_quality")
+    ? `LLM rewrite${name.slice(14).replace(/[[\]]/g, " ").trimEnd()}`
+    : name.replace(/_/g, " "));
+
+/* Why an answer was declined, in plain words. */
+const REASON_LABELS = {
+  unsafe_content: "unsafe request, refused before searching",
+  blocked_intent: "prompt injection, refused before searching",
+  unsupported_language: "not Hindi or Gujarati",
+  empty_query: "empty question",
+  short_query: "question too short",
+  no_context: "nothing retrieved",
+  low_confidence: "not enough supporting evidence in the corpus",
+  ungrounded_answer: "answer was not supported by the retrieved passages",
+};
+
 // Devanagari and Gujarati are disjoint Unicode blocks, so the script the user
 // typed in identifies the language. The server does the same detection; this
 // copy only drives the live hint under the box.
@@ -106,7 +139,7 @@ function renderStages(timings, total) {
       const width = Math.max((ms / max) * 100, 1.5);
       const slow = ms > total * 0.5;
       return `<div class="stage">
-        <span class="stage-name">${esc(name)}</span>
+        <span class="stage-name">${esc(stageLabel(name))}</span>
         <span class="stage-bar"><span class="stage-fill${slow ? " is-slow" : ""}" style="width:${width}%"></span></span>
         <span class="stage-ms">${fmtMs(ms)}</span>
       </div>`;
@@ -146,7 +179,8 @@ function renderFast(data, transcript) {
   el.refusal.hidden = !abstained;
 
   if (abstained) {
-    el.refusal.innerHTML = `<b>Declined · ${esc(data.guardrail_stage || "")} · ${esc(data.guardrail_reason || "")}</b>${esc(data.answer || "")}`;
+    const why = REASON_LABELS[data.guardrail_reason] || data.guardrail_reason || "";
+    el.refusal.innerHTML = `<b>Declined · ${esc(why)}</b>${esc(data.answer || "")}`;
   } else {
     el.answer.textContent = data.answer || "";
   }
