@@ -1,4 +1,4 @@
-"""No-op guardrail — passthrough for tests or disabled guardrails."""
+"""No-op guardrail, passthrough for tests or disabled guardrails."""
 
 from __future__ import annotations
 

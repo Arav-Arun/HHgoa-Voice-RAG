@@ -5,6 +5,7 @@ from __future__ import annotations
 import httpx
 
 from core.stt.base import BaseSTT, TranscriptionResult
+from core.text import detect_language
 
 _STT_LANGUAGES = {"hi", "gu"}
 _DEFAULT_BASE_URL = "https://api.elevenlabs.io/v1"
@@ -28,17 +29,21 @@ class ElevenLabsSTT(BaseSTT):
         self,
         audio: bytes,
         *,
-        language: str = "hi",
+        language: str | None = None,
         content_type: str = "audio/wav",
         filename: str = "audio.wav",
     ) -> TranscriptionResult:
-        if language not in _STT_LANGUAGES:
+        if language is not None and language not in _STT_LANGUAGES:
             raise ValueError(f"Unsupported STT language {language!r}. Supported: hi, gu")
         if not audio:
             raise ValueError("Audio payload is empty")
 
         headers = {"xi-api-key": self.api_key}
-        data = {"model_id": self.model, "language_code": language}
+        # Omitting language_code lets Scribe detect the language itself, which
+        # is what a speaker expects: they should not have to declare it first.
+        data = {"model_id": self.model}
+        if language is not None:
+            data["language_code"] = language
         files = {"file": (filename, audio, content_type)}
 
         with httpx.Client(timeout=120.0) as client:
@@ -52,10 +57,13 @@ class ElevenLabsSTT(BaseSTT):
             payload = response.json()
 
         text = str(payload.get("text", "")).strip()
-        detected = str(payload.get("language_code", language))
+        detected = str(payload.get("language_code", "") or "")
+        # The transcript settles it. Script detection cannot confuse Devanagari
+        # with Gujarati, whereas the provider's own label occasionally does.
+        resolved = detect_language(text) or (detected if detected in _STT_LANGUAGES else None)
         return TranscriptionResult(
             text=text,
-            language=language,
+            language=resolved or language or "hi",
             provider="elevenlabs",
             metadata={
                 "model": self.model,

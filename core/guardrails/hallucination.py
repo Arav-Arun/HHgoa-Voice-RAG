@@ -1,23 +1,36 @@
-"""Post-generation faithfulness check — detect answers not supported by context."""
+"""Post-generation faithfulness check, detect answers not supported by context.
+
+Two independent signals:
+
+* **Token overlap**, a bag-of-words share of the answer that appears in the
+  retrieved context. Cheap, but a fluent model can recombine context words into
+  a claim the context never made, so it is a floor, not a proof.
+* **Numeric grounding**, every number appearing in the answer must appear in
+  the context. Numbers are where ungrounded generation does real damage
+  (prices, dates, dosages, rates), a wrong one is invisible to token overlap
+  because the surrounding words all match, and the check costs one regex.
+  Digits are script-normalized first, so a Gujarati "૫૦૦" in the passage
+  grounds a "500" in the answer.
+"""
 
 from __future__ import annotations
 
-import re
-
 from core.guardrails.base import BaseGuardrail, GuardrailDecision
 from core.guardrails.messages import ABSTAIN_HALLUCINATION, message_for
+from core.text import extract_numbers, token_set
 from core.types import ScoredChunk
-
-_TOKEN_RE = re.compile(r"[\w\u0900-\u097F\u0A80-\u0AFF]+", re.UNICODE)
 
 
 def _content_tokens(text: str) -> set[str]:
-    return {token.lower() for token in _TOKEN_RE.findall(text) if len(token) >= 2}
+    # Shared tokenizer: matra-aware and danda-stripping, so "है।" and "है"
+    # count as the same token instead of never matching.
+    return token_set(text, min_length=2)
 
 
 class HallucinationChecker(BaseGuardrail):
-    def __init__(self, *, min_overlap: float = 0.20) -> None:
+    def __init__(self, *, min_overlap: float = 0.20, check_numbers: bool = True) -> None:
         self.min_overlap = min_overlap
+        self.check_numbers = check_numbers
 
     def check_input(self, query: str, *, language: str = "hi") -> GuardrailDecision:
         return GuardrailDecision(blocked=False, stage="input_intent")
@@ -50,6 +63,24 @@ class HallucinationChecker(BaseGuardrail):
 
         context_tokens = _content_tokens(context)
         overlap = len(answer_tokens & context_tokens) / len(answer_tokens)
+
+        # A number the context never stated is ungrounded regardless of how
+        # well the surrounding prose overlaps.
+        ungrounded_numbers: list[str] = []
+        if self.check_numbers:
+            ungrounded_numbers = sorted(extract_numbers(text) - extract_numbers(context))
+            if ungrounded_numbers:
+                return GuardrailDecision(
+                    blocked=True,
+                    answer=message_for(language, ABSTAIN_HALLUCINATION),
+                    sources=sources,
+                    reason="ungrounded_numbers",
+                    stage="hallucination",
+                    metadata={
+                        "ungrounded_numbers": ungrounded_numbers,
+                        "overlap": round(overlap, 4),
+                    },
+                )
 
         if overlap < self.min_overlap:
             return GuardrailDecision(

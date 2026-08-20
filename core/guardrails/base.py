@@ -1,4 +1,4 @@
-"""Guardrail interface — input filtering and grounding gates before the LLM."""
+"""Guardrail interface, input filtering and grounding gates before the LLM."""
 
 from __future__ import annotations
 

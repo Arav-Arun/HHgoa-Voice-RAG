@@ -1,29 +1,45 @@
-"""End-to-end RAG pipeline — wire retriever + guardrails + LLM here."""
+"""End-to-end RAG pipeline.
+
+Kept as a thin facade over :class:`core.harness.orchestrator.Orchestrator` so
+that the CLI, the HTTP API, the eval harness, and the latency benchmark all
+exercise exactly the same stage graph. If they diverged, the benchmark would
+stop measuring the thing that ships.
+"""
 
 from __future__ import annotations
 
-from core.guardrails.base import BaseGuardrail, GuardrailDecision
-from core.guardrails.stub import StubGuardrail
-from core.llm.base import BaseLLM
-from core.rag.prompts import SYSTEM_PROMPT
-from core.retriever.base import BaseRetriever
+from typing import TYPE_CHECKING
+
+from core.harness.contracts import QueryEnvelope
+from core.text import detect_language
 from core.types import RAGResponse
+
+if TYPE_CHECKING:  # pragma: no cover - import cycle guard
+    # core.harness.orchestrator imports core.rag.prompts, so importing it here
+    # at runtime would close the loop core.rag -> harness -> core.rag.
+    from core.harness.orchestrator import Orchestrator
+
+# Fast path is local-only and budgeted; quality path may call a remote model.
+DEFAULT_FAST_DEADLINE_MS = 200
+DEFAULT_QUALITY_DEADLINE_MS = 30_000
 
 
 class RAGPipeline:
     def __init__(
         self,
-        retriever: BaseRetriever,
-        llm: BaseLLM,
+        orchestrator: Orchestrator,
         default_language: str = "hi",
-        system_prompt: str = SYSTEM_PROMPT,
-        guardrail: BaseGuardrail | None = None,
     ) -> None:
-        self.retriever = retriever
-        self.llm = llm
+        self.orchestrator = orchestrator
         self.default_language = default_language
-        self.system_prompt = system_prompt
-        self.guardrail = guardrail or StubGuardrail()
+
+    @property
+    def retriever(self):
+        return self.orchestrator.retriever
+
+    @property
+    def guardrail(self):
+        return self.orchestrator.guardrail
 
     def query(
         self,
@@ -31,87 +47,23 @@ class RAGPipeline:
         *,
         language: str | None = None,
         top_k: int | None = None,
+        mode: str = "fast",
+        deadline_ms: int | None = None,
+        trace_id: str = "",
     ) -> RAGResponse:
-        lang = language or self.default_language
-        metadata: dict = {}
-
-        input_decision = self.guardrail.check_input(question, language=lang)
-        if input_decision.blocked:
-            return self._blocked_response(
-                question,
-                input_decision,
-                language=lang,
+        if deadline_ms is None:
+            deadline_ms = (
+                DEFAULT_QUALITY_DEADLINE_MS if mode == "quality" else DEFAULT_FAST_DEADLINE_MS
             )
-
-        sources = self.retriever.retrieve(question, top_k=top_k)
-
-        grounding_decision = self.guardrail.check_grounding(
-            question,
-            sources,
-            language=lang,
+        # Devanagari and Gujarati are disjoint scripts, so the question states
+        # its own language. An explicit argument still wins, for callers that
+        # know better (eval fixtures carry a label).
+        envelope = QueryEnvelope(
+            text=question,
+            language=language or detect_language(question) or self.default_language,
+            top_k=top_k,
+            mode=mode,  # type: ignore[arg-type]
+            deadline_ms=deadline_ms,
+            trace_id=trace_id,
         )
-        if grounding_decision.blocked:
-            return self._blocked_response(
-                question,
-                grounding_decision,
-                language=lang,
-            )
-
-        sources = grounding_decision.sources or sources
-        if grounding_decision.metadata:
-            metadata["grounding"] = grounding_decision.metadata
-
-        answer = self.llm.answer_with_context(
-            question,
-            sources,
-            language=lang,
-            system=self.system_prompt,
-        )
-
-        answer_decision = self.guardrail.check_answer(
-            question,
-            answer,
-            sources,
-            language=lang,
-        )
-        if answer_decision.blocked:
-            return self._blocked_response(
-                question,
-                answer_decision,
-                language=lang,
-                metadata=metadata,
-            )
-
-        if answer_decision.metadata:
-            metadata["hallucination"] = answer_decision.metadata
-
-        return RAGResponse(
-            query=question,
-            answer=answer_decision.answer or answer,
-            sources=sources,
-            language=lang,
-            metadata=metadata,
-        )
-
-    @staticmethod
-    def _blocked_response(
-        question: str,
-        decision: GuardrailDecision,
-        *,
-        language: str,
-        metadata: dict | None = None,
-    ) -> RAGResponse:
-        combined = dict(metadata or {})
-        combined["guardrail"] = {
-            "blocked": True,
-            "stage": decision.stage,
-            "reason": decision.reason,
-            **decision.metadata,
-        }
-        return RAGResponse(
-            query=question,
-            answer=decision.answer or "",
-            sources=decision.sources or [],
-            language=language,
-            metadata=combined,
-        )
+        return self.orchestrator.run(envelope)

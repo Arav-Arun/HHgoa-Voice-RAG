@@ -1,0 +1,188 @@
+{
+  "host": {
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "processor": "arm",
+    "python": "3.12.13",
+    "numpy": "2.5.2",
+    "embedding_preset": "e5-small",
+    "chunking_provider": "fixed",
+    "retriever": "hybrid",
+    "fusion": "rrf",
+    "top_k": 5,
+    "indexed_chunks": 109082,
+    "torch_threads": 4
+  },
+  "target_ms": 200,
+  "tracks": {
+    "fast": {
+      "mode": "fast",
+      "queries": 450,
+      "pipeline_build_ms": 616.2,
+      "cold_start_ms": 8643.11,
+      "total": {
+        "count": 450,
+        "p50_ms": 12.19,
+        "p70_ms": 12.75,
+        "p90_ms": 15.96,
+        "p95_ms": 18.87,
+        "p100_ms": 32.86,
+        "mean_ms": 11.57,
+        "stddev_ms": 4.95,
+        "min_ms": 0.01
+      },
+      "by_stage": {
+        "answer_fast": {
+          "count": 346,
+          "p50_ms": 0.12,
+          "p70_ms": 0.13,
+          "p90_ms": 0.16,
+          "p95_ms": 0.17,
+          "p100_ms": 0.26,
+          "mean_ms": 0.12,
+          "stddev_ms": 0.03,
+          "min_ms": 0.05
+        },
+        "faithfulness": {
+          "count": 346,
+          "p50_ms": 0.27,
+          "p70_ms": 0.3,
+          "p90_ms": 0.34,
+          "p95_ms": 0.36,
+          "p100_ms": 0.46,
+          "mean_ms": 0.27,
+          "stddev_ms": 0.05,
+          "min_ms": 0.11
+        },
+        "grounding_guard": {
+          "count": 396,
+          "p50_ms": 0.05,
+          "p70_ms": 0.06,
+          "p90_ms": 0.07,
+          "p95_ms": 0.07,
+          "p100_ms": 0.18,
+          "mean_ms": 0.05,
+          "stddev_ms": 0.01,
+          "min_ms": 0.01
+        },
+        "input_guard": {
+          "count": 450,
+          "p50_ms": 0.01,
+          "p70_ms": 0.01,
+          "p90_ms": 0.02,
+          "p95_ms": 0.02,
+          "p100_ms": 0.47,
+          "mean_ms": 0.01,
+          "stddev_ms": 0.02,
+          "min_ms": 0.01
+        },
+        "retrieve": {
+          "count": 396,
+          "p50_ms": 11.91,
+          "p70_ms": 12.38,
+          "p90_ms": 16.22,
+          "p95_ms": 18.64,
+          "p100_ms": 31.53,
+          "mean_ms": 12.67,
+          "stddev_ms": 2.62,
+          "min_ms": 10.05
+        }
+      },
+      "by_kind": {
+        "answerable": {
+          "count": 300,
+          "p50_ms": 12.51,
+          "p70_ms": 13.01,
+          "p90_ms": 17.18,
+          "p95_ms": 20.01,
+          "p100_ms": 32.86,
+          "mean_ms": 13.4,
+          "stddev_ms": 2.88,
+          "min_ms": 10.51
+        },
+        "in_domain_unanswerable": {
+          "count": 26,
+          "p50_ms": 12.13,
+          "p70_ms": 12.95,
+          "p90_ms": 14.01,
+          "p95_ms": 14.52,
+          "p100_ms": 19.63,
+          "mean_ms": 12.7,
+          "stddev_ms": 1.73,
+          "min_ms": 10.54
+        },
+        "nonsense": {
+          "count": 20,
+          "p50_ms": 11.62,
+          "p70_ms": 11.83,
+          "p90_ms": 12.61,
+          "p95_ms": 13.32,
+          "p100_ms": 18.31,
+          "mean_ms": 11.9,
+          "stddev_ms": 1.67,
+          "min_ms": 10.34
+        },
+        "off_topic": {
+          "count": 50,
+          "p50_ms": 12.16,
+          "p70_ms": 12.55,
+          "p90_ms": 13.17,
+          "p95_ms": 13.76,
+          "p100_ms": 20.75,
+          "mean_ms": 12.34,
+          "stddev_ms": 1.43,
+          "min_ms": 10.58
+        },
+        "prompt_injection": {
+          "count": 24,
+          "p50_ms": 0.02,
+          "p70_ms": 0.02,
+          "p90_ms": 0.02,
+          "p95_ms": 0.02,
+          "p100_ms": 0.02,
+          "mean_ms": 0.02,
+          "stddev_ms": 0.0,
+          "min_ms": 0.01
+        },
+        "unsafe": {
+          "count": 30,
+          "p50_ms": 0.02,
+          "p70_ms": 0.02,
+          "p90_ms": 0.03,
+          "p95_ms": 0.05,
+          "p100_ms": 0.05,
+          "mean_ms": 0.02,
+          "stddev_ms": 0.01,
+          "min_ms": 0.01
+        }
+      },
+      "by_language": {
+        "gu": {
+          "count": 110,
+          "p50_ms": 11.77,
+          "p70_ms": 12.32,
+          "p90_ms": 13.32,
+          "p95_ms": 15.67,
+          "p100_ms": 32.86,
+          "mean_ms": 9.59,
+          "stddev_ms": 5.96,
+          "min_ms": 0.01
+        },
+        "hi": {
+          "count": 340,
+          "p50_ms": 12.35,
+          "p70_ms": 12.88,
+          "p90_ms": 16.71,
+          "p95_ms": 19.49,
+          "p100_ms": 25.89,
+          "mean_ms": 12.21,
+          "stddev_ms": 4.39,
+          "min_ms": 0.01
+        }
+      },
+      "paths": {
+        "fast": 346,
+        "abstained": 104
+      }
+    }
+  }
+}

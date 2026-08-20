@@ -7,7 +7,11 @@ import random
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from ingest.loaders import MSMARCO_XI_DATASET, MSMARCO_XI_SCOPE_LANGUAGES, msmarco_validation_row_count
+from ingest.loaders import (
+    MSMARCO_XI_DATASET,
+    MSMARCO_XI_SCOPE_LANGUAGES,
+    msmarco_validation_row_count,
+)
 
 DEFAULT_SPLIT_PATH = Path("data/eval/split.json")
 DEFAULT_SHUFFLE_SEED = 42

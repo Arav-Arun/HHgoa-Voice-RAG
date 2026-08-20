@@ -1,4 +1,4 @@
-"""Embedding interface — swap providers without touching retrieval code."""
+"""Embedding interface, swap providers without touching retrieval code."""
 
 from __future__ import annotations
 

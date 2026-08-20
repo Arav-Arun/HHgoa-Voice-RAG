@@ -1,3 +1,17 @@
-from bench.runner import BenchResult, bench_query
+from bench.runner import (
+    bench_pipeline,
+    bench_voice,
+    load_bench_queries,
+    percentile,
+    run_benchmarks,
+    summarize,
+)
 
-__all__ = ["BenchResult", "bench_query"]
+__all__ = [
+    "bench_pipeline",
+    "bench_voice",
+    "load_bench_queries",
+    "percentile",
+    "run_benchmarks",
+    "summarize",
+]

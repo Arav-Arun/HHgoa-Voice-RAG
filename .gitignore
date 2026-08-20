@@ -27,9 +27,10 @@ htmlcov/
 .tox/
 .nox/
 
-# IDE / OS
+# Editor / agent tooling
 .idea/
 .vscode/
+.claude/
 *.swp
 *.swo
 .DS_Store
@@ -51,13 +52,15 @@ torch_cache/
 whisper_cache/
 sentence_transformers/
 
-# Large data / indexes (keep layout; commit samples + eval fixtures)
+# Large data / indexes (keep layout; commit samples, eval fixtures, benchmarks)
 data/*
 !data/.gitkeep
 !data/samples/
 !data/samples/**
 !data/eval/
 !data/eval/**
+!data/bench/
+!data/bench/**
 *.faiss
 *.index
 *.ann
@@ -72,6 +75,8 @@ data/*
 
 # Audio / media dumps
 *.wav
+!data/samples/audio/
+!data/samples/audio/**
 *.mp3
 *.flac
 *.ogg

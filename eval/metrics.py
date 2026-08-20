@@ -1,9 +1,14 @@
-"""Retrieval metrics — extend with nDCG, recall@k, etc."""
+"""Retrieval metrics and the aggregation shared by every eval harness.
+
+Scoring is deliberately two-phase: :func:`eval.significance.score_examples`
+keeps one row per query, and these aggregate those rows. The per-query rows
+are what the paired bootstrap resamples, so nothing here may collapse them
+early.
+"""
 
 from __future__ import annotations
 
 from core.types import ScoredChunk
-from eval.dataset import EvalExample
 
 
 def hit_at_k(retrieved: list[ScoredChunk], expected_doc_ids: list[str], k: int = 5) -> float:
@@ -62,45 +67,4 @@ def aggregate_scores_by_language(
     return {
         language: aggregate_scores(lang_rows, top_k=top_k)
         for language, lang_rows in sorted(by_language.items())
-    }
-
-
-def evaluate_examples(
-    examples: list[EvalExample],
-    retrieve_fn,
-    *,
-    top_k: int = 5,
-) -> dict[str, float]:
-    hits: list[float] = []
-    recalls: list[float] = []
-    mrrs: list[float] = []
-
-    for example in examples:
-        retrieved = retrieve_fn(example.query, top_k=top_k)
-        hits.append(hit_at_k(retrieved, example.expected_doc_ids, k=top_k))
-        recalls.append(recall_at_k(retrieved, example.expected_doc_ids, k=top_k))
-        mrrs.append(mrr(retrieved, example.expected_doc_ids))
-
-    n = len(examples) or 1
-    return {
-        f"hit@{top_k}": sum(hits) / n,
-        f"recall@{top_k}": sum(recalls) / n,
-        "mrr": sum(mrrs) / n,
-        "count": float(len(examples)),
-    }
-
-
-def evaluate_examples_by_language(
-    examples: list[EvalExample],
-    retrieve_fn,
-    *,
-    top_k: int = 5,
-) -> dict[str, dict[str, float]]:
-    by_language: dict[str, list[EvalExample]] = {}
-    for example in examples:
-        by_language.setdefault(example.language, []).append(example)
-
-    return {
-        language: evaluate_examples(lang_examples, retrieve_fn, top_k=top_k)
-        for language, lang_examples in sorted(by_language.items())
     }

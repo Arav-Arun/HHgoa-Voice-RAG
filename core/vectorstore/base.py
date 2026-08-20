@@ -1,4 +1,4 @@
-"""Vector store interface — add FAISS/Qdrant/etc. by subclassing."""
+"""Vector store interface, add FAISS/Qdrant/etc. by subclassing."""
 
 from __future__ import annotations
 

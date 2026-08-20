@@ -10,6 +10,18 @@ from eval.dataset import EvalExample
 MetricName = Literal["hit", "recall", "mrr"]
 
 
+def _retrieve(retrieve_fn, example, top_k: int):
+    """Score one example, always passing its language.
+
+    This deliberately does not catch TypeError. An earlier version fell back to
+    a language-free call when ``retrieve_fn`` did not accept the keyword, which
+    silently disabled the per-language fusion weights in every comparison
+    harness and made two published tables measure the global weight instead.
+    A retriever that cannot take a language should fail loudly here.
+    """
+    return retrieve_fn(example.query, top_k=top_k, language=example.language)
+
+
 def score_examples(
     examples: list[EvalExample],
     retrieve_fn,
@@ -20,7 +32,7 @@ def score_examples(
 
     rows: list[dict[str, float | str]] = []
     for example in examples:
-        retrieved = retrieve_fn(example.query, top_k=top_k)
+        retrieved = _retrieve(retrieve_fn, example, top_k)
         rows.append(
             {
                 "language": example.language,

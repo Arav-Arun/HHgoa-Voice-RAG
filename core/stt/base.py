@@ -1,4 +1,4 @@
-"""Speech-to-text interface — swap providers without touching API routes."""
+"""Speech-to-text interface, swap providers without touching API routes."""
 
 from __future__ import annotations
 

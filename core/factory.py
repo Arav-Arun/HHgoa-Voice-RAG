@@ -1,25 +1,35 @@
-"""Factory — swap components by editing provider strings in .env or here."""
+"""Factory, swap components by editing provider strings in .env or here."""
 
 from __future__ import annotations
 
+import sys
+
 from core.chunking.fixed import FixedSizeChunker
 from core.chunking.metadata import MetadataAwareChunker
-from core.chunking.presets import CHUNKING_PRESETS, DEFAULT_CHUNKING_PROVIDER
+from core.chunking.parent_child import ParentChildChunker
+from core.chunking.presets import CHUNKING_PRESETS
+from core.chunking.recursive import RecursiveChunker
 from core.chunking.semantic import SemanticChunker
+from core.chunking.token_window import TokenWindowChunker
 from core.config import Settings, get_settings
 from core.embeddings.hash import HashEmbedder
 from core.embeddings.openai import OpenAIEmbedder
-from core.embeddings.presets import DEFAULT_EMBEDDING_PRESET, EMBEDDING_PRESETS
+from core.embeddings.presets import EMBEDDING_PRESETS
 from core.embeddings.sentence_transformers import SentenceTransformerEmbedder
 from core.guardrails.composite import CompositeGuardrail
+from core.guardrails.confidence import ConfidenceGate
 from core.guardrails.grounding import GroundingGate
 from core.guardrails.hallucination import HallucinationChecker
 from core.guardrails.input_intent import InputIntentFilter
 from core.guardrails.stub import StubGuardrail
-from core.llm.openai_compat import OpenAICompatibleLLM
-from core.llm.template import TemplateLLM
+from core.harness.orchestrator import Orchestrator
+from core.llm.chat import ChatClient
+from core.llm.extractive import ExtractiveAnswerer
 from core.rag.pipeline import RAGPipeline
+from core.retriever.base import BaseRetriever
 from core.retriever.dense import DenseRetriever
+from core.retriever.hybrid import HybridRetriever
+from core.retriever.sparse import BM25Index, SparseRetriever
 from core.stt.elevenlabs import ElevenLabsSTT
 from core.stt.openai_whisper import OpenAIWhisperSTT
 from core.stt.stub import StubSTT
@@ -94,24 +104,27 @@ def build_chunker(settings: Settings | None = None):
             chunk_size=settings.chunk_size,
             overlap=settings.chunk_overlap,
         )
+    if provider == "recursive":
+        return RecursiveChunker(
+            chunk_size=settings.chunk_size,
+            overlap=settings.chunk_overlap,
+        )
+    if provider in {"parent_child", "parent-child"}:
+        return ParentChildChunker(
+            child_sentences=settings.child_sentences,
+            child_stride=settings.child_stride,
+        )
+    if provider in {"token_window", "token"}:
+        # chunk_size/overlap here are TOKEN counts, not characters.
+        return TokenWindowChunker(
+            chunk_size=settings.token_chunk_size,
+            overlap=settings.token_chunk_overlap,
+        )
 
     supported = ", ".join(sorted(CHUNKING_PRESETS))
     raise ValueError(
         f"Unknown CHUNKING_PROVIDER={settings.chunking_provider!r}. "
         f"Supported: {supported}"
-    )
-
-
-def build_llm(settings: Settings | None = None, *, use_template: bool = False):
-    settings = settings or get_settings()
-    if use_template or not settings.llm_api_key:
-        return TemplateLLM()
-    return OpenAICompatibleLLM(
-        api_key=settings.llm_api_key,
-        model=settings.llm_model,
-        base_url=settings.llm_base_url,
-        temperature=settings.llm_temperature,
-        max_tokens=settings.llm_max_tokens,
     )
 
 
@@ -146,11 +159,91 @@ def build_stt(settings: Settings | None = None):
     )
 
 
-def build_retriever(settings: Settings | None = None) -> DenseRetriever:
+def build_bm25_index(settings: Settings | None = None) -> BM25Index:
+    """Load the persisted BM25 index, or an empty one if it was never built."""
     settings = settings or get_settings()
-    embedder = build_embedder(settings)
-    store = build_vector_store(settings)
-    return DenseRetriever(embedder=embedder, store=store, top_k=settings.top_k)
+    index = BM25Index()
+    if settings.index_dir.exists():
+        index.load(settings.index_dir)
+    return index
+
+
+def build_retriever(
+    settings: Settings | None = None,
+    *,
+    store=None,
+    embedder=None,
+    index: BM25Index | None = None,
+) -> BaseRetriever:
+    """Build the configured retriever.
+
+    Accepts pre-built components so callers that need the store/embedder/BM25
+    index anyway (the orchestrator does) can avoid loading a 100k-chunk index
+    and a transformer model twice.
+    """
+    settings = settings or get_settings()
+    provider = (settings.retriever_provider or "hybrid").lower()
+    store = store if store is not None else build_vector_store(settings)
+
+    if provider == "dense":
+        return DenseRetriever(
+            embedder=embedder if embedder is not None else build_embedder(settings),
+            store=store,
+            top_k=settings.top_k,
+            dedupe=settings.retrieval_dedupe,
+        )
+    if provider == "sparse":
+        return SparseRetriever(
+            index=index if index is not None else build_bm25_index(settings),
+            store=store,
+            top_k=settings.top_k,
+            dedupe=settings.retrieval_dedupe,
+        )
+    if provider == "hybrid":
+        index = index if index is not None else build_bm25_index(settings)
+        if index.matrix is None:
+            # No lexical index on disk, degrade to dense rather than silently
+            # returning nothing, and make the reason visible.
+            print(
+                "[factory] No BM25 index found in "
+                f"{settings.index_dir}; falling back to dense retrieval. "
+                "Re-run './hhgoa ingest msmarco' to build it.",
+                file=sys.stderr,
+            )
+            return DenseRetriever(
+                embedder=embedder if embedder is not None else build_embedder(settings),
+                store=store,
+                top_k=settings.top_k,
+                dedupe=settings.retrieval_dedupe,
+            )
+        return HybridRetriever(
+            embedder=embedder if embedder is not None else build_embedder(settings),
+            store=store,
+            index=index,
+            top_k=settings.top_k,
+            candidate_k=settings.retrieval_candidate_k,
+            fusion=settings.fusion_method,
+            rrf_k=settings.fusion_rrf_k,
+            alpha=settings.fusion_alpha,
+            dense_weight=settings.fusion_dense_weight,
+            dense_weight_by_language=settings.fusion_dense_weight_by_language,
+            dedupe=settings.retrieval_dedupe,
+        )
+
+    raise ValueError(
+        f"Unknown RETRIEVER={settings.retriever_provider!r}. "
+        "Supported: dense, sparse, hybrid"
+    )
+
+
+def _build_grounding_gate(settings: Settings):
+    """Multi-feature gate when calibrated, plain cosine threshold otherwise."""
+    if (settings.guardrail_mode or "auto").lower() == "threshold":
+        return GroundingGate(min_score=settings.guardrail_min_score)
+    return ConfidenceGate.from_file(
+        settings.guardrail_model_path,
+        min_score=settings.guardrail_min_score,
+    )
 
 
 def build_guardrail(settings: Settings | None = None):
@@ -165,7 +258,7 @@ def build_guardrail(settings: Settings | None = None):
                 min_query_length=settings.guardrail_min_query_length,
                 supported_languages=settings.supported_languages,
             ),
-            grounding_gate=GroundingGate(min_score=settings.guardrail_min_score),
+            grounding_gate=_build_grounding_gate(settings),
             hallucination_checker=HallucinationChecker(
                 min_overlap=settings.guardrail_min_answer_overlap,
             ),
@@ -176,7 +269,7 @@ def build_guardrail(settings: Settings | None = None):
             supported_languages=settings.supported_languages,
         )
     if provider == "grounding":
-        return GroundingGate(min_score=settings.guardrail_min_score)
+        return _build_grounding_gate(settings)
 
     raise ValueError(
         f"Unknown GUARDRAIL_PROVIDER={settings.guardrail_provider!r}. "
@@ -184,15 +277,92 @@ def build_guardrail(settings: Settings | None = None):
     )
 
 
+_LLM_BASE_URLS = {
+    "openai": "https://api.openai.com/v1",
+    # Groq is OpenAI-compatible, so the same client works with a different host.
+    "groq": "https://api.groq.com/openai/v1",
+}
+
+
+def build_chat_clients(settings: Settings | None = None) -> list[ChatClient]:
+    """Ordered provider fallback chain for the quality path.
+
+    Returns primary first, then the optional secondary. Unconfigured providers
+    are omitted, so an empty list simply means "no quality path available" and
+    the harness stays on the fast path.
+    """
+    settings = settings or get_settings()
+    clients: list[ChatClient] = []
+
+    if settings.llm_api_key:
+        provider = (settings.llm_provider or "openai").lower()
+        clients.append(
+            ChatClient(
+                api_key=settings.llm_api_key,
+                model=settings.llm_model,
+                base_url=settings.llm_base_url or _LLM_BASE_URLS.get(provider, ""),
+                temperature=settings.llm_temperature,
+                max_tokens=settings.llm_max_tokens,
+                provider=provider,
+            )
+        )
+
+    if settings.llm_api_key_secondary:
+        provider = (settings.llm_provider_secondary or "groq").lower()
+        clients.append(
+            ChatClient(
+                api_key=settings.llm_api_key_secondary,
+                model=settings.llm_model_secondary or settings.llm_model,
+                base_url=_LLM_BASE_URLS.get(provider, settings.llm_base_url),
+                temperature=settings.llm_temperature,
+                max_tokens=settings.llm_max_tokens,
+                provider=provider,
+            )
+        )
+
+    return clients
+
+
+def build_fast_answerer(
+    settings: Settings | None = None,
+    *,
+    index: BM25Index | None = None,
+) -> ExtractiveAnswerer:
+    """Local extractive answerer, IDF-weighted from the BM25 index when present."""
+    settings = settings or get_settings()
+    index = index if index is not None else build_bm25_index(settings)
+    return ExtractiveAnswerer(idf_lookup=index.idf_for if index.idf is not None else None)
+
+
+def build_orchestrator(settings: Settings | None = None) -> Orchestrator:
+    """Assemble the harness, loading each shared component exactly once."""
+    settings = settings or get_settings()
+    store = build_vector_store(settings)
+    embedder = build_embedder(settings)
+    index = build_bm25_index(settings)
+    return Orchestrator(
+        retriever=build_retriever(settings, store=store, embedder=embedder, index=index),
+        guardrail=build_guardrail(settings),
+        fast_answerer=build_fast_answerer(settings, index=index),
+        chat_clients=build_chat_clients(settings),
+        default_language=settings.default_language,
+        top_k=settings.top_k,
+    )
+
+
 def build_rag_pipeline(
     settings: Settings | None = None,
     *,
-    use_template_llm: bool = False,
+    local_only: bool = False,
 ) -> RAGPipeline:
+    """Build the pipeline facade.
+
+    ``local_only`` drops the quality-path clients, so the pipeline cannot make a
+    network call. Used by eval and the latency benchmark, where a remote model
+    would add variance that has nothing to do with what is being measured.
+    """
     settings = settings or get_settings()
-    return RAGPipeline(
-        retriever=build_retriever(settings),
-        llm=build_llm(settings, use_template=use_template_llm),
-        default_language=settings.default_language,
-        guardrail=build_guardrail(settings),
-    )
+    orchestrator = build_orchestrator(settings)
+    if local_only:
+        orchestrator.chat_clients = []
+    return RAGPipeline(orchestrator, default_language=settings.default_language)

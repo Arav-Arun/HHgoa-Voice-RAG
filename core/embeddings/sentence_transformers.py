@@ -2,13 +2,15 @@
 
 from __future__ import annotations
 
+from typing import ClassVar
+
 from core.embeddings.base import BaseEmbedder
 
 
 class SentenceTransformerEmbedder(BaseEmbedder):
     """Wraps Hugging Face sentence-transformers models for dense retrieval."""
 
-    _models: dict[str, object] = {}
+    _models: ClassVar[dict[str, object]] = {}
 
     def __init__(
         self,

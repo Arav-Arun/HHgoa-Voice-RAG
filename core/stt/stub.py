@@ -1,4 +1,4 @@
-"""Stub STT — used when no provider is configured."""
+"""Stub STT, used when no provider is configured."""
 
 from __future__ import annotations
 

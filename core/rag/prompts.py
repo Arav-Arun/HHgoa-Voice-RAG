@@ -1,4 +1,4 @@
-"""Prompt templates — edit here to tune Hindi/Gujarati RAG behavior."""
+"""Prompt templates, edit here to tune Hindi/Gujarati RAG behavior."""
 
 from __future__ import annotations
 

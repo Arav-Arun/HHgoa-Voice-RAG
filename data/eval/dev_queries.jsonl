@@ -1,0 +1,590 @@
+{"query": "कितना हर साल", "language": "hi", "expected_doc_ids": ["hi_318922_p6"], "query_id": 318922, "split": "validation"}
+{"query": "ऑपरेशन टॉर्च का क्या महत्व था", "language": "hi", "expected_doc_ids": ["hi_922562_p0"], "query_id": 922562, "split": "validation"}
+{"query": "दलटन गा क्षेत्र कोड क्या है", "language": "hi", "expected_doc_ids": ["hi_737347_p6"], "query_id": 737347, "split": "validation"}
+{"query": "एडिसन रीके की उम्र क्या है", "language": "hi", "expected_doc_ids": ["hi_334223_p5"], "query_id": 334223, "split": "validation"}
+{"query": "विकिरण उपचार के दुष्प्रभाव कितने समय तक रहते हैं", "language": "hi", "expected_doc_ids": ["hi_1098101_p9"], "query_id": 1098101, "split": "validation"}
+{"query": "हृदयाघात हो सकता है", "language": "hi", "expected_doc_ids": ["hi_1100043_p0"], "query_id": 1100043, "split": "validation"}
+{"query": "मार्क ट्वेन ने पृथ्वी से पत्र कब लिखे थे", "language": "hi", "expected_doc_ids": ["hi_939656_p7"], "query_id": 939656, "split": "validation"}
+{"query": "मैं कैसे लेक्साप्रो से दूर हो सकता हूँ?", "language": "hi", "expected_doc_ids": ["hi_219541_p1"], "query_id": 219541, "split": "validation"}
+{"query": "अनुमस्तिष्क की परिभाषा", "language": "hi", "expected_doc_ids": ["hi_993948_p8"], "query_id": 993948, "split": "validation"}
+{"query": "अब तक की सबसे लंबी नैसकार दौड़ क्या थी", "language": "hi", "expected_doc_ids": ["hi_921210_p9"], "query_id": 921210, "split": "validation"}
+{"query": "क्या पाया जाएगा?", "language": "hi", "expected_doc_ids": ["hi_1011044_p0"], "query_id": 1011044, "split": "validation"}
+{"query": "लोगों की अपनी लैंडलाइन छोड़ने की संख्या।", "language": "hi", "expected_doc_ids": ["hi_1092093_p9"], "query_id": 1092093, "split": "validation"}
+{"query": "फ्रांसीसी स्वतंत्रता का अधिकार-पत्र क्या है", "language": "hi", "expected_doc_ids": ["hi_810680_p1"], "query_id": 810680, "split": "validation"}
+{"query": "लुईसियाना के समय के राष्ट्रपति थे", "language": "hi", "expected_doc_ids": ["hi_986412_p6"], "query_id": 986412, "split": "validation"}
+{"query": "टेस्ला कार चार्ज करने में कितना पैसा लगता है।", "language": "hi", "expected_doc_ids": ["hi_1095664_p8"], "query_id": 1095664, "split": "validation"}
+{"query": "मेरे पैर में क्या हो गई है?", "language": "hi", "expected_doc_ids": ["hi_855707_p6"], "query_id": 855707, "split": "validation"}
+{"query": "क्या है एक क्यूरेटेज", "language": "hi", "expected_doc_ids": ["hi_1075021_p4"], "query_id": 1075021, "split": "validation"}
+{"query": "क्या एन.बी.सी.सी. है", "language": "hi", "expected_doc_ids": ["hi_692160_p0"], "query_id": 692160, "split": "validation"}
+{"query": "मोरेनो वैली मॉल में कौन सा थिएटर है", "language": "hi", "expected_doc_ids": ["hi_1018474_p0"], "query_id": 1018474, "split": "validation"}
+{"query": "बीएमडब्ल्यू की पहली कार क्या थी", "language": "hi", "expected_doc_ids": ["hi_1013036_p7"], "query_id": 1013036, "split": "validation"}
+{"query": "शाकाहारी प्राणियों में सीकम की परिभाषा", "language": "hi", "expected_doc_ids": ["hi_89415_p9"], "query_id": 89415, "split": "validation"}
+{"query": "कौन सा राज्य स्टारलिंग शहर स्थित है", "language": "hi", "expected_doc_ids": ["hi_897954_p5"], "query_id": 897954, "split": "validation"}
+{"query": "मान लीजिए कि आपका शब्दकोश", "language": "hi", "expected_doc_ids": ["hi_520056_p1"], "query_id": 520056, "split": "validation"}
+{"query": "लैपटॉप पर क्या स्क्रॉल व्हील होता है", "language": "hi", "expected_doc_ids": ["hi_1032385_p4"], "query_id": 1032385, "split": "validation"}
+{"query": "कुछ हिलक्रेस्ट की आबादी", "language": "hi", "expected_doc_ids": ["hi_1091473_p6"], "query_id": 1091473, "split": "validation"}
+{"query": "मानक मक्खन की छड़ें कितनी औंस होती हैं", "language": "hi", "expected_doc_ids": ["hi_290924_p1"], "query_id": 290924, "split": "validation"}
+{"query": "सामान्य तौर पर शरीर के सामान्य तापमान की सीमा", "language": "hi", "expected_doc_ids": ["hi_485246_p0"], "query_id": 485246, "split": "validation"}
+{"query": "बुका दी बेप्पो कॉर्पोरेट नंबर", "language": "hi", "expected_doc_ids": ["hi_1089549_p1"], "query_id": 1089549, "split": "validation"}
+{"query": "एक दंत चिकित्सक किस गैस का उपयोग करता है", "language": "hi", "expected_doc_ids": ["hi_1080009_p1"], "query_id": 1080009, "split": "validation"}
+{"query": "कार्बन कंस्टेल कहाँ स्थित हैं", "language": "hi", "expected_doc_ids": ["hi_965095_p3"], "query_id": 965095, "split": "validation"}
+{"query": "माचू पिचू क्या है", "language": "hi", "expected_doc_ids": ["hi_672825_p8"], "query_id": 672825, "split": "validation"}
+{"query": "नीम के पेड़ के स्वास्थ्य लाभ", "language": "hi", "expected_doc_ids": ["hi_199837_p7"], "query_id": 199837, "split": "validation"}
+{"query": "1935 में इटली ने इथियोपिया पर हमला क्यों किया", "language": "hi", "expected_doc_ids": ["hi_1062603_p0"], "query_id": 1062603, "split": "validation"}
+{"query": "महाविद्यालयों के लिए सर्वोत्तम मान्यता क्या है", "language": "hi", "expected_doc_ids": ["hi_808059_p4"], "query_id": 808059, "split": "validation"}
+{"query": "एक दिन में कितना मेलेनिया ट्रम्प खाता है", "language": "hi", "expected_doc_ids": ["hi_1024854_p9"], "query_id": 1024854, "split": "validation"}
+{"query": "क्या का करीब है मृदु में मृदु", "language": "hi", "expected_doc_ids": ["hi_775685_p8"], "query_id": 775685, "split": "validation"}
+{"query": "जनवरी में कैटलिना में तापमान", "language": "hi", "expected_doc_ids": ["hi_1090030_p5"], "query_id": 1090030, "split": "validation"}
+{"query": "जैव चिकित्सा इंजीनियरों के लिए वेतन", "language": "hi", "expected_doc_ids": ["hi_491227_p5"], "query_id": 491227, "split": "validation"}
+{"query": "राशि चक्र तितली का अर्थ है", "language": "hi", "expected_doc_ids": ["hi_1082082_p8"], "query_id": 1082082, "split": "validation"}
+{"query": "नैशविले के डाउनटाउन में स्थित निसान स्टेडियम", "language": "hi", "expected_doc_ids": ["hi_1094068_p2"], "query_id": 1094068, "split": "validation"}
+{"query": "कलराडो में निवास स्थापित करने के लिए कितना समय लगेगा।", "language": "hi", "expected_doc_ids": ["hi_1097747_p5"], "query_id": 1097747, "split": "validation"}
+{"query": "एक टॉन्सिल को हटाने की कीमत कितनी होती है", "language": "hi", "expected_doc_ids": ["hi_311822_p4"], "query_id": 311822, "split": "validation"}
+{"query": "संघीय ध्वज को डिजाइन करने वाले", "language": "hi", "expected_doc_ids": ["hi_1026095_p2"], "query_id": 1026095, "split": "validation"}
+{"query": "शेल का अर्थ है", "language": "hi", "expected_doc_ids": ["hi_449188_p3"], "query_id": 449188, "split": "validation"}
+{"query": "क्या है एक मोल्ड", "language": "hi", "expected_doc_ids": ["hi_691659_p7"], "query_id": 691659, "split": "validation"}
+{"query": "पैर की मांसपेशियों में शोष कितनी तेजी से होता है", "language": "hi", "expected_doc_ids": ["hi_338277_p4"], "query_id": 338277, "split": "validation"}
+{"query": "आप सेना में शामिल हो सकते हैं?", "language": "hi", "expected_doc_ids": ["hi_1008742_p6"], "query_id": 1008742, "split": "validation"}
+{"query": "सी.पी.एल.पी. प्रमाणीकरण क्या है", "language": "hi", "expected_doc_ids": ["hi_1075081_p8"], "query_id": 1075081, "split": "validation"}
+{"query": "वयस्कों में नींद अश्वसन क्या है", "language": "hi", "expected_doc_ids": ["hi_1046178_p6"], "query_id": 1046178, "split": "validation"}
+{"query": "बच्चों की उम्र बढ़ने के साथ-साथ उनकी उम्र बढ़ने के साथ-साथ उनकी उम्र बढ़ गई।", "language": "hi", "expected_doc_ids": ["hi_1101031_p7"], "query_id": 1101031, "split": "validation"}
+{"query": "पल्स विड्थ मॉड्यूलेटर क्या है", "language": "hi", "expected_doc_ids": ["hi_696765_p0"], "query_id": 696765, "split": "validation"}
+{"query": "एक वाक्य में जैव विविधता क्या है", "language": "hi", "expected_doc_ids": ["hi_1084153_p4"], "query_id": 1084153, "split": "validation"}
+{"query": "एच.एस. प्रतिक्रियाशील प्रोटीन क्या है", "language": "hi", "expected_doc_ids": ["hi_755972_p9"], "query_id": 755972, "split": "validation"}
+{"query": "पेटुला क्लार्क डॉब?", "language": "hi", "expected_doc_ids": ["hi_474123_p2"], "query_id": 474123, "split": "validation"}
+{"query": "सेंट मार्टिन कहाँ है", "language": "hi", "expected_doc_ids": ["hi_993419_p9"], "query_id": 993419, "split": "validation"}
+{"query": "शिक्षक स्व-रक्षा वर्ग की लागत", "language": "hi", "expected_doc_ids": ["hi_1090098_p1"], "query_id": 1090098, "split": "validation"}
+{"query": "घर की पूरी छत बनाने की लागत कितनी होगी", "language": "hi", "expected_doc_ids": ["hi_1096099_p8"], "query_id": 1096099, "split": "validation"}
+{"query": "पंजीकृत नर्स पीडियाट्रिक में किसी को कितनी तेजी से पदोन्नत किया जा सकता है", "language": "hi", "expected_doc_ids": ["hi_233272_p3"], "query_id": 233272, "split": "validation"}
+{"query": "आयरन किलेटर के दुष्प्रभाव", "language": "hi", "expected_doc_ids": ["hi_1090684_p7"], "query_id": 1090684, "split": "validation"}
+{"query": "किस तरह का मार्शलॉ है", "language": "hi", "expected_doc_ids": ["hi_1007931_p1"], "query_id": 1007931, "split": "validation"}
+{"query": "दंत चयन किस धातु से बने होते हैं?", "language": "hi", "expected_doc_ids": ["hi_877807_p8"], "query_id": 877807, "split": "validation"}
+{"query": "मुझे पेट का समय किस समय शुरू करना चाहिए।", "language": "hi", "expected_doc_ids": ["hi_954596_p4"], "query_id": 954596, "split": "validation"}
+{"query": "कंक्रीट स्लैब की लागत", "language": "hi", "expected_doc_ids": ["hi_100480_p0"], "query_id": 100480, "split": "validation"}
+{"query": "अनंत सबसे बड़ा सूव", "language": "hi", "expected_doc_ids": ["hi_395779_p0"], "query_id": 395779, "split": "validation"}
+{"query": "हमारी माँ फ्रांस में कहाँ स्थित है", "language": "hi", "expected_doc_ids": ["hi_1092148_p8"], "query_id": 1092148, "split": "validation"}
+{"query": "एक गली में एक जीन के बीच क्या अंतर है", "language": "hi", "expected_doc_ids": ["hi_816388_p1", "hi_816388_p9"], "query_id": 816388, "split": "validation"}
+{"query": "रक्त में क्रप स्तर क्या होता है", "language": "hi", "expected_doc_ids": ["hi_679919_p3"], "query_id": 679919, "split": "validation"}
+{"query": "क्या आप इंतजार कर रहे हैं कि कौन सा ऐसिंक होगा?", "language": "hi", "expected_doc_ids": ["hi_1061169_p4"], "query_id": 1061169, "split": "validation"}
+{"query": "एक घरेलू बिल्ली कितने घंटे सोती है", "language": "hi", "expected_doc_ids": ["hi_285926_p6"], "query_id": 285926, "split": "validation"}
+{"query": "जिस एन.सी.ए.ए. बास्केटबॉल टूर्नामेंट की मेजबानी तुलसा करेगी।", "language": "hi", "expected_doc_ids": ["hi_1013905_p4"], "query_id": 1013905, "split": "validation"}
+{"query": "बिल्ली में सामान्य बुखार क्या है", "language": "hi", "expected_doc_ids": ["hi_1049635_p4"], "query_id": 1049635, "split": "validation"}
+{"query": "नाम का लिंग क्या है एफ़.ई.एफ़.ई.", "language": "hi", "expected_doc_ids": ["hi_1079992_p1", "hi_1079992_p3"], "query_id": 1079992, "split": "validation"}
+{"query": "ग्रेगोरियो का ट्रैटोरिया", "language": "hi", "expected_doc_ids": ["hi_1100182_p6"], "query_id": 1100182, "split": "validation"}
+{"query": "औसत वेतन अग्निशामकों के लिए आज", "language": "hi", "expected_doc_ids": ["hi_1095874_p6"], "query_id": 1095874, "split": "validation"}
+{"query": "पावरबॉल क्या है", "language": "hi", "expected_doc_ids": ["hi_1034189_p8"], "query_id": 1034189, "split": "validation"}
+{"query": "इनमें से कौन सा तत्व कार्बोहाइड्रेट और पानी दोनों में पाया जाता है?", "language": "hi", "expected_doc_ids": ["hi_1016108_p4"], "query_id": 1016108, "split": "validation"}
+{"query": "रोथ और पारंपरिक के बीच का अंतर", "language": "hi", "expected_doc_ids": ["hi_515572_p7", "hi_515572_p9"], "query_id": 515572, "split": "validation"}
+{"query": "कौन सी कंपनी कॉमेडी सेंट्रल चैनल पर स्ट्रीम करती है?", "language": "hi", "expected_doc_ids": ["hi_1085800_p1"], "query_id": 1085800, "split": "validation"}
+{"query": "परिसंपत्ति क्या है?", "language": "hi", "expected_doc_ids": ["hi_712457_p9"], "query_id": 712457, "split": "validation"}
+{"query": "क्या अंगूर के बीज का अर्क रक्तचाप को कम करता है", "language": "hi", "expected_doc_ids": ["hi_166857_p0"], "query_id": 166857, "split": "validation"}
+{"query": "क्या आप इसे खेलना चाहते हैं?", "language": "hi", "expected_doc_ids": ["hi_423923_p8"], "query_id": 423923, "split": "validation"}
+{"query": "सबसे लोकप्रिय यूट्यूबर", "language": "hi", "expected_doc_ids": ["hi_1092464_p4"], "query_id": 1092464, "split": "validation"}
+{"query": "गीत \"लो राइडर\" किस साल आया था", "language": "hi", "expected_doc_ids": ["hi_927104_p5"], "query_id": 927104, "split": "validation"}
+{"query": "मेथडिस्ट मैकिनी अस्पताल का फोन नंबर", "language": "hi", "expected_doc_ids": ["hi_1092756_p4"], "query_id": 1092756, "split": "validation"}
+{"query": "स्कूटर लिब्बी", "language": "hi", "expected_doc_ids": ["hi_1055468_p9"], "query_id": 1055468, "split": "validation"}
+{"query": "विंडोज़ 10 डिजिटल हस्ताक्षर के बिना ड्राइवर इंस्टॉल करें।", "language": "hi", "expected_doc_ids": ["hi_1078261_p1"], "query_id": 1078261, "split": "validation"}
+{"query": "कौन सा कॉलेज उत्सा है", "language": "hi", "expected_doc_ids": ["hi_1085885_p2"], "query_id": 1085885, "split": "validation"}
+{"query": "कौन सा पहला निवेश था फिल नाइट्स का", "language": "hi", "expected_doc_ids": ["hi_1012631_p0"], "query_id": 1012631, "split": "validation"}
+{"query": "एक पैराग्राफ का उदाहरण क्या है", "language": "hi", "expected_doc_ids": ["hi_693636_p1"], "query_id": 693636, "split": "validation"}
+{"query": "क्या तानाशाही है?", "language": "hi", "expected_doc_ids": ["hi_716567_p0"], "query_id": 716567, "split": "validation"}
+{"query": "क्या ताजा बकव्हीट है", "language": "hi", "expected_doc_ids": ["hi_1045373_p3"], "query_id": 1045373, "split": "validation"}
+{"query": "कौन से चश्मे मछली पकड़ने के लिए सबसे अच्छे हैं", "language": "hi", "expected_doc_ids": ["hi_1010189_p3"], "query_id": 1010189, "split": "validation"}
+{"query": "जिसे एकल स्वामित्व और साझेदारी का नुकसान माना जा सकता है?", "language": "hi", "expected_doc_ids": ["hi_995624_p3"], "query_id": 995624, "split": "validation"}
+{"query": "टोरिंगटन सी.टी. का महापौर क्या है वेतन", "language": "hi", "expected_doc_ids": ["hi_830551_p6"], "query_id": 830551, "split": "validation"}
+{"query": "परिभाषा: शास्त्रीय", "language": "hi", "expected_doc_ids": ["hi_140216_p2"], "query_id": 140216, "split": "validation"}
+{"query": "किस लिए प्रोपाइलथियोरासिल का इस्तेमाल किया जाता है?", "language": "hi", "expected_doc_ids": ["hi_1022026_p1"], "query_id": 1022026, "split": "validation"}
+{"query": "सीमा आधार रेखा को परिभाषित करें।", "language": "hi", "expected_doc_ids": ["hi_126822_p0"], "query_id": 126822, "split": "validation"}
+{"query": "सुनहरे खनिज स्टॉक की कीमत", "language": "hi", "expected_doc_ids": ["hi_1100237_p6"], "query_id": 1100237, "split": "validation"}
+{"query": "ह्यूस्टन, टेक्सास से कितनी दूर है", "language": "hi", "expected_doc_ids": ["hi_231228_p3"], "query_id": 231228, "split": "validation"}
+{"query": "औसत तापमान प्रेस्कॉट घाटी अरिजोना", "language": "hi", "expected_doc_ids": ["hi_45630_p5"], "query_id": 45630, "split": "validation"}
+{"query": "कितने समय तक निशान पूरा होने में लगेगा ठीक करने के लिए।", "language": "hi", "expected_doc_ids": ["hi_267732_p0"], "query_id": 267732, "split": "validation"}
+{"query": "पॉल वॉकर की मृत्यु कैसे हुई।", "language": "hi", "expected_doc_ids": ["hi_214321_p1"], "query_id": 214321, "split": "validation"}
+{"query": "गूसनेक की भार क्षमता", "language": "hi", "expected_doc_ids": ["hi_1088064_p0"], "query_id": 1088064, "split": "validation"}
+{"query": "पर्स स्ट्रिंग सिलाई कैसे करें", "language": "hi", "expected_doc_ids": ["hi_356064_p8"], "query_id": 356064, "split": "validation"}
+{"query": "किस पेड़ में बीज होते हैं?", "language": "hi", "expected_doc_ids": ["hi_909221_p9"], "query_id": 909221, "split": "validation"}
+{"query": "क्या मोनेल एक सुपर मिश्र धातु है?", "language": "hi", "expected_doc_ids": ["hi_1094078_p2"], "query_id": 1094078, "split": "validation"}
+{"query": "क्या होता है इसका क्या अर्थ है", "language": "hi", "expected_doc_ids": ["hi_1094626_p9"], "query_id": 1094626, "split": "validation"}
+{"query": "रॉकेटमैन में कौन अभिनय करता है", "language": "hi", "expected_doc_ids": ["hi_1052548_p3"], "query_id": 1052548, "split": "validation"}
+{"query": "हमारे बच्चों में अस्थमा का कारण क्या है", "language": "hi", "expected_doc_ids": ["hi_728446_p9"], "query_id": 728446, "split": "validation"}
+{"query": "राज्य का रंग क्या है ओरेगॉन?", "language": "hi", "expected_doc_ids": ["hi_848377_p5"], "query_id": 848377, "split": "validation"}
+{"query": "डायवर्टीकुलाइटिस के इलाज के लिए आमतौर पर किन दवाओं का उपयोग किया जाता है", "language": "hi", "expected_doc_ids": ["hi_877668_p1"], "query_id": 877668, "split": "validation"}
+{"query": "क्या ट्रम्प एकतरफा रूप से टैरिफ लगा सकते हैं?", "language": "hi", "expected_doc_ids": ["hi_1086126_p0"], "query_id": 1086126, "split": "validation"}
+{"query": "को कहाँ आर्क है", "language": "hi", "expected_doc_ids": ["hi_977057_p7"], "query_id": 977057, "split": "validation"}
+{"query": "पिक डेफिनिशन", "language": "hi", "expected_doc_ids": ["hi_475275_p0"], "query_id": 475275, "split": "validation"}
+{"query": "कोलनोस्कोपी की लागत", "language": "hi", "expected_doc_ids": ["hi_100947_p1"], "query_id": 100947, "split": "validation"}
+{"query": "पैट्रिक को किस तरह का कैंसर है", "language": "hi", "expected_doc_ids": ["hi_1027812_p5"], "query_id": 1027812, "split": "validation"}
+{"query": "शेनान्दोह चिकित्सा केंद्र फैक्स नंबर", "language": "hi", "expected_doc_ids": ["hi_1090743_p5"], "query_id": 1090743, "split": "validation"}
+{"query": "अनदेखा होने का क्या अर्थ है", "language": "hi", "expected_doc_ids": ["hi_654427_p0"], "query_id": 654427, "split": "validation"}
+{"query": "उचित पागलपन बचाव क्या होना चाहिए", "language": "hi", "expected_doc_ids": ["hi_893994_p8"], "query_id": 893994, "split": "validation"}
+{"query": "स्टेन्ड ग्लास की कीमत", "language": "hi", "expected_doc_ids": ["hi_502233_p6"], "query_id": 502233, "split": "validation"}
+{"query": "स्लो कुकर में 8 घंटे के बराबर दबाव कुकर को कितने समय तक सेट करना है", "language": "hi", "expected_doc_ids": ["hi_272102_p0"], "query_id": 272102, "split": "validation"}
+{"query": "तकनीक में ओ.एस. का क्या अर्थ है", "language": "hi", "expected_doc_ids": ["hi_644890_p4"], "query_id": 644890, "split": "validation"}
+{"query": "चिंता के लिए कौन से विटामिन सप्लीमेंट्स अच्छे हैं", "language": "hi", "expected_doc_ids": ["hi_917076_p9"], "query_id": 917076, "split": "validation"}
+{"query": "बेसेंजी कुत्ते की औसत लागत", "language": "hi", "expected_doc_ids": ["hi_33111_p5"], "query_id": 33111, "split": "validation"}
+{"query": "जेन्ज़र किस तरह का नाम है", "language": "hi", "expected_doc_ids": ["hi_869590_p4"], "query_id": 869590, "split": "validation"}
+{"query": "प्रवाह मीटर में का कारक क्या होता है", "language": "hi", "expected_doc_ids": ["hi_1071664_p4"], "query_id": 1071664, "split": "validation"}
+{"query": "मिशिगन में डेट्रायट का मौसम मई में", "language": "hi", "expected_doc_ids": ["hi_1088577_p0"], "query_id": 1088577, "split": "validation"}
+{"query": "कौन सी एयरलाइंस शोक के भाव के साथ किराए की पेशकश करती है", "language": "hi", "expected_doc_ids": ["hi_1004920_p5", "hi_1004920_p7", "hi_1004920_p8"], "query_id": 1004920, "split": "validation"}
+{"query": "क्या सेल्युलोज एक लिपिड है", "language": "hi", "expected_doc_ids": ["hi_405820_p9"], "query_id": 405820, "split": "validation"}
+{"query": "तन्तुमय साइटोस्केलेटन परिभाषा", "language": "hi", "expected_doc_ids": ["hi_186802_p4"], "query_id": 186802, "split": "validation"}
+{"query": "क्या पतंगे सांपों को भगाते हैं?", "language": "hi", "expected_doc_ids": ["hi_157912_p0", "hi_157912_p2"], "query_id": 157912, "split": "validation"}
+{"query": "भोजन विषाक्तता के लक्षणों की शुरुआत", "language": "hi", "expected_doc_ids": ["hi_469103_p0"], "query_id": 469103, "split": "validation"}
+{"query": "कौन सा रासायनिक कारण संवहनी संकीर्णन का कारण बनता है", "language": "hi", "expected_doc_ids": ["hi_548816_p8"], "query_id": 548816, "split": "validation"}
+{"query": "रेशेदार प्रोटीन केराटिन क्या उत्पादन करता है", "language": "hi", "expected_doc_ids": ["hi_888777_p1"], "query_id": 888777, "split": "validation"}
+{"query": "वजन बढ़ाने के लिए आहार", "language": "hi", "expected_doc_ids": ["hi_146055_p6"], "query_id": 146055, "split": "validation"}
+{"query": "कौन सा हब सबसे अच्छा है", "language": "hi", "expected_doc_ids": ["hi_567614_p6"], "query_id": 567614, "split": "validation"}
+{"query": "क्या स्पॉटिफाई एक सार्वजनिक रूप से कारोबार करने वाली कंपनी है", "language": "hi", "expected_doc_ids": ["hi_424449_p4"], "query_id": 424449, "split": "validation"}
+{"query": "मध्यम केंद्रीय गोलाकार वातस्फीति क्या है?", "language": "hi", "expected_doc_ids": ["hi_772984_p1"], "query_id": 772984, "split": "validation"}
+{"query": "भैंस के मोटापे की परिभाषा", "language": "hi", "expected_doc_ids": ["hi_56911_p8"], "query_id": 56911, "split": "validation"}
+{"query": "विकास के लिए आवश्यक हार्मोन ? में उत्पादित होता है", "language": "hi", "expected_doc_ids": ["hi_516413_p5"], "query_id": 516413, "split": "validation"}
+{"query": "लक्षणों का उल्लेख", "language": "hi", "expected_doc_ids": ["hi_509130_p8"], "query_id": 509130, "split": "validation"}
+{"query": "एक एयरेटर कुंजी नल के लिए क्या करती है", "language": "hi", "expected_doc_ids": ["hi_631642_p0"], "query_id": 631642, "split": "validation"}
+{"query": "चेक गणराज्य सी का हिस्सा है", "language": "hi", "expected_doc_ids": ["hi_407713_p5"], "query_id": 407713, "split": "validation"}
+{"query": "सेरोटोनिन के स्तर के क्या प्रभाव हैं", "language": "hi", "expected_doc_ids": ["hi_656754_p3", "hi_656754_p5"], "query_id": 656754, "split": "validation"}
+{"query": "कैमिलो डी कैवर एक रूढ़िवादी था।", "language": "hi", "expected_doc_ids": ["hi_1088834_p5"], "query_id": 1088834, "split": "validation"}
+{"query": "वॉल्ट डिज़नी को कितने पुरस्कार मिले", "language": "hi", "expected_doc_ids": ["hi_275049_p2"], "query_id": 275049, "split": "validation"}
+{"query": "क्या डूख में फाइबर होता है?", "language": "hi", "expected_doc_ids": ["hi_158129_p4"], "query_id": 158129, "split": "validation"}
+{"query": "क्या चीनी दुल्हन पति का नाम लेती है?", "language": "hi", "expected_doc_ids": ["hi_161976_p0"], "query_id": 161976, "split": "validation"}
+{"query": "अनंत की कीमत", "language": "hi", "expected_doc_ids": ["hi_395760_p7"], "query_id": 395760, "split": "validation"}
+{"query": "इंजन के तेल का रंग क्या होता है", "language": "hi", "expected_doc_ids": ["hi_811723_p5"], "query_id": 811723, "split": "validation"}
+{"query": "क्या पारा है", "language": "hi", "expected_doc_ids": ["hi_1051140_p2"], "query_id": 1051140, "split": "validation"}
+{"query": "उपनिवेशवादियों ने मुहरबंदी अधिनियम पर कैसी प्रतिक्रिया व्यक्त की", "language": "hi", "expected_doc_ids": ["hi_1099529_p7"], "query_id": 1099529, "split": "validation"}
+{"query": "अल्टीमेट फ्रिसबी में हक का क्या अर्थ है", "language": "hi", "expected_doc_ids": ["hi_1083676_p4"], "query_id": 1083676, "split": "validation"}
+{"query": "कौन सील की पत्नी थी", "language": "hi", "expected_doc_ids": ["hi_1055472_p0"], "query_id": 1055472, "split": "validation"}
+{"query": "जहाँ ऑक्टोपस रहते हैं", "language": "hi", "expected_doc_ids": ["hi_1000370_p5"], "query_id": 1000370, "split": "validation"}
+{"query": "शाखाकार कोशिका का क्या अर्थ है", "language": "hi", "expected_doc_ids": ["hi_635774_p7"], "query_id": 635774, "split": "validation"}
+{"query": "कार में टॉर्क का क्या अर्थ है", "language": "hi", "expected_doc_ids": ["hi_1082481_p4"], "query_id": 1082481, "split": "validation"}
+{"query": "प्रोस्टाग्लैंडिन का क्या कार्य है", "language": "hi", "expected_doc_ids": ["hi_1039119_p1"], "query_id": 1039119, "split": "validation"}
+{"query": "झील एरी की सबसे बड़ी मछली", "language": "hi", "expected_doc_ids": ["hi_436470_p5"], "query_id": 436470, "split": "validation"}
+{"query": "पंक्तियों को एक साथ रखने के लिए उत्कृष्टता कैसे प्राप्त करें", "language": "hi", "expected_doc_ids": ["hi_380558_p5"], "query_id": 380558, "split": "validation"}
+{"query": "एथेना के प्रतीक क्या थे", "language": "hi", "expected_doc_ids": ["hi_1011477_p1"], "query_id": 1011477, "split": "validation"}
+{"query": "क्या टेस्टोस्टेरोन नियंत्रित है?", "language": "hi", "expected_doc_ids": ["hi_1093959_p5"], "query_id": 1093959, "split": "validation"}
+{"query": "ऑटो रैप की लागत", "language": "hi", "expected_doc_ids": ["hi_102655_p4"], "query_id": 102655, "split": "validation"}
+{"query": "बिकिनी सर्जरी क्या है", "language": "hi", "expected_doc_ids": ["hi_1076268_p2"], "query_id": 1076268, "split": "validation"}
+{"query": "सामूहिक स्वास्थ्य क्यूबा संपर्क फोन नंबर", "language": "hi", "expected_doc_ids": ["hi_445863_p5"], "query_id": 445863, "split": "validation"}
+{"query": "एथाम्बुटोल दवा का वैकल्पिक नाम क्या है", "language": "hi", "expected_doc_ids": ["hi_804662_p8"], "query_id": 804662, "split": "validation"}
+{"query": "ओकलैंड का वर्तमान समय", "language": "hi", "expected_doc_ids": ["hi_1032198_p9"], "query_id": 1032198, "split": "validation"}
+{"query": "मस्तिष्क का कौन सा हिस्सा निर्णय लेने और योजना बनाने में सक्षम होता है।", "language": "hi", "expected_doc_ids": ["hi_993705_p9"], "query_id": 993705, "split": "validation"}
+{"query": "आप सुबह की बीमारी के लक्षण कब दिखा सकते हैं?", "language": "hi", "expected_doc_ids": ["hi_1099099_p9"], "query_id": 1099099, "split": "validation"}
+{"query": "स्विट्जरलैंड में लोग क्या बोलते हैं?", "language": "hi", "expected_doc_ids": ["hi_1084749_p0"], "query_id": 1084749, "split": "validation"}
+{"query": "नागरिक अधिकार आंदोलन के परिणामस्वरूप निम्नलिखित सभी हुए", "language": "hi", "expected_doc_ids": ["hi_1956_p4"], "query_id": 1956, "split": "validation"}
+{"query": "दुनिया का सबसे बड़ा अंतरिक्ष दूरबीन", "language": "hi", "expected_doc_ids": ["hi_1101817_p5"], "query_id": 1101817, "split": "validation"}
+{"query": "मोना लिसा क्रॉस आई को चित्रित करने वाला कलाकार", "language": "hi", "expected_doc_ids": ["hi_27058_p8"], "query_id": 27058, "split": "validation"}
+{"query": "बात करने के लिए क्या जोर देना पड़ता है", "language": "hi", "expected_doc_ids": ["hi_1083168_p7"], "query_id": 1083168, "split": "validation"}
+{"query": "कलाई ब्रेस के प्रकार", "language": "hi", "expected_doc_ids": ["hi_530572_p6", "hi_530572_p8"], "query_id": 530572, "split": "validation"}
+{"query": "जब लोग _______ करते हैं तब अर्थपूर्ण गलतफहमियाँ उत्पन्न होती हैं।", "language": "hi", "expected_doc_ids": ["hi_1090813_p6"], "query_id": 1090813, "split": "validation"}
+{"query": "कौन सा आइवी लीग स्कूल विश्वविद्यालय कनेक्टिकट में है?", "language": "hi", "expected_doc_ids": ["hi_865581_p1"], "query_id": 865581, "split": "validation"}
+{"query": "प्राथमिक देखभाल में क्या शामिल है", "language": "hi", "expected_doc_ids": ["hi_1083205_p2"], "query_id": 1083205, "split": "validation"}
+{"query": "यह अमेरिका के अलावा बहामा है", "language": "hi", "expected_doc_ids": ["hi_425771_p2"], "query_id": 425771, "split": "validation"}
+{"query": "कौन सिम्पसन अभिनेत्री है जिसकी मृत्यु हो गई है", "language": "hi", "expected_doc_ids": ["hi_1041739_p2"], "query_id": 1041739, "split": "validation"}
+{"query": "हॉपकिंस, मिनेसोटा कर दर", "language": "hi", "expected_doc_ids": ["hi_1099796_p0"], "query_id": 1099796, "split": "validation"}
+{"query": "कैटाफ्लैम क्या है", "language": "hi", "expected_doc_ids": ["hi_1058952_p7"], "query_id": 1058952, "split": "validation"}
+{"query": "कौन से रोग टिक से फैलते हैं", "language": "hi", "expected_doc_ids": ["hi_621228_p0", "hi_621228_p4"], "query_id": 621228, "split": "validation"}
+{"query": "एच.पी.वी. का क्या अर्थ है", "language": "hi", "expected_doc_ids": ["hi_639116_p4"], "query_id": 639116, "split": "validation"}
+{"query": "प्रकाश में केंद्र बिंदु क्या है", "language": "hi", "expected_doc_ids": ["hi_683668_p4"], "query_id": 683668, "split": "validation"}
+{"query": "प्लम पुडिंग मॉडल किसने बनाया?", "language": "hi", "expected_doc_ids": ["hi_1043587_p3"], "query_id": 1043587, "split": "validation"}
+{"query": "क्या मैं कर ऋण को ऋण निपटान में डाल सकता हूँ?", "language": "hi", "expected_doc_ids": ["hi_69442_p8"], "query_id": 69442, "split": "validation"}
+{"query": "वरिज़ोन की असीमित डेटा योजना कितनी है", "language": "hi", "expected_doc_ids": ["hi_323628_p1"], "query_id": 323628, "split": "validation"}
+{"query": "कभी से शुरू हुआ?", "language": "hi", "expected_doc_ids": ["hi_958836_p7"], "query_id": 958836, "split": "validation"}
+{"query": "एक बार बन जाने के बाद एक बोतल कितने समय तक कमरे के तापमान पर रखी रह सकती है।", "language": "hi", "expected_doc_ids": ["hi_1098693_p4"], "query_id": 1098693, "split": "validation"}
+{"query": "क्या अंधा छिपकली रंग बदल सकता है?", "language": "hi", "expected_doc_ids": ["hi_65000_p3"], "query_id": 65000, "split": "validation"}
+{"query": "टी.डी. रूटिंग नंबर", "language": "hi", "expected_doc_ids": ["hi_510918_p9"], "query_id": 510918, "split": "validation"}
+{"query": "रक्त कार्य क्या है पी.टी.टी.", "language": "hi", "expected_doc_ids": ["hi_1059571_p8"], "query_id": 1059571, "split": "validation"}
+{"query": "पांडा एक्सप्रेस की कीमत", "language": "hi", "expected_doc_ids": ["hi_1091348_p5"], "query_id": 1091348, "split": "validation"}
+{"query": "पृथ्वी पर निकटतम तारे तक की दूरी क्या है", "language": "hi", "expected_doc_ids": ["hi_819217_p5"], "query_id": 819217, "split": "validation"}
+{"query": "पेन्सविले में दर्द का तापमान क्या है?", "language": "hi", "expected_doc_ids": ["hi_1031402_p8"], "query_id": 1031402, "split": "validation"}
+{"query": "प्यूब्लो कोलोराडो में फूलों की दुकानें", "language": "hi", "expected_doc_ids": ["hi_188134_p6"], "query_id": 188134, "split": "validation"}
+{"query": "बेक किए हुए शकरकंद को पकाने में कितना समय लगता है", "language": "hi", "expected_doc_ids": ["hi_269136_p3"], "query_id": 269136, "split": "validation"}
+{"query": "ऑर्केस्ट्रा में बांसुरी के निर्माण के कौन से भाग हैं", "language": "hi", "expected_doc_ids": ["hi_1039552_p4"], "query_id": 1039552, "split": "validation"}
+{"query": "जी.आई. बिल का क्या प्रभाव पड़ा", "language": "hi", "expected_doc_ids": ["hi_670437_p1"], "query_id": 670437, "split": "validation"}
+{"query": "उच्चतम आई.क्यू. राष्ट्रपति", "language": "hi", "expected_doc_ids": ["hi_202238_p8"], "query_id": 202238, "split": "validation"}
+{"query": "कैल्विन कोलाइड्ज़ राष्ट्रपति थे", "language": "hi", "expected_doc_ids": ["hi_957027_p2"], "query_id": 957027, "split": "validation"}
+{"query": "वैज्ञानिक समस्या समाधान विधि में किस दार्शनिक की मान्यता थी", "language": "hi", "expected_doc_ids": ["hi_1022575_p7"], "query_id": 1022575, "split": "validation"}
+{"query": "नेब्रास्का कितना वर्ग मील है", "language": "hi", "expected_doc_ids": ["hi_1095468_p0"], "query_id": 1095468, "split": "validation"}
+{"query": "कीटाणुनाशकों का उपयोग जीवित ऊतकों पर किया जा सकता है।", "language": "hi", "expected_doc_ids": ["hi_1101335_p4"], "query_id": 1101335, "split": "validation"}
+{"query": "सीसमी स्ट्रीट कितनी पुरानी सड़क है", "language": "hi", "expected_doc_ids": ["hi_336472_p9"], "query_id": 336472, "split": "validation"}
+{"query": "क्या बी.ए. है", "language": "hi", "expected_doc_ids": ["hi_673936_p2"], "query_id": 673936, "split": "validation"}
+{"query": "आयोवा अपार्टमेंट में औसत उपयोगिताएँ", "language": "hi", "expected_doc_ids": ["hi_1094873_p2"], "query_id": 1094873, "split": "validation"}
+{"query": "मनुष्य में कोलन क्या होता है", "language": "hi", "expected_doc_ids": ["hi_811603_p6"], "query_id": 811603, "split": "validation"}
+{"query": "मिल की सैन्य परिभाषा", "language": "hi", "expected_doc_ids": ["hi_1092714_p8"], "query_id": 1092714, "split": "validation"}
+{"query": "पेकान में कोलेस्ट्रॉल कितना होता है", "language": "hi", "expected_doc_ids": ["hi_1096392_p2"], "query_id": 1096392, "split": "validation"}
+{"query": "कौन से अंग प्रणालियाँ शरीर की कोशिकाओं तक ऑक्सीजन पहुँचाने में मदद करती हैं?", "language": "hi", "expected_doc_ids": ["hi_1023361_p5"], "query_id": 1023361, "split": "validation"}
+{"query": "कभी किशोर स्वर्गदूत गीत रिलीज़ हुआ था", "language": "hi", "expected_doc_ids": ["hi_962284_p1", "hi_962284_p2"], "query_id": 962284, "split": "validation"}
+{"query": "टैंगो की मुख्य विशेषताएँ क्या हैं", "language": "hi", "expected_doc_ids": ["hi_1037181_p8"], "query_id": 1037181, "split": "validation"}
+{"query": "क्या मिसौरी में चंद्रमा की चमक बनाना कानूनी है", "language": "hi", "expected_doc_ids": ["hi_413961_p9"], "query_id": 413961, "split": "validation"}
+{"query": "जब गेरार्डो मचाडो राष्ट्रपति बने", "language": "hi", "expected_doc_ids": ["hi_938656_p4"], "query_id": 938656, "split": "validation"}
+{"query": "वारेन्सबर्ग की ऊँचाई क्या है", "language": "hi", "expected_doc_ids": ["hi_1040064_p1"], "query_id": 1040064, "split": "validation"}
+{"query": "क्या सी.पी.ए. लाइसेंस के लिए विशिष्ट प्रकार के घंटे आवश्यक हैं?", "language": "hi", "expected_doc_ids": ["hi_25769_p0"], "query_id": 25769, "split": "validation"}
+{"query": "कैलिफोर्निया के वैकविले में मौसम फरेनहाइट", "language": "hi", "expected_doc_ids": ["hi_1088168_p7"], "query_id": 1088168, "split": "validation"}
+{"query": "आर्टेमिस का विषय क्या है", "language": "hi", "expected_doc_ids": ["hi_1031047_p3"], "query_id": 1031047, "split": "validation"}
+{"query": "वाणिज्य बैंक कैनसस शहर के लिए मार्ग निर्देश संख्या", "language": "hi", "expected_doc_ids": ["hi_1090976_p5"], "query_id": 1090976, "split": "validation"}
+{"query": "6 फीट के पुरुष के लिए सामान्य वजन", "language": "hi", "expected_doc_ids": ["hi_465777_p2"], "query_id": 465777, "split": "validation"}
+{"query": "गरीबी में पैदा हुए कितने लोग जीवन भर गरीबी में रहते हैं", "language": "hi", "expected_doc_ids": ["hi_1096842_p5"], "query_id": 1096842, "split": "validation"}
+{"query": "क्या फलियों में बहुत अधिक प्रोटीन होता है?", "language": "hi", "expected_doc_ids": ["hi_155189_p3"], "query_id": 155189, "split": "validation"}
+{"query": "इंजीनियर का औसत वेतन", "language": "hi", "expected_doc_ids": ["hi_43058_p1"], "query_id": 43058, "split": "validation"}
+{"query": "ऑक्सफोर्ड मिशिगन कौन सी काउंटी है", "language": "hi", "expected_doc_ids": ["hi_610918_p5"], "query_id": 610918, "split": "validation"}
+{"query": "वर्दुन की लड़ाई कितने समय तक चली थी", "language": "hi", "expected_doc_ids": ["hi_273143_p0"], "query_id": 273143, "split": "validation"}
+{"query": "अव्रांचेस फ़्रांसीसी मौसम", "language": "hi", "expected_doc_ids": ["hi_1094440_p0"], "query_id": 1094440, "split": "validation"}
+{"query": "कार्यात्मक डिज़ाइन को परिभाषित करें", "language": "hi", "expected_doc_ids": ["hi_121102_p9"], "query_id": 121102, "split": "validation"}
+{"query": "जैक्सन टेनेसी में तापमान", "language": "hi", "expected_doc_ids": ["hi_1090025_p3"], "query_id": 1090025, "split": "validation"}
+{"query": "सेल्सफोर्स क्या है?", "language": "hi", "expected_doc_ids": ["hi_845746_p7"], "query_id": 845746, "split": "validation"}
+{"query": "क्या आपसी संबंध में क्या होता है और क्या होता है इसके बारे में क्या होता है", "language": "hi", "expected_doc_ids": ["hi_1071048_p0"], "query_id": 1071048, "split": "validation"}
+{"query": "बुनियादी केबल की कीमत क्या है", "language": "hi", "expected_doc_ids": ["hi_812538_p5"], "query_id": 812538, "split": "validation"}
+{"query": "घर बनाने की औसत लागत", "language": "hi", "expected_doc_ids": ["hi_35129_p9"], "query_id": 35129, "split": "validation"}
+{"query": "अप्रैल में पनामा शहर, फ्लोरिडा में मौसम", "language": "hi", "expected_doc_ids": ["hi_1088317_p6", "hi_1088317_p9"], "query_id": 1088317, "split": "validation"}
+{"query": "बिना शेविंग के अनचाहे बालों से कैसे छुटकारा पाएं", "language": "hi", "expected_doc_ids": ["hi_362700_p0"], "query_id": 362700, "split": "validation"}
+{"query": "तूफान हर्वी के कारण हुए नुकसान की लागत क्या थी", "language": "hi", "expected_doc_ids": ["hi_919876_p4"], "query_id": 919876, "split": "validation"}
+{"query": "जो स्मर्फ़ फिल्में बनाती है", "language": "hi", "expected_doc_ids": ["hi_1044305_p8"], "query_id": 1044305, "split": "validation"}
+{"query": "ऐसे खाद्य पदार्थ जो मरोड़ों में मदद करते हैं", "language": "hi", "expected_doc_ids": ["hi_189467_p3", "hi_189467_p7"], "query_id": 189467, "split": "validation"}
+{"query": "सेल्फी स्टिक का उपयोग कैसे करें", "language": "hi", "expected_doc_ids": ["hi_384845_p1"], "query_id": 384845, "split": "validation"}
+{"query": "पृथ्वी अधिकतर किस मुख्य तत्व से बनी है", "language": "hi", "expected_doc_ids": ["hi_601156_p3"], "query_id": 601156, "split": "validation"}
+{"query": "ईंधन रॉड की परिभाषा", "language": "hi", "expected_doc_ids": ["hi_134832_p9"], "query_id": 134832, "split": "validation"}
+{"query": "नज़रबंदी की परिभाषा क्या है", "language": "hi", "expected_doc_ids": ["hi_814541_p1"], "query_id": 814541, "split": "validation"}
+{"query": "मठाधीश की परिभाषा", "language": "hi", "expected_doc_ids": ["hi_1097811_p4"], "query_id": 1097811, "split": "validation"}
+{"query": "अगर आपके पास पहले से ही स्नातक की डिग्री है तो अपना बीएसआरएन पाने में कितना समय लगेगा।", "language": "hi", "expected_doc_ids": ["hi_257309_p3"], "query_id": 257309, "split": "validation"}
+{"query": "वाणिज्यिक भवनों की परिभाषा", "language": "hi", "expected_doc_ids": ["hi_1062687_p5"], "query_id": 1062687, "split": "validation"}
+{"query": "क्या है एक गाइडलाइन?", "language": "hi", "expected_doc_ids": ["hi_1072479_p0"], "query_id": 1072479, "split": "validation"}
+{"query": "जो डॉ. रैडमैन ग्रीनबेल्ट के मुख्य डॉक्टर हैं", "language": "hi", "expected_doc_ids": ["hi_1032371_p0"], "query_id": 1032371, "split": "validation"}
+{"query": "सबसे बड़ी शोधक कंपनियां अमेरिका में", "language": "hi", "expected_doc_ids": ["hi_1093548_p8"], "query_id": 1093548, "split": "validation"}
+{"query": "चश्मे के लिए नुस्खा कितने समय तक मान्य है", "language": "hi", "expected_doc_ids": ["hi_262775_p6"], "query_id": 262775, "split": "validation"}
+{"query": "जो बॉक्सकार विली के लिए सारंगी बजाता था", "language": "hi", "expected_doc_ids": ["hi_1046648_p9"], "query_id": 1046648, "split": "validation"}
+{"query": "डुप्लिन काउंटी एन.सी. कहाँ है?", "language": "hi", "expected_doc_ids": ["hi_981780_p4"], "query_id": 981780, "split": "validation"}
+{"query": "मेनिन्जोकोकल टीके के लिए उम्र", "language": "hi", "expected_doc_ids": ["hi_13038_p1"], "query_id": 13038, "split": "validation"}
+{"query": "किस देश में निमरुड का असीरियन शहर है", "language": "hi", "expected_doc_ids": ["hi_880456_p7"], "query_id": 880456, "split": "validation"}
+{"query": "लिखित वाक्य के लिए सामान्य दवा क्या है", "language": "hi", "expected_doc_ids": ["hi_1008989_p6"], "query_id": 1008989, "split": "validation"}
+{"query": "कला के तत्व क्या हैं", "language": "hi", "expected_doc_ids": ["hi_558175_p1"], "query_id": 558175, "split": "validation"}
+{"query": "कुत्तों के लिए चावल एक अच्छा फाइबर है या नहीं।", "language": "hi", "expected_doc_ids": ["hi_422526_p0"], "query_id": 422526, "split": "validation"}
+{"query": "एक अंडा पकाने में कितना समय लगता है?", "language": "hi", "expected_doc_ids": ["hi_1097903_p2"], "query_id": 1097903, "split": "validation"}
+{"query": "लेवाक्विन कौन से प्रतिजैविक परिवार में है", "language": "hi", "expected_doc_ids": ["hi_659182_p0", "hi_659182_p8"], "query_id": 659182, "split": "validation"}
+{"query": "बाजार पूंजीकरण क्या दर्शाता है?", "language": "hi", "expected_doc_ids": ["hi_1082750_p3"], "query_id": 1082750, "split": "validation"}
+{"query": "जब जादूई ड्रैगन ने पहली बार अपना प्रभाव डाला था", "language": "hi", "expected_doc_ids": ["hi_1006287_p8"], "query_id": 1006287, "split": "validation"}
+{"query": "क्या अहंकार है?", "language": "hi", "expected_doc_ids": ["hi_1074001_p0"], "query_id": 1074001, "split": "validation"}
+{"query": "ऑक्सीजनयुक्त ब्लीच क्या है", "language": "hi", "expected_doc_ids": ["hi_780880_p4"], "query_id": 780880, "split": "validation"}
+{"query": "गुर्दे की पथरी से बचने के लिए खाद्य पदार्थ", "language": "hi", "expected_doc_ids": ["hi_1100467_p0", "hi_1100467_p5"], "query_id": 1100467, "split": "validation"}
+{"query": "किंडल प्राइम सदस्यता के लिए कौन सी किताबें मुफ़्त हैं", "language": "hi", "expected_doc_ids": ["hi_579677_p2", "hi_579677_p9"], "query_id": 579677, "split": "validation"}
+{"query": "मेलाटोनिन के दुष्प्रभावों का उपयोग", "language": "hi", "expected_doc_ids": ["hi_1090694_p1"], "query_id": 1090694, "split": "validation"}
+{"query": "रे चार्ल्स वर्थ के लायक", "language": "hi", "expected_doc_ids": ["hi_1091141_p5"], "query_id": 1091141, "split": "validation"}
+{"query": "कहावत के उदाहरण क्या हैं", "language": "hi", "expected_doc_ids": ["hi_1068703_p2"], "query_id": 1068703, "split": "validation"}
+{"query": "एक आदर्श निष्क्रिय भागीदार क्या है?", "language": "hi", "expected_doc_ids": ["hi_1069405_p3", "hi_1069405_p5"], "query_id": 1069405, "split": "validation"}
+{"query": "साहित्यिक कार्य क्या है", "language": "hi", "expected_doc_ids": ["hi_766342_p7"], "query_id": 766342, "split": "validation"}
+{"query": "एक भौतिक संपत्ति के रूप में कठोरता क्या है", "language": "hi", "expected_doc_ids": ["hi_1029549_p5"], "query_id": 1029549, "split": "validation"}
+{"query": "लोरेंजो टीएक्स", "language": "hi", "expected_doc_ids": ["hi_998624_p6"], "query_id": 998624, "split": "validation"}
+{"query": "आधार चयापचय दर (बी.एम.आर.) की विशेषता क्या है?", "language": "hi", "expected_doc_ids": ["hi_1073671_p5"], "query_id": 1073671, "split": "validation"}
+{"query": "मिप्स का अर्थ है", "language": "hi", "expected_doc_ids": ["hi_1093004_p0"], "query_id": 1093004, "split": "validation"}
+{"query": "केशिका पुनर्भरण परीक्षण कैसे किया जाता है?", "language": "hi", "expected_doc_ids": ["hi_1098816_p0"], "query_id": 1098816, "split": "validation"}
+{"query": "सेंटूरी का इस्तेमाल किस लिए किया जाता है", "language": "hi", "expected_doc_ids": ["hi_729066_p9"], "query_id": 729066, "split": "validation"}
+{"query": "जंगली तोते अपने बच्चों का नाम क्या रखते हैं", "language": "hi", "expected_doc_ids": ["hi_159931_p3"], "query_id": 159931, "split": "validation"}
+{"query": "नेतृत्व प्रशिक्षण परिभाषा", "language": "hi", "expected_doc_ids": ["hi_438286_p6"], "query_id": 438286, "split": "validation"}
+{"query": "अपने कुत्ते को खाने के लिए प्रेरित करने के तरीके", "language": "hi", "expected_doc_ids": ["hi_542293_p6"], "query_id": 542293, "split": "validation"}
+{"query": "अम्बीवर्ट का क्या अर्थ है", "language": "hi", "expected_doc_ids": ["hi_631487_p5"], "query_id": 631487, "split": "validation"}
+{"query": "सामाजिक रोग परिभाषा विकिपीडिया", "language": "hi", "expected_doc_ids": ["hi_499948_p9"], "query_id": 499948, "split": "validation"}
+{"query": "नेग्रिल जमैका में औसत तापमान क्या है", "language": "hi", "expected_doc_ids": ["hi_1044239_p3"], "query_id": 1044239, "split": "validation"}
+{"query": "आँख की मध्य परत में क्या होता है", "language": "hi", "expected_doc_ids": ["hi_1082741_p7"], "query_id": 1082741, "split": "validation"}
+{"query": "संयुक्त राज्य अमेरिका का डाक टिकट कितना है", "language": "hi", "expected_doc_ids": ["hi_321440_p2"], "query_id": 321440, "split": "validation"}
+{"query": "एक ट्विटर यू.आर.एल. क्या है", "language": "hi", "expected_doc_ids": ["hi_929923_p3"], "query_id": 929923, "split": "validation"}
+{"query": "परिभाषा मालिंगर", "language": "hi", "expected_doc_ids": ["hi_997494_p9"], "query_id": 997494, "split": "validation"}
+{"query": "साहित्य में एक स्थिर चरित्र क्या है", "language": "hi", "expected_doc_ids": ["hi_701390_p0"], "query_id": 701390, "split": "validation"}
+{"query": "फ्रांस के किस शहर में लॉर्डेस स्थित है", "language": "hi", "expected_doc_ids": ["hi_393850_p7"], "query_id": 393850, "split": "validation"}
+{"query": "अतिश्वसन की परिभाषा क्या है", "language": "hi", "expected_doc_ids": ["hi_1041602_p6"], "query_id": 1041602, "split": "validation"}
+{"query": "गर्भावस्था की उम्र की गणना कैसे करें लिम्प से", "language": "hi", "expected_doc_ids": ["hi_346984_p3"], "query_id": 346984, "split": "validation"}
+{"query": "आसमान सीमा क्यों कहा जाता है", "language": "hi", "expected_doc_ids": ["hi_1101971_p5"], "query_id": 1101971, "split": "validation"}
+{"query": "शिमिंग को परिभाषित करें", "language": "hi", "expected_doc_ids": ["hi_127025_p3"], "query_id": 127025, "split": "validation"}
+{"query": "सिंगापुर कितने घंटे से सिएटल से आगे है", "language": "hi", "expected_doc_ids": ["hi_1097038_p8"], "query_id": 1097038, "split": "validation"}
+{"query": "तंत्रिका तंत्र सीने में दर्द का कारण बन सकता है।", "language": "hi", "expected_doc_ids": ["hi_71767_p6"], "query_id": 71767, "split": "validation"}
+{"query": "क्या फ़िल्म निर्देशक के लिए मुल्लर को अस्वीकार कर दिया गया?", "language": "hi", "expected_doc_ids": ["hi_540455_p4"], "query_id": 540455, "split": "validation"}
+{"query": "વાર્ષિક અફી કેટલી છે", "language": "gu", "expected_doc_ids": ["gu_318922_p6"], "query_id": 318922, "split": "validation"}
+{"query": "ઓપરેશન ટોર્ચનું શું મહત્વ હતું?", "language": "gu", "expected_doc_ids": ["gu_922562_p0"], "query_id": 922562, "split": "validation"}
+{"query": "ડાલ્ટન ગા વિસ્તાર કોડ શું છે", "language": "gu", "expected_doc_ids": ["gu_737347_p6"], "query_id": 737347, "split": "validation"}
+{"query": "એડિસન રીકે કેટલી ઉંમરની છે", "language": "gu", "expected_doc_ids": ["gu_334223_p5"], "query_id": 334223, "split": "validation"}
+{"query": "કિરણોત્સર્ગ સારવારની આડઅસરો કેટલા સમય સુધી ચાલે છે", "language": "gu", "expected_doc_ids": ["gu_1098101_p9"], "query_id": 1098101, "split": "validation"}
+{"query": "હૃદયરોગનો હુમલો થઈ શકે છે.", "language": "gu", "expected_doc_ids": ["gu_1100043_p0"], "query_id": 1100043, "split": "validation"}
+{"query": "જ્યારે માર્ક ટ્વેને પૃથ્વી પરથી પત્રો લખ્યા ત્યારે", "language": "gu", "expected_doc_ids": ["gu_939656_p7"], "query_id": 939656, "split": "validation"}
+{"query": "લેક્સાપ્રોમાંથી હું કેવી રીતે દૂર થઈ શકું?", "language": "gu", "expected_doc_ids": ["gu_219541_p1"], "query_id": 219541, "split": "validation"}
+{"query": "સેરેબ્રમની વ્યાખ્યા", "language": "gu", "expected_doc_ids": ["gu_993948_p8"], "query_id": 993948, "split": "validation"}
+{"query": "સૌથી લાંબી નાસ્કાર રેસ ક્યારે થઈ હતી", "language": "gu", "expected_doc_ids": ["gu_921210_p9"], "query_id": 921210, "split": "validation"}
+{"query": "જેનાથી એફઆનએલએ મળી શકે છે", "language": "gu", "expected_doc_ids": ["gu_1011044_p0"], "query_id": 1011044, "split": "validation"}
+{"query": "લોકોની સંખ્યા જેમણે તેમની લેન્ડલાઇન છોડી દીધી છે", "language": "gu", "expected_doc_ids": ["gu_1092093_p9"], "query_id": 1092093, "split": "validation"}
+{"query": "ફ્રેન્ચ સ્વતંત્રતાનું શાસન શું છે", "language": "gu", "expected_doc_ids": ["gu_810680_p1"], "query_id": 810680, "split": "validation"}
+{"query": "લુઈસિયાનાના સમયે જે રાષ્ટ્રપતિ હતા", "language": "gu", "expected_doc_ids": ["gu_986412_p6"], "query_id": 986412, "split": "validation"}
+{"query": "ટેસલા કાર ચાર્જ કરવા માટે કેટલા પૈસા ખર્ચાય છે", "language": "gu", "expected_doc_ids": ["gu_1095664_p8"], "query_id": 1095664, "split": "validation"}
+{"query": "મારા પગમાં આ કંઈ કેવી સુંવાળી છે?", "language": "gu", "expected_doc_ids": ["gu_855707_p6"], "query_id": 855707, "split": "validation"}
+{"query": "શું એ ક્યુરેટેજ છે", "language": "gu", "expected_doc_ids": ["gu_1075021_p4"], "query_id": 1075021, "split": "validation"}
+{"query": "એનબીસીસી શું છે", "language": "gu", "expected_doc_ids": ["gu_692160_p0"], "query_id": 692160, "split": "validation"}
+{"query": "વોલી મોલમાં કયું થિયેટર છે", "language": "gu", "expected_doc_ids": ["gu_1018474_p0"], "query_id": 1018474, "split": "validation"}
+{"query": "બી.એમ.ડબલ્યુ.ની પહેલી કાર શું હતી", "language": "gu", "expected_doc_ids": ["gu_1013036_p7"], "query_id": 1013036, "split": "validation"}
+{"query": "શાકાહારીઓમાં સીકમની વ્યાખ્યા", "language": "gu", "expected_doc_ids": ["gu_89415_p9"], "query_id": 89415, "split": "validation"}
+{"query": "સ્ટારલિંગ શહેર કઈ રાજ્યમાં આવેલું છે", "language": "gu", "expected_doc_ids": ["gu_897954_p5"], "query_id": 897954, "split": "validation"}
+{"query": "તમારા શબ્દકોશની વ્યાખ્યા", "language": "gu", "expected_doc_ids": ["gu_520056_p1"], "query_id": 520056, "split": "validation"}
+{"query": "લેપટોપ પર સ્ક્રોલ વ્હીલ શું છે", "language": "gu", "expected_doc_ids": ["gu_1032385_p4"], "query_id": 1032385, "split": "validation"}
+{"query": "હિલક્રેસ્ટ કોમ્પનીની વસ્તી", "language": "gu", "expected_doc_ids": ["gu_1091473_p6"], "query_id": 1091473, "split": "validation"}
+{"query": "કેટલી ઔંસ પ્રમાણભૂત માખણની લાકડીઓ છે", "language": "gu", "expected_doc_ids": ["gu_290924_p1"], "query_id": 290924, "split": "validation"}
+{"query": "સામાન્ય રીતે શરીરના સામાન્ય તાપમાન માટે શ્રેણી", "language": "gu", "expected_doc_ids": ["gu_485246_p0"], "query_id": 485246, "split": "validation"}
+{"query": "બુકા ડી બેપ્પો કોર્પોરેટ નંબર", "language": "gu", "expected_doc_ids": ["gu_1089549_p1"], "query_id": 1089549, "split": "validation"}
+{"query": "દંતવૈદ્ય શું વાપરે છે", "language": "gu", "expected_doc_ids": ["gu_1080009_p1"], "query_id": 1080009, "split": "validation"}
+{"query": "કાર્બન કેનિસ્ટર્સ ક્યાં સ્થિત છે", "language": "gu", "expected_doc_ids": ["gu_965095_p3"], "query_id": 965095, "split": "validation"}
+{"query": "માચુ પિચુ શું છે", "language": "gu", "expected_doc_ids": ["gu_672825_p8"], "query_id": 672825, "split": "validation"}
+{"query": "લીમડાના વૃક્ષના આરોગ્ય લાભો", "language": "gu", "expected_doc_ids": ["gu_199837_p7"], "query_id": 199837, "split": "validation"}
+{"query": "1935માં ઈથિયોપિયા પર ઈટાલીનો હુમલો કેમ થયો?", "language": "gu", "expected_doc_ids": ["gu_1062603_p0"], "query_id": 1062603, "split": "validation"}
+{"query": "કોલેજો માટે શ્રેષ્ઠ માન્યતા શું છે", "language": "gu", "expected_doc_ids": ["gu_808059_p4"], "query_id": 808059, "split": "validation"}
+{"query": "એક દિવસમાં મેલેનિયા શું ખાય છે", "language": "gu", "expected_doc_ids": ["gu_1024854_p9"], "query_id": 1024854, "split": "validation"}
+{"query": "કેએમઆરડી નજીક શું છે", "language": "gu", "expected_doc_ids": ["gu_775685_p8"], "query_id": 775685, "split": "validation"}
+{"query": "જાન્યુઆરીમાં કેટાલિનામાં તાપમાન", "language": "gu", "expected_doc_ids": ["gu_1090030_p5"], "query_id": 1090030, "split": "validation"}
+{"query": "બાયોમેડિકલ એન્જિનિયરોના પગાર", "language": "gu", "expected_doc_ids": ["gu_491227_p5"], "query_id": 491227, "split": "validation"}
+{"query": "રાશિચક્ર પતંગિયાનો અર્થ થાય છે", "language": "gu", "expected_doc_ids": ["gu_1082082_p8"], "query_id": 1082082, "split": "validation"}
+{"query": "નિસાન સ્ટેડિયમ ડાઉનટાઉન નેશવિલેમાં આવેલું છે.", "language": "gu", "expected_doc_ids": ["gu_1094068_p2"], "query_id": 1094068, "split": "validation"}
+{"query": "કેલરાડોમાં રહેવાનો સમય કેટલો છે", "language": "gu", "expected_doc_ids": ["gu_1097747_p5"], "query_id": 1097747, "split": "validation"}
+{"query": "ટોન્સિલ્સ દૂર કરવાની કિંમત કેટલી છે", "language": "gu", "expected_doc_ids": ["gu_311822_p4"], "query_id": 311822, "split": "validation"}
+{"query": "કોણે સંઘીય ધ્વજની રચના કરી હતી", "language": "gu", "expected_doc_ids": ["gu_1026095_p2"], "query_id": 1026095, "split": "validation"}
+{"query": "શેલનો અર્થ", "language": "gu", "expected_doc_ids": ["gu_449188_p3"], "query_id": 449188, "split": "validation"}
+{"query": "મોલ્ડ શું છે?", "language": "gu", "expected_doc_ids": ["gu_691659_p7"], "query_id": 691659, "split": "validation"}
+{"query": "પગના સ્નાયુઓની કેટલી ઝડપથી ક્ષીણતા થાય છે", "language": "gu", "expected_doc_ids": ["gu_338277_p4"], "query_id": 338277, "split": "validation"}
+{"query": "તમે સેનામાં જોડાઈ શકો છો તે ક્યારેથી?", "language": "gu", "expected_doc_ids": ["gu_1008742_p6"], "query_id": 1008742, "split": "validation"}
+{"query": "સીપીએલપી પ્રમાણપત્ર શું છે", "language": "gu", "expected_doc_ids": ["gu_1075081_p8"], "query_id": 1075081, "split": "validation"}
+{"query": "પુખ્ત વયના લોકોમાં ઊંઘની અસહિષ્ણુતા શું છે", "language": "gu", "expected_doc_ids": ["gu_1046178_p6"], "query_id": 1046178, "split": "validation"}
+{"query": "ડ્રો કરી ગયું.", "language": "gu", "expected_doc_ids": ["gu_1101031_p7"], "query_id": 1101031, "split": "validation"}
+{"query": "પલ્સ વિડ્થ મોડ્યુલેટર શું છે", "language": "gu", "expected_doc_ids": ["gu_696765_p0"], "query_id": 696765, "split": "validation"}
+{"query": "વાક્યમાં જૈવવિવિધતા શું છે", "language": "gu", "expected_doc_ids": ["gu_1084153_p4"], "query_id": 1084153, "split": "validation"}
+{"query": "એચએસ સી-રિએક્ટિવ પ્રોટીન શું છે", "language": "gu", "expected_doc_ids": ["gu_755972_p9"], "query_id": 755972, "split": "validation"}
+{"query": "પેટુલા ક્લાર્ક ડોબ?", "language": "gu", "expected_doc_ids": ["gu_474123_p2"], "query_id": 474123, "split": "validation"}
+{"query": "જ્યાં સેન્ટ માર્ટિન છે", "language": "gu", "expected_doc_ids": ["gu_993419_p9"], "query_id": 993419, "split": "validation"}
+{"query": "શિક્ષક સ્વ-રક્ષણ વર્ગનો ખર્ચ", "language": "gu", "expected_doc_ids": ["gu_1090098_p1"], "query_id": 1090098, "split": "validation"}
+{"query": "ઘરની સંપૂર્ણ છત બનાવવાનો ખર્ચ કેટલો થાય છે?", "language": "gu", "expected_doc_ids": ["gu_1096099_p8"], "query_id": 1096099, "split": "validation"}
+{"query": "નોંધાયેલ નર્સ પેડિયેટ્રિકમાં કોઈને કેટલી ઝડપથી બઢતી આપી શકાય", "language": "gu", "expected_doc_ids": ["gu_233272_p3"], "query_id": 233272, "split": "validation"}
+{"query": "આયર્ન ચેલેટર્સની આડઅસરો", "language": "gu", "expected_doc_ids": ["gu_1090684_p7"], "query_id": 1090684, "split": "validation"}
+{"query": "કયા પ્રકારનો માર્શાડો છે", "language": "gu", "expected_doc_ids": ["gu_1007931_p1"], "query_id": 1007931, "split": "validation"}
+{"query": "દાંતની પિક્સ કયા ધાતુથી બનેલી છે?", "language": "gu", "expected_doc_ids": ["gu_877807_p8"], "query_id": 877807, "split": "validation"}
+{"query": "હું પેટનો સમય ક્યારે શરૂ કરું?", "language": "gu", "expected_doc_ids": ["gu_954596_p4"], "query_id": 954596, "split": "validation"}
+{"query": "કોન્ક્રિટ સ્લેબનો ખર્ચ", "language": "gu", "expected_doc_ids": ["gu_100480_p0"], "query_id": 100480, "split": "validation"}
+{"query": "અનંત સૌથી મોટી સુવારી", "language": "gu", "expected_doc_ids": ["gu_395779_p0"], "query_id": 395779, "split": "validation"}
+{"query": "અમારી ડેમ ફ્રાન્સમાં જ્યાં સ્થિત છે", "language": "gu", "expected_doc_ids": ["gu_1092148_p8"], "query_id": 1092148, "split": "validation"}
+{"query": "ગલીમાં જનીન વચ્ચે શું તફાવત છે", "language": "gu", "expected_doc_ids": ["gu_816388_p1", "gu_816388_p9"], "query_id": 816388, "split": "validation"}
+{"query": "લોહીમાં ક્રપ સ્તર શું છે", "language": "gu", "expected_doc_ids": ["gu_679919_p3"], "query_id": 679919, "split": "validation"}
+{"query": "શું એસિંક રાહ જોવાની છે", "language": "gu", "expected_doc_ids": ["gu_1061169_p4"], "query_id": 1061169, "split": "validation"}
+{"query": "ઘરની બિલાડી કેટલા કલાક સૂઈ જાય છે", "language": "gu", "expected_doc_ids": ["gu_285926_p6"], "query_id": 285926, "split": "validation"}
+{"query": "જે નાના બાસ્કેટબોલ ટૂર્નામેન્ટનું આયોજન કરશે", "language": "gu", "expected_doc_ids": ["gu_1013905_p4"], "query_id": 1013905, "split": "validation"}
+{"query": "બિલાડીમાં સામાન્ય તાવ શું છે", "language": "gu", "expected_doc_ids": ["gu_1049635_p4"], "query_id": 1049635, "split": "validation"}
+{"query": "ઈફે નામનું લિંગ શું છે?", "language": "gu", "expected_doc_ids": ["gu_1079992_p1", "gu_1079992_p3"], "query_id": 1079992, "split": "validation"}
+{"query": "ગ્રેગોરિયોની ટ્રેટોરિયા", "language": "gu", "expected_doc_ids": ["gu_1100182_p6"], "query_id": 1100182, "split": "validation"}
+{"query": "અગ્નિશામકો માટે સરેરાશ પગાર", "language": "gu", "expected_doc_ids": ["gu_1095874_p6"], "query_id": 1095874, "split": "validation"}
+{"query": "પાવરબોલ શું છે?", "language": "gu", "expected_doc_ids": ["gu_1034189_p8"], "query_id": 1034189, "split": "validation"}
+{"query": "આમાંથી કયા તત્વો કાર્બોહાઈડ્રેટ્સ અને પાણી બંનેમાં જોવા મળે છે?", "language": "gu", "expected_doc_ids": ["gu_1016108_p4"], "query_id": 1016108, "split": "validation"}
+{"query": "રોથ અને પરંપરાગત વચ્ચેનો તફાવત", "language": "gu", "expected_doc_ids": ["gu_515572_p7", "gu_515572_p9"], "query_id": 515572, "split": "validation"}
+{"query": "કઈ કંપની કોમેડી સેન્ટ્રલ ચેનલ પ્રસારિત કરે છે?", "language": "gu", "expected_doc_ids": ["gu_1085800_p1"], "query_id": 1085800, "split": "validation"}
+{"query": "સંપત્તિ શું છે?", "language": "gu", "expected_doc_ids": ["gu_712457_p9"], "query_id": 712457, "split": "validation"}
+{"query": "શેરડીના બીજનો અર્ક લોહીનું દબાણ ઘટાડે છે", "language": "gu", "expected_doc_ids": ["gu_166857_p0"], "query_id": 166857, "split": "validation"}
+{"query": "સ્કાયરિમ એ સેન્ડબોક્સ ગેમ છે", "language": "gu", "expected_doc_ids": ["gu_423923_p8"], "query_id": 423923, "split": "validation"}
+{"query": "સૌથી લોકપ્રિય યુટ્યુબર", "language": "gu", "expected_doc_ids": ["gu_1092464_p4"], "query_id": 1092464, "split": "validation"}
+{"query": "લો રાઇડર ગીત કયા વર્ષે બહાર આવ્યું હતું", "language": "gu", "expected_doc_ids": ["gu_927104_p5"], "query_id": 927104, "split": "validation"}
+{"query": "મેથોડિસ્ટ મેકકિન્ની હોસ્પિટલનો ફોન નંબર", "language": "gu", "expected_doc_ids": ["gu_1092756_p4"], "query_id": 1092756, "split": "validation"}
+{"query": "લિબી સ્કૂટર કોણ હતી", "language": "gu", "expected_doc_ids": ["gu_1055468_p9"], "query_id": 1055468, "split": "validation"}
+{"query": "વિન્ડોઝ 10 ડિજિટલ હસ્તાક્ષર વિના ઇન્સ્ટોલ ડ્રાઇવર છે.", "language": "gu", "expected_doc_ids": ["gu_1078261_p1"], "query_id": 1078261, "split": "validation"}
+{"query": "કયો કોલેજ ઉત્સવ છે", "language": "gu", "expected_doc_ids": ["gu_1085885_p2"], "query_id": 1085885, "split": "validation"}
+{"query": "પ્રથમ રોકાણ ફિલ નાઈટ્સ હતું", "language": "gu", "expected_doc_ids": ["gu_1012631_p0"], "query_id": 1012631, "split": "validation"}
+{"query": "એક પેરાગ્રાફનું ઉદાહરણ શું છે", "language": "gu", "expected_doc_ids": ["gu_693636_p1"], "query_id": 693636, "split": "validation"}
+{"query": "શું એકાધિકારવાદ છે", "language": "gu", "expected_doc_ids": ["gu_716567_p0"], "query_id": 716567, "split": "validation"}
+{"query": "ટાર્ટરી બકવ્હીટ શું છે", "language": "gu", "expected_doc_ids": ["gu_1045373_p3"], "query_id": 1045373, "split": "validation"}
+{"query": "કયા ચશ્મા સાથે માછીમારીની રેખા જોવા માટે શ્રેષ્ઠ છે", "language": "gu", "expected_doc_ids": ["gu_1010189_p3"], "query_id": 1010189, "split": "validation"}
+{"query": "જેને એકાધિકારી માલિકી અને ભાગીદારીના ગેરફાયદા તરીકે ગણી શકાય?", "language": "gu", "expected_doc_ids": ["gu_995624_p3"], "query_id": 995624, "split": "validation"}
+{"query": "ટોરિંગ્ટન સીટીના મેયરનો પગાર શું છે", "language": "gu", "expected_doc_ids": ["gu_830551_p6"], "query_id": 830551, "split": "validation"}
+{"query": "શાસ્ત્રીય:", "language": "gu", "expected_doc_ids": ["gu_140216_p2"], "query_id": 140216, "split": "validation"}
+{"query": "પ્રોપિલથિયોરાસિલનો ઉપયોગ શું માટે થાય છે?", "language": "gu", "expected_doc_ids": ["gu_1022026_p1"], "query_id": 1022026, "split": "validation"}
+{"query": "સ્કોપ બેઝલાઇન વ્યાખ્યાયિત કરો", "language": "gu", "expected_doc_ids": ["gu_126822_p0"], "query_id": 126822, "split": "validation"}
+{"query": "સોનેરી ખનિજ સ્ટોકની કિંમત", "language": "gu", "expected_doc_ids": ["gu_1100237_p6"], "query_id": 1100237, "split": "validation"}
+{"query": "હ્યુસ્ટન, ટેક્સાસથી કેટલું દૂર છે", "language": "gu", "expected_doc_ids": ["gu_231228_p3"], "query_id": 231228, "split": "validation"}
+{"query": "સરેરાશ તાપમાન પ્રેસ્કોટ ખીણ અરિઝોના", "language": "gu", "expected_doc_ids": ["gu_45630_p5"], "query_id": 45630, "split": "validation"}
+{"query": "કેટલો સમય સ્પે કાપવું પડે છે તે સાજા થવા માટે", "language": "gu", "expected_doc_ids": ["gu_267732_p0"], "query_id": 267732, "split": "validation"}
+{"query": "પોલ વૉકર કેવી રીતે મૃત્યુ પામ્યા.", "language": "gu", "expected_doc_ids": ["gu_214321_p1"], "query_id": 214321, "split": "validation"}
+{"query": "ગૂસનેકની વજન ક્ષમતા", "language": "gu", "expected_doc_ids": ["gu_1088064_p0"], "query_id": 1088064, "split": "validation"}
+{"query": "પર્સ સ્ટ્રિંગ સીવવાની રીત", "language": "gu", "expected_doc_ids": ["gu_356064_p8"], "query_id": 356064, "split": "validation"}
+{"query": "કયા વૃક્ષમાં એકોર્ન હોય છે?", "language": "gu", "expected_doc_ids": ["gu_909221_p9"], "query_id": 909221, "split": "validation"}
+{"query": "મોનેલ એક સુપર એલોય છે", "language": "gu", "expected_doc_ids": ["gu_1094078_p2"], "query_id": 1094078, "split": "validation"}
+{"query": "શું છે તેનો અર્થ", "language": "gu", "expected_doc_ids": ["gu_1094626_p9"], "query_id": 1094626, "split": "validation"}
+{"query": "રોકેટમેનમાં કોણ અભિનય કરે છે", "language": "gu", "expected_doc_ids": ["gu_1052548_p3"], "query_id": 1052548, "split": "validation"}
+{"query": "આપણા બાળકોમાં અસ્થમા શું થાય છે", "language": "gu", "expected_doc_ids": ["gu_728446_p9"], "query_id": 728446, "split": "validation"}
+{"query": "ઓરેગોન માટે રાજ્યનો રંગ શું છે", "language": "gu", "expected_doc_ids": ["gu_848377_p5"], "query_id": 848377, "split": "validation"}
+{"query": "ડાયવર્ટિક્યુલાઇટિસની સારવાર માટે સામાન્ય રીતે કયા દવાઓનો ઉપયોગ થાય છે", "language": "gu", "expected_doc_ids": ["gu_877668_p1"], "query_id": 877668, "split": "validation"}
+{"query": "એકપક્ષીય રીતે જકાત લાદી શકે છે.", "language": "gu", "expected_doc_ids": ["gu_1086126_p0"], "query_id": 1086126, "split": "validation"}
+{"query": "આર્ક ક્યાં છે?", "language": "gu", "expected_doc_ids": ["gu_977057_p7"], "query_id": 977057, "split": "validation"}
+{"query": "પિક ડેફિનિશન", "language": "gu", "expected_doc_ids": ["gu_475275_p0"], "query_id": 475275, "split": "validation"}
+{"query": "કોલોનોસ્કોપી માટેનો ખર્ચ", "language": "gu", "expected_doc_ids": ["gu_100947_p1"], "query_id": 100947, "split": "validation"}
+{"query": "પેટ્રિકને કેવા પ્રકારનું કેન્સર છે", "language": "gu", "expected_doc_ids": ["gu_1027812_p5"], "query_id": 1027812, "split": "validation"}
+{"query": "શેનાન્ડોઆ તબીબી કેન્દ્રનો ફેક્સ નંબર", "language": "gu", "expected_doc_ids": ["gu_1090743_p5"], "query_id": 1090743, "split": "validation"}
+{"query": "અનાથી શું થાય છે", "language": "gu", "expected_doc_ids": ["gu_654427_p0"], "query_id": 654427, "split": "validation"}
+{"query": "યોગ્ય પાગલપણાનો બચાવ શું હોવો જોઈએ", "language": "gu", "expected_doc_ids": ["gu_893994_p8"], "query_id": 893994, "split": "validation"}
+{"query": "રંગીન કાચની કિંમત", "language": "gu", "expected_doc_ids": ["gu_502233_p6"], "query_id": 502233, "split": "validation"}
+{"query": "ધીમા કૂકરમાં 8 કલાકનું દબાણ કેટલું સમય સુધી કૂકરને સમાન કરવું", "language": "gu", "expected_doc_ids": ["gu_272102_p0"], "query_id": 272102, "split": "validation"}
+{"query": "ઓએસ તકનીકમાં શું છે", "language": "gu", "expected_doc_ids": ["gu_644890_p4"], "query_id": 644890, "split": "validation"}
+{"query": "ચિંતા માટે કયા વિટામિન પૂરક સારા છે", "language": "gu", "expected_doc_ids": ["gu_917076_p9"], "query_id": 917076, "split": "validation"}
+{"query": "બાસેન્જી કૂતરાની સરેરાશ કિંમત", "language": "gu", "expected_doc_ids": ["gu_33111_p5"], "query_id": 33111, "split": "validation"}
+{"query": "જેન્ઝર કેવા પ્રકારનું નામ છે", "language": "gu", "expected_doc_ids": ["gu_869590_p4"], "query_id": 869590, "split": "validation"}
+{"query": "ફ્લો મીટરમાં કે ફેક્ટર શું છે", "language": "gu", "expected_doc_ids": ["gu_1071664_p4"], "query_id": 1071664, "split": "validation"}
+{"query": "ડેટ્રોઇટ મિશિગનમાં હવામાન મે મહિનામાં", "language": "gu", "expected_doc_ids": ["gu_1088577_p0"], "query_id": 1088577, "split": "validation"}
+{"query": "જે એરલાઇન્સ બિનસંગત ભાડાની ઓફર કરે છે", "language": "gu", "expected_doc_ids": ["gu_1004920_p5", "gu_1004920_p7", "gu_1004920_p8"], "query_id": 1004920, "split": "validation"}
+{"query": "સેલ્યુલોઝ એ લિપિડ છે", "language": "gu", "expected_doc_ids": ["gu_405820_p9"], "query_id": 405820, "split": "validation"}
+{"query": "ફિલામેન્ટસ સાયટોસ્કેલેટન વ્યાખ્યા", "language": "gu", "expected_doc_ids": ["gu_186802_p4"], "query_id": 186802, "split": "validation"}
+{"query": "શલભના દડા સાપને ભગાડી દે છે.", "language": "gu", "expected_doc_ids": ["gu_157912_p0", "gu_157912_p2"], "query_id": 157912, "split": "validation"}
+{"query": "ખોરાકમાં ઝેરી લાક્ષણિકતાઓની શરૂઆત", "language": "gu", "expected_doc_ids": ["gu_469103_p0"], "query_id": 469103, "split": "validation"}
+{"query": "રસાયણનું શું કારણ છે વેસોકોન્સ્ટ્રિક્શન", "language": "gu", "expected_doc_ids": ["gu_548816_p8"], "query_id": 548816, "split": "validation"}
+{"query": "તંતુમય પ્રોટીન કેરાટિન કયાંથી ઉત્પન્ન થાય છે", "language": "gu", "expected_doc_ids": ["gu_888777_p1"], "query_id": 888777, "split": "validation"}
+{"query": "વજન વધારવા માટેનો આહાર", "language": "gu", "expected_doc_ids": ["gu_146055_p6"], "query_id": 146055, "split": "validation"}
+{"query": "શ્રેષ્ઠ હબ શું છે", "language": "gu", "expected_doc_ids": ["gu_567614_p6"], "query_id": 567614, "split": "validation"}
+{"query": "શું સ્પોટિફાઇ જાહેરમાં વેપાર કરતી કંપની છે?", "language": "gu", "expected_doc_ids": ["gu_424449_p4"], "query_id": 424449, "split": "validation"}
+{"query": "મધ્યમ સેન્ટ્રિલોબ્યુલર એમ્ફિસીમા શું છે?", "language": "gu", "expected_doc_ids": ["gu_772984_p1"], "query_id": 772984, "split": "validation"}
+{"query": "ભેંસની સ્થૂળતાની વ્યાખ્યા", "language": "gu", "expected_doc_ids": ["gu_56911_p8"], "query_id": 56911, "split": "validation"}
+{"query": "વૃદ્ધિ માટે જરૂરી હોર્મોન ક્યાં ઉત્પન્ન થાય છે?", "language": "gu", "expected_doc_ids": ["gu_516413_p5"], "query_id": 516413, "split": "validation"}
+{"query": "લક્ષણો નોંધવામાં આવ્યાં.", "language": "gu", "expected_doc_ids": ["gu_509130_p8"], "query_id": 509130, "split": "validation"}
+{"query": "એરેટર કી ફોસેટ માટે શું કરે છે", "language": "gu", "expected_doc_ids": ["gu_631642_p0"], "query_id": 631642, "split": "validation"}
+{"query": "ચેક પ્રજાસત્તાક એ ચીની જાતિનો ભાગ છે.", "language": "gu", "expected_doc_ids": ["gu_407713_p5"], "query_id": 407713, "split": "validation"}
+{"query": "સેરોટોનિનના સ્તરની અસરો", "language": "gu", "expected_doc_ids": ["gu_656754_p3", "gu_656754_p5"], "query_id": 656754, "split": "validation"}
+{"query": "કેમિલો ડી કેવર એક રૂઢિચુસ્ત હતો.", "language": "gu", "expected_doc_ids": ["gu_1088834_p5"], "query_id": 1088834, "split": "validation"}
+{"query": "વોલ્ટ ડિઝનીને કેટલા પુરસ્કારો મળ્યાં", "language": "gu", "expected_doc_ids": ["gu_275049_p2"], "query_id": 275049, "split": "validation"}
+{"query": "ડુંગળીમાં ફાઇબર હોય છે.", "language": "gu", "expected_doc_ids": ["gu_158129_p4"], "query_id": 158129, "split": "validation"}
+{"query": "શું ચીની કન્યા પતિનું નામ લે છે?", "language": "gu", "expected_doc_ids": ["gu_161976_p0"], "query_id": 161976, "split": "validation"}
+{"query": "અનંત ખર્ચ", "language": "gu", "expected_doc_ids": ["gu_395760_p7"], "query_id": 395760, "split": "validation"}
+{"query": "એન્જિન ઓઇલનો રંગ શું છે", "language": "gu", "expected_doc_ids": ["gu_811723_p5"], "query_id": 811723, "split": "validation"}
+{"query": "પારો શું છે", "language": "gu", "expected_doc_ids": ["gu_1051140_p2"], "query_id": 1051140, "split": "validation"}
+{"query": "સ્ટેમ્પ એક્ટ્સ પર વસાહતીઓએ કેવી પ્રતિક્રિયા આપી", "language": "gu", "expected_doc_ids": ["gu_1099529_p7"], "query_id": 1099529, "split": "validation"}
+{"query": "અલ્ટીમેટ ફ્રિઝબીમાં હકનો શું અર્થ થાય છે", "language": "gu", "expected_doc_ids": ["gu_1083676_p4"], "query_id": 1083676, "split": "validation"}
+{"query": "જે સીલની પત્ની હતી", "language": "gu", "expected_doc_ids": ["gu_1055472_p0"], "query_id": 1055472, "split": "validation"}
+{"query": "મિમિક ઓક્ટોપસ ક્યાં રહે છે", "language": "gu", "expected_doc_ids": ["gu_1000370_p5"], "query_id": 1000370, "split": "validation"}
+{"query": "ડેન્ડ્રાઇટિક કોષ શું છે?", "language": "gu", "expected_doc_ids": ["gu_635774_p7"], "query_id": 635774, "split": "validation"}
+{"query": "કારમાં ટોર્કનો શું અર્થ થાય છે", "language": "gu", "expected_doc_ids": ["gu_1082481_p4"], "query_id": 1082481, "split": "validation"}
+{"query": "પ્રોસ્ટાગ્લેન્ડિન્સનું શું કાર્ય છે", "language": "gu", "expected_doc_ids": ["gu_1039119_p1"], "query_id": 1039119, "split": "validation"}
+{"query": "તળાવ એરીમાં સૌથી મોટી માછલી.", "language": "gu", "expected_doc_ids": ["gu_436470_p5"], "query_id": 436470, "split": "validation"}
+{"query": "કેવી રીતે એકસાથે હરોળને વર્ગીકૃત કરવી", "language": "gu", "expected_doc_ids": ["gu_380558_p5"], "query_id": 380558, "split": "validation"}
+{"query": "એથેનાનાં પ્રતીકો શું હતાં", "language": "gu", "expected_doc_ids": ["gu_1011477_p1"], "query_id": 1011477, "split": "validation"}
+{"query": "ટેસ્ટોસ્ટેરોન નિયંત્રિત છે", "language": "gu", "expected_doc_ids": ["gu_1093959_p5"], "query_id": 1093959, "split": "validation"}
+{"query": "ઓટો રેપની કિંમત", "language": "gu", "expected_doc_ids": ["gu_102655_p4"], "query_id": 102655, "split": "validation"}
+{"query": "બિકીની શસ્ત્રક્રિયા શું છે", "language": "gu", "expected_doc_ids": ["gu_1076268_p2"], "query_id": 1076268, "split": "validation"}
+{"query": "માસહેલ્થ ક્યુએમબી કોન્ટેક્ટ ફોન નંબર", "language": "gu", "expected_doc_ids": ["gu_445863_p5"], "query_id": 445863, "split": "validation"}
+{"query": "એથામ્બુટોલ દવાનું વૈકલ્પિક નામ શું છે", "language": "gu", "expected_doc_ids": ["gu_804662_p8"], "query_id": 804662, "split": "validation"}
+{"query": "ઓકલેન્ડમાં વર્તમાન સમય", "language": "gu", "expected_doc_ids": ["gu_1032198_p9"], "query_id": 1032198, "split": "validation"}
+{"query": "મગજનો કયો ભાગ નિર્ણય લેવા અને આયોજન કરવા માટે સક્ષમ બનાવે છે", "language": "gu", "expected_doc_ids": ["gu_993705_p9"], "query_id": 993705, "split": "validation"}
+{"query": "તમે કેટલી વહેલી સવારની બીમારીના લક્ષણો બતાવી શકો છો?", "language": "gu", "expected_doc_ids": ["gu_1099099_p9"], "query_id": 1099099, "split": "validation"}
+{"query": "સ્વિટ્ઝરલેન્ડમાં લોકો શું બોલે છે?", "language": "gu", "expected_doc_ids": ["gu_1084749_p0"], "query_id": 1084749, "split": "validation"}
+{"query": "નાગરિક અધિકાર આંદોલન સિવાય નીચેના તમામ પરિણામો આવ્યાં", "language": "gu", "expected_doc_ids": ["gu_1956_p4"], "query_id": 1956, "split": "validation"}
+{"query": "વિશ્વનું સૌથી મોટું અવકાશ દૂરબીન", "language": "gu", "expected_doc_ids": ["gu_1101817_p5"], "query_id": 1101817, "split": "validation"}
+{"query": "મોના લિસાને ક્રોસ આઇડ પેઇન્ટ કરનાર કલાકાર", "language": "gu", "expected_doc_ids": ["gu_27058_p8"], "query_id": 27058, "split": "validation"}
+{"query": "વાત કરવા માટે ધક્કો શું છે તેનો અર્થ શું છે", "language": "gu", "expected_doc_ids": ["gu_1083168_p7"], "query_id": 1083168, "split": "validation"}
+{"query": "કાંડાના પ્રકારોની બ્રેસ", "language": "gu", "expected_doc_ids": ["gu_530572_p6", "gu_530572_p8"], "query_id": 530572, "split": "validation"}
+{"query": "જ્યારે લોકો ______ થાય છે ત્યારે શબ્દાર્થની ગેરસમજ ઊભી થાય છે.", "language": "gu", "expected_doc_ids": ["gu_1090813_p6"], "query_id": 1090813, "split": "validation"}
+{"query": "કઈ આઈવી લીગ સ્કૂલ યુનિવર્સિટી કનેક્ટિકટમાં છે?", "language": "gu", "expected_doc_ids": ["gu_865581_p1"], "query_id": 865581, "split": "validation"}
+{"query": "પ્રાથમિક સંભાળમાં શું સામેલ છે", "language": "gu", "expected_doc_ids": ["gu_1083205_p2"], "query_id": 1083205, "split": "validation"}
+{"query": "બહામાસ યુ.એસ.એ.થી અલગ છે", "language": "gu", "expected_doc_ids": ["gu_425771_p2"], "query_id": 425771, "split": "validation"}
+{"query": "સિમ્પસન અભિનેત્રી કોણ છે જેનું મૃત્યુ થયું છે", "language": "gu", "expected_doc_ids": ["gu_1041739_p2"], "query_id": 1041739, "split": "validation"}
+{"query": "હોપકિન્સ, મીને ટેક્સ રેટ", "language": "gu", "expected_doc_ids": ["gu_1099796_p0"], "query_id": 1099796, "split": "validation"}
+{"query": "શું છે કેટાફ્લામ", "language": "gu", "expected_doc_ids": ["gu_1058952_p7"], "query_id": 1058952, "split": "validation"}
+{"query": "કયા રોગો ટિક દ્વારા ફેલાય છે", "language": "gu", "expected_doc_ids": ["gu_621228_p0", "gu_621228_p4"], "query_id": 621228, "split": "validation"}
+{"query": "એચપીવીનો શું અર્થ થાય છે", "language": "gu", "expected_doc_ids": ["gu_639116_p4"], "query_id": 639116, "split": "validation"}
+{"query": "પ્રકાશમાં કેન્દ્રબિંદુ શું છે", "language": "gu", "expected_doc_ids": ["gu_683668_p4"], "query_id": 683668, "split": "validation"}
+{"query": "પ્લમ પુડિંગ મોડેલ કોણે બનાવ્યું?", "language": "gu", "expected_doc_ids": ["gu_1043587_p3"], "query_id": 1043587, "split": "validation"}
+{"query": "શું હું કર ઋણને ઋણ વિહિતમાં મૂકી શકું?", "language": "gu", "expected_doc_ids": ["gu_69442_p8"], "query_id": 69442, "split": "validation"}
+{"query": "વેરિઝોનની અમર્યાદિત ડેટા યોજના કેટલી છે", "language": "gu", "expected_doc_ids": ["gu_323628_p1"], "query_id": 323628, "split": "validation"}
+{"query": "મર્સ ક્યારે શરૂ થયું હતું?", "language": "gu", "expected_doc_ids": ["gu_958836_p7"], "query_id": 958836, "split": "validation"}
+{"query": "એકવાર બનાવવામાં આવે તે પછી બોટલ કેટલો સમય ઓરડાના તાપમાન પર રહી શકે છે.", "language": "gu", "expected_doc_ids": ["gu_1098693_p4"], "query_id": 1098693, "split": "validation"}
+{"query": "શું અંધ કેમિલિયન રંગ બદલી શકે છે?", "language": "gu", "expected_doc_ids": ["gu_65000_p3"], "query_id": 65000, "split": "validation"}
+{"query": "ટીડી બેંક એમડી રાઉટિંગ નંબર", "language": "gu", "expected_doc_ids": ["gu_510918_p9"], "query_id": 510918, "split": "validation"}
+{"query": "રક્ત કામ શું છે?", "language": "gu", "expected_doc_ids": ["gu_1059571_p8"], "query_id": 1059571, "split": "validation"}
+{"query": "પાંડા એક્સપ્રેસની કિંમત", "language": "gu", "expected_doc_ids": ["gu_1091348_p5"], "query_id": 1091348, "split": "validation"}
+{"query": "પૃથ્વી પરના સૌથી નજીકના તારાનું અંતર કેટલું છે", "language": "gu", "expected_doc_ids": ["gu_819217_p5"], "query_id": 819217, "split": "validation"}
+{"query": "પેઇન્સવિલેમાં તાપમાન શું છે?", "language": "gu", "expected_doc_ids": ["gu_1031402_p8"], "query_id": 1031402, "split": "validation"}
+{"query": "પ્યુબ્લો કોલોરાડોમાં ફૂલોની દુકાનો", "language": "gu", "expected_doc_ids": ["gu_188134_p6"], "query_id": 188134, "split": "validation"}
+{"query": "શેકેલા શકકરાને કેટલો સમય રાંધવો.", "language": "gu", "expected_doc_ids": ["gu_269136_p3"], "query_id": 269136, "split": "validation"}
+{"query": "ઓર્કેસ્ટ્રામાં વાંસળીના બાંધકામના ભાગો શું છે", "language": "gu", "expected_doc_ids": ["gu_1039552_p4"], "query_id": 1039552, "split": "validation"}
+{"query": "GI બિલની અસર શું હતી?", "language": "gu", "expected_doc_ids": ["gu_670437_p1"], "query_id": 670437, "split": "validation"}
+{"query": "સર્વોચ્ચ આઈ.ક્યુ. પ્રમુખ", "language": "gu", "expected_doc_ids": ["gu_202238_p8"], "query_id": 202238, "split": "validation"}
+{"query": "કેલ્વિન કોલિડ્જ પ્રમુખ ત્યારે હતા.", "language": "gu", "expected_doc_ids": ["gu_957027_p2"], "query_id": 957027, "split": "validation"}
+{"query": "વૈજ્ઞાનિક સમસ્યા ઉકેલવાની પદ્ધતિમાં કયા તત્વજ્ઞાનીને માનવું હતું", "language": "gu", "expected_doc_ids": ["gu_1022575_p7"], "query_id": 1022575, "split": "validation"}
+{"query": "નેબ્રાસ્કા કેટલા ચોરસ માઇલ છે", "language": "gu", "expected_doc_ids": ["gu_1095468_p0"], "query_id": 1095468, "split": "validation"}
+{"query": "જીવંત પેશીઓ પર જંતુનાશકોનો ઉપયોગ કરી શકાય છે.", "language": "gu", "expected_doc_ids": ["gu_1101335_p4"], "query_id": 1101335, "split": "validation"}
+{"query": "સામેલ છે તેલ માર્ગ કેટલો જૂનો છે", "language": "gu", "expected_doc_ids": ["gu_336472_p9"], "query_id": 336472, "split": "validation"}
+{"query": "બી.એ. શું છે?", "language": "gu", "expected_doc_ids": ["gu_673936_p2"], "query_id": 673936, "split": "validation"}
+{"query": "આયોવા એપાર્ટમેન્ટમાં સરેરાશ ઉપયોગિતાઓ", "language": "gu", "expected_doc_ids": ["gu_1094873_p2"], "query_id": 1094873, "split": "validation"}
+{"query": "મનુષ્યમાં આંતરડા શું છે", "language": "gu", "expected_doc_ids": ["gu_811603_p6"], "query_id": 811603, "split": "validation"}
+{"query": "મિલની લશ્કરી વ્યાખ્યા", "language": "gu", "expected_doc_ids": ["gu_1092714_p8"], "query_id": 1092714, "split": "validation"}
+{"query": "પેકનમાં કેટલું કોલેસ્ટ્રોલ છે", "language": "gu", "expected_doc_ids": ["gu_1096392_p2"], "query_id": 1096392, "split": "validation"}
+{"query": "કયા અંગ પ્રણાલીઓ શરીરના કોષોમાં ઓક્સિજન પહોંચાડવામાં મદદ કરે છે?", "language": "gu", "expected_doc_ids": ["gu_1023361_p5"], "query_id": 1023361, "split": "validation"}
+{"query": "આ ગીત કરીને એન્જલ રિલીઝ થયું ત્યારે ક્યારે હતું", "language": "gu", "expected_doc_ids": ["gu_962284_p1", "gu_962284_p2"], "query_id": 962284, "split": "validation"}
+{"query": "ટેંગોની મુખ્ય લાક્ષણિકતાઓ શું છે", "language": "gu", "expected_doc_ids": ["gu_1037181_p8"], "query_id": 1037181, "split": "validation"}
+{"query": "શું મિસૌરીમાં ચંદ્રપ્રકાશ બનાવવો કાયદેસર છે?", "language": "gu", "expected_doc_ids": ["gu_413961_p9"], "query_id": 413961, "split": "validation"}
+{"query": "જ્યારે જેરાર્ડો મચાડો રાષ્ટ્રપતિ બન્યા", "language": "gu", "expected_doc_ids": ["gu_938656_p4"], "query_id": 938656, "split": "validation"}
+{"query": "વોરેન્સબર્ગની ઊંચાઈ શું છે", "language": "gu", "expected_doc_ids": ["gu_1040064_p1"], "query_id": 1040064, "split": "validation"}
+{"query": "સીપીએ લાયસન્સ માટે કલાકોના ચોક્કસ પ્રકારો જરૂરી છે", "language": "gu", "expected_doc_ids": ["gu_25769_p0"], "query_id": 25769, "split": "validation"}
+{"query": "વેકવિલે, કેલિફોર્નિયામાં હવામાન", "language": "gu", "expected_doc_ids": ["gu_1088168_p7"], "query_id": 1088168, "split": "validation"}
+{"query": "આર્ટેમિસનો વિષય શું છે", "language": "gu", "expected_doc_ids": ["gu_1031047_p3"], "query_id": 1031047, "split": "validation"}
+{"query": "વાણિજ્ય બેંક કેન્સાસ શહેર માટે રાઉટિંગ નંબર", "language": "gu", "expected_doc_ids": ["gu_1090976_p5"], "query_id": 1090976, "split": "validation"}
+{"query": "6 ફૂટના પુરુષ માટે સામાન્ય વજન", "language": "gu", "expected_doc_ids": ["gu_465777_p2"], "query_id": 465777, "split": "validation"}
+{"query": "ગરીબીમાં જન્મેલા કેટલા લોકો આજીવન ગરીબીમાં રહે છે.", "language": "gu", "expected_doc_ids": ["gu_1096842_p5"], "query_id": 1096842, "split": "validation"}
+{"query": "શું કદાચ કઠોળમાં પ્રોટીન ભરપૂર હોય છે?", "language": "gu", "expected_doc_ids": ["gu_155189_p3"], "query_id": 155189, "split": "validation"}
+{"query": "એક ઇજનેરનો સરેરાશ પગાર", "language": "gu", "expected_doc_ids": ["gu_43058_p1"], "query_id": 43058, "split": "validation"}
+{"query": "ઓક્સફર્ડ મિશિગન કયા કાઉન્ટીમાં છે", "language": "gu", "expected_doc_ids": ["gu_610918_p5"], "query_id": 610918, "split": "validation"}
+{"query": "વર્દનનું યુદ્ધ કેટલો સમય ચાલ્યું હતું?", "language": "gu", "expected_doc_ids": ["gu_273143_p0"], "query_id": 273143, "split": "validation"}
+{"query": "હિમપ્રપાત ફ્રાન્સનું હવામાન", "language": "gu", "expected_doc_ids": ["gu_1094440_p0"], "query_id": 1094440, "split": "validation"}
+{"query": "કાર્યકારી ડિઝાઇનની વ્યાખ્યા", "language": "gu", "expected_doc_ids": ["gu_121102_p9"], "query_id": 121102, "split": "validation"}
+{"query": "જેક્સન ટેનેસીમાં તાપમાન", "language": "gu", "expected_doc_ids": ["gu_1090025_p3"], "query_id": 1090025, "split": "validation"}
+{"query": "વેચાણ દળ શું છે", "language": "gu", "expected_doc_ids": ["gu_845746_p7"], "query_id": 845746, "split": "validation"}
+{"query": "શું એક મુખ્ય તબીબી સ્થિતિ છે", "language": "gu", "expected_doc_ids": ["gu_1071048_p0"], "query_id": 1071048, "split": "validation"}
+{"query": "મૂળભૂત કેબલની કિંમત શું છે", "language": "gu", "expected_doc_ids": ["gu_812538_p5"], "query_id": 812538, "split": "validation"}
+{"query": "ફ્રેમ હાઉસની સરેરાશ કિંમત", "language": "gu", "expected_doc_ids": ["gu_35129_p9"], "query_id": 35129, "split": "validation"}
+{"query": "એપ્રિલમાં પનામા શહેર ફ્લોરિડામાં હવામાન", "language": "gu", "expected_doc_ids": ["gu_1088317_p6", "gu_1088317_p9"], "query_id": 1088317, "split": "validation"}
+{"query": "કેવી રીતે વાળ કાપ્યા વિના અનિચ્છનીય વાળથી છુટકારો મેળવવો", "language": "gu", "expected_doc_ids": ["gu_362700_p0"], "query_id": 362700, "split": "validation"}
+{"query": "વાવાઝોડાની હાર્વેનું નુકસાન કેટલું હતું?", "language": "gu", "expected_doc_ids": ["gu_919876_p4"], "query_id": 919876, "split": "validation"}
+{"query": "જે સ્મર્ફ્સ ફિલ્મો બનાવે છે", "language": "gu", "expected_doc_ids": ["gu_1044305_p8"], "query_id": 1044305, "split": "validation"}
+{"query": "જે ખોરાક ખેંચાણમાં મદદ કરે છે", "language": "gu", "expected_doc_ids": ["gu_189467_p3", "gu_189467_p7"], "query_id": 189467, "split": "validation"}
+{"query": "સેલ્ફી સ્ટિકનો ઉપયોગ કેવી રીતે કરવો", "language": "gu", "expected_doc_ids": ["gu_384845_p1"], "query_id": 384845, "split": "validation"}
+{"query": "પૃથ્વી મોટે ભાગે કયા મુખ્ય તત્વથી બનેલી છે", "language": "gu", "expected_doc_ids": ["gu_601156_p3"], "query_id": 601156, "split": "validation"}
+{"query": "ઇંધણ દાંડીઓની વ્યાખ્યા", "language": "gu", "expected_doc_ids": ["gu_134832_p9"], "query_id": 134832, "split": "validation"}
+{"query": "ઇન્ટર્ન્ડ શબ્દની વ્યાખ્યા શું છે?", "language": "gu", "expected_doc_ids": ["gu_814541_p1"], "query_id": 814541, "split": "validation"}
+{"query": "મઠાધિપતિની વ્યાખ્યા", "language": "gu", "expected_doc_ids": ["gu_1097811_p4"], "query_id": 1097811, "split": "validation"}
+{"query": "જો તમારી પાસે પહેલેથી જ સ્નાતકની ડિગ્રી હોય તો તમારા બીએસઆરએન મેળવવામાં કેટલો સમય લાગે છે.", "language": "gu", "expected_doc_ids": ["gu_257309_p3"], "query_id": 257309, "split": "validation"}
+{"query": "વ્યાપારી ઈમારતોની વ્યાખ્યા", "language": "gu", "expected_doc_ids": ["gu_1062687_p5"], "query_id": 1062687, "split": "validation"}
+{"query": "શું છે ગુઈડી|", "language": "gu", "expected_doc_ids": ["gu_1072479_p0"], "query_id": 1072479, "split": "validation"}
+{"query": "જે ગ્રીનબેલ્ટના ડૉ. રેડમેન મોસ્ટાગિમ છે, એમ.ડી.", "language": "gu", "expected_doc_ids": ["gu_1032371_p0"], "query_id": 1032371, "split": "validation"}
+{"query": "અમેરિકાની સૌથી મોટી શુદ્ધિકરણ કંપનીઓ", "language": "gu", "expected_doc_ids": ["gu_1093548_p8"], "query_id": 1093548, "split": "validation"}
+{"query": "ચશ્મા માટેની પ્રિસ્ક્રિપ્શન કેટલી લાંબી માન્ય છે", "language": "gu", "expected_doc_ids": ["gu_262775_p6"], "query_id": 262775, "split": "validation"}
+{"query": "બોક્સકાર વિલી માટે ફિડલ વગાડનાર", "language": "gu", "expected_doc_ids": ["gu_1046648_p9"], "query_id": 1046648, "split": "validation"}
+{"query": "ડુપ્લિન કાઉન્ટી ક્યાં છે?", "language": "gu", "expected_doc_ids": ["gu_981780_p4"], "query_id": 981780, "split": "validation"}
+{"query": "મેનિન્જોકોકલ રસી માટે ઉંમર", "language": "gu", "expected_doc_ids": ["gu_13038_p1"], "query_id": 13038, "split": "validation"}
+{"query": "કયા દેશમાં નિમ્રુડનું આસીરીયન શહેર છે.", "language": "gu", "expected_doc_ids": ["gu_880456_p7"], "query_id": 880456, "split": "validation"}
+{"query": "લિશેનિયા માટે સામાન્ય દવા શું છે", "language": "gu", "expected_doc_ids": ["gu_1008989_p6"], "query_id": 1008989, "split": "validation"}
+{"query": "કલાનાં તત્વો શું છે", "language": "gu", "expected_doc_ids": ["gu_558175_p1"], "query_id": 558175, "split": "validation"}
+{"query": "શું કૂતરા માટે ચોખા સારા છે?", "language": "gu", "expected_doc_ids": ["gu_422526_p0"], "query_id": 422526, "split": "validation"}
+{"query": "ઈંડું રાંધવામાં કેટલો સમય લાગે છે?", "language": "gu", "expected_doc_ids": ["gu_1097903_p2"], "query_id": 1097903, "split": "validation"}
+{"query": "લેવાક્વિન એન્ટિબાયોટિક્સનું કયું પરિવાર છે", "language": "gu", "expected_doc_ids": ["gu_659182_p0", "gu_659182_p8"], "query_id": 659182, "split": "validation"}
+{"query": "બજાર કેપ શું સૂચવે છે?", "language": "gu", "expected_doc_ids": ["gu_1082750_p3"], "query_id": 1082750, "split": "validation"}
+{"query": "જ્યારે પફ ધ મેજિક ડ્રેગન ડેબ્યુ થયું", "language": "gu", "expected_doc_ids": ["gu_1006287_p8"], "query_id": 1006287, "split": "validation"}
+{"query": "એગ્પુ શું છે?", "language": "gu", "expected_doc_ids": ["gu_1074001_p0"], "query_id": 1074001, "split": "validation"}
+{"query": "ઓક્સિજનેટેડ બ્લીચ શું છે", "language": "gu", "expected_doc_ids": ["gu_780880_p4"], "query_id": 780880, "split": "validation"}
+{"query": "કિડનીના પથ્થરની રોકથામ સાથે ટાળવા માટેના ખોરાક", "language": "gu", "expected_doc_ids": ["gu_1100467_p0", "gu_1100467_p5"], "query_id": 1100467, "split": "validation"}
+{"query": "કિંડલ પ્રાઇમ સભ્યપદ માટે કયા પુસ્તકો મફત છે", "language": "gu", "expected_doc_ids": ["gu_579677_p2", "gu_579677_p9"], "query_id": 579677, "split": "validation"}
+{"query": "મેલાટોનિનનો ઉપયોગ સાઇડ ઇફેક્ટ્સ", "language": "gu", "expected_doc_ids": ["gu_1090694_p1"], "query_id": 1090694, "split": "validation"}
+{"query": "રે ચાર્લ્સ વર્થ", "language": "gu", "expected_doc_ids": ["gu_1091141_p5"], "query_id": 1091141, "split": "validation"}
+{"query": "કહેવતના ઉદાહરણો", "language": "gu", "expected_doc_ids": ["gu_1068703_p2"], "query_id": 1068703, "split": "validation"}
+{"query": "શું એક સંપૂર્ણ નિષ્ક્રિય ભાગીદાર છે?", "language": "gu", "expected_doc_ids": ["gu_1069405_p3", "gu_1069405_p5"], "query_id": 1069405, "split": "validation"}
+{"query": "શૈલી અને સાહિત્યિક કાર્ય", "language": "gu", "expected_doc_ids": ["gu_766342_p7"], "query_id": 766342, "split": "validation"}
+{"query": "સામગ્રીની મિલકત તરીકે કઠોરતા શું છે", "language": "gu", "expected_doc_ids": ["gu_1029549_p5"], "query_id": 1029549, "split": "validation"}
+{"query": "લોરેન્ઝો ટીએક્સ ક્યાં છે", "language": "gu", "expected_doc_ids": ["gu_998624_p6"], "query_id": 998624, "split": "validation"}
+{"query": "બેઝલ મેટાબોલિક રેટ (બી.એમ.આર.) નું લક્ષણ શું છે?", "language": "gu", "expected_doc_ids": ["gu_1073671_p5"], "query_id": 1073671, "split": "validation"}
+{"query": "મિપ્સનો અર્થ", "language": "gu", "expected_doc_ids": ["gu_1093004_p0"], "query_id": 1093004, "split": "validation"}
+{"query": "કેપિલરી રિફિલ પરીક્ષણ કેવી રીતે કરવામાં આવે છે?", "language": "gu", "expected_doc_ids": ["gu_1098816_p0"], "query_id": 1098816, "split": "validation"}
+{"query": "શેના માટે સેન્ટોરીનો ઉપયોગ થાય છે", "language": "gu", "expected_doc_ids": ["gu_729066_p9"], "query_id": 729066, "split": "validation"}
+{"query": "જંગલી પોપટો તેમના બચ્ચાંનું નામ રાખે છે.", "language": "gu", "expected_doc_ids": ["gu_159931_p3"], "query_id": 159931, "split": "validation"}
+{"query": "નેતૃત્વ કોચિંગની વ્યાખ્યા", "language": "gu", "expected_doc_ids": ["gu_438286_p6"], "query_id": 438286, "split": "validation"}
+{"query": "તમારા કૂતરાને ખાવા માટે પ્રેરિત કરવાની રીતો", "language": "gu", "expected_doc_ids": ["gu_542293_p6"], "query_id": 542293, "split": "validation"}
+{"query": "એમ્બિવર્ટનો શું અર્થ થાય છે", "language": "gu", "expected_doc_ids": ["gu_631487_p5"], "query_id": 631487, "split": "validation"}
+{"query": "સમાજરોગ વ્યાખ્યા વિકિપીડિયા", "language": "gu", "expected_doc_ids": ["gu_499948_p9"], "query_id": 499948, "split": "validation"}
+{"query": "નેગ્રીલ જમૈકામાં સરેરાશ તાપમાન શું છે", "language": "gu", "expected_doc_ids": ["gu_1044239_p3"], "query_id": 1044239, "split": "validation"}
+{"query": "આંખના મધ્ય સ્તરમાં શું હોય છે", "language": "gu", "expected_doc_ids": ["gu_1082741_p7"], "query_id": 1082741, "split": "validation"}
+{"query": "યુનાઇટેડ સ્ટેટ્સની ટપાલ ટિકિટ કેટલી છે", "language": "gu", "expected_doc_ids": ["gu_321440_p2"], "query_id": 321440, "split": "validation"}
+{"query": "ટ્વિટર પર શું યુઆરએલ છે", "language": "gu", "expected_doc_ids": ["gu_929923_p3"], "query_id": 929923, "split": "validation"}
+{"query": "વ્યાખ્યા મલિંગર", "language": "gu", "expected_doc_ids": ["gu_997494_p9"], "query_id": 997494, "split": "validation"}
+{"query": "સાહિત્યમાં સ્થિર પાત્ર શું છે", "language": "gu", "expected_doc_ids": ["gu_701390_p0"], "query_id": 701390, "split": "validation"}
+{"query": "ફ્રાન્સમાં કયા શહેરમાં લોર્ડ્સ આવેલું છે", "language": "gu", "expected_doc_ids": ["gu_393850_p7"], "query_id": 393850, "split": "validation"}
+{"query": "હાયપરવેન્ટિલેશનની વ્યાખ્યા શું છે", "language": "gu", "expected_doc_ids": ["gu_1041602_p6"], "query_id": 1041602, "split": "validation"}
+{"query": "ગર્ભાવસ્થાની ઉંમર કેવી રીતે ગણવી.", "language": "gu", "expected_doc_ids": ["gu_346984_p3"], "query_id": 346984, "split": "validation"}
+{"query": "આકાશ કેમ મર્યાદા છે તે કહેવાનું કારણ છે.", "language": "gu", "expected_doc_ids": ["gu_1101971_p5"], "query_id": 1101971, "split": "validation"}
+{"query": "શિમિંગની વ્યાખ્યા", "language": "gu", "expected_doc_ids": ["gu_127025_p3"], "query_id": 127025, "split": "validation"}
+{"query": "સિંગાપોર સિએટલ કરતાં કેટલા કલાક આગળ છે.", "language": "gu", "expected_doc_ids": ["gu_1097038_p8"], "query_id": 1097038, "split": "validation"}
+{"query": "નર્વસ સિસ્ટમ છાતીમાં દુખાવો પેદા કરી શકે છે.", "language": "gu", "expected_doc_ids": ["gu_71767_p6"], "query_id": 71767, "split": "validation"}
+{"query": "શું મ્યુલરને એફબીઆઈ ડિરેક્ટર માટે નકારવામાં આવ્યા?", "language": "gu", "expected_doc_ids": ["gu_540455_p4"], "query_id": 540455, "split": "validation"}

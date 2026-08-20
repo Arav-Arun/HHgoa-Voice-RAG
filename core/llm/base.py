@@ -19,7 +19,7 @@ class BaseLLM(ABC):
         language: str = "hi",
         system: str | None = None,
     ) -> str:
-        """Default RAG answer path — override for custom prompting."""
+        """Default RAG answer path, override for custom prompting."""
         from core.rag.prompts import build_rag_prompt
 
         prompt = build_rag_prompt(query, context_chunks, language=language)

@@ -1,110 +1,704 @@
-# hhgoa
+# hhgoa: Voice RAG for Hindi and Gujarati
 
-Modular **RAG framework** for **Hindi** and **Gujarati** (MS MARCO-XI scope).
+Speak a question in Hindi or Gujarati; get a grounded, cited answer from a
+109,082-chunk [MS MARCO-XI](https://huggingface.co/datasets/ai4bharat/MSMARCO-XI)
+index in **12.2 ms at P50**.
 
-Each layer is swappable — chunking, embeddings, vector store, retrieval, LLM, prompts, ingest, eval, API. See [docs/architecture.md](docs/architecture.md).
+Built for **HH Goa 2026 Shortlisting Task 2** by **Team Deploy For Good**.
 
-## Quick start
+Corpus: [ai4bharat/MSMARCO-XI](https://huggingface.co/datasets/ai4bharat/MSMARCO-XI)
+· Speech-to-text: ElevenLabs Scribe v2
+
+---
+
+## Headline numbers
+
+300 held-out queries plus 150 guardrail queries, one at a time, no batching,
+warm process:
+
+| Metric | Value | Budget |
+|---|---:|---|
+| **P50** | **12.19 ms** | 200 ms |
+| **P70** | **12.75 ms** | 200 ms |
+| **P100** | **32.86 ms** | 200 ms |
+| Queries inside budget | **450 / 450** | |
+
+The measured window is **transcript in, answer out**, matching the task's
+wording: *"chunking + vector DB retrieval + everything through to final
+output."* Speech-to-text and LLM generation are network calls and are reported
+separately below, never folded into this number.
 
 ```bash
-cp .env.example .env          # optional: add LLM_API_KEY for real answers
-uv sync
-./hhgoa eval-build              # held-out queries.jsonl + split.json
-./hhgoa ingest msmarco          # corpus slice from split.json
-./hhgoa eval-validate           # labels present in index
-./hhgoa eval                    # metrics on held-out queries (not dev slice)
+./hhgoa bench --queries 300
 ```
 
-Equivalent: `uv run python -m core.cli ingest`
+---
 
-With an LLM key set, drop `--template-llm` for generated answers.
+## Architecture
+
+Requirement 1 mandates a hosted speech-to-text provider. Ours measures **~900 ms**,
+which is 4.5x the entire 200 ms budget before any retrieval happens, and an LLM
+generation call adds 2 to 6 seconds more. So "under 200 ms" cannot mean
+microphone to answer. It can only mean the part of the pipeline we build and
+control, which is what the number above measures, with every stage timed and the
+network legs reported separately rather than hidden.
+
+That constraint produces the design:
+
+```mermaid
+flowchart TD
+    MIC["🎤 Voice input"] --> STT["ElevenLabs Scribe v2<br/>STT · ~900ms · outside budget"]
+    TXT["⌨️ Typed question"] --> G1
+    STT -->|transcript| G1
+
+    subgraph BUDGET["⏱️ 200ms BUDGET, measured window · P50 12.2ms · P100 32.9ms"]
+        G1["🛡️ Input guardrail<br/>unsafe + injection · 0.01ms"]
+        G1 -->|"unsafe / injection"| REFUSE["❌ Refuse<br/>never touches the index"]
+        G1 -->|allowed| EMB["🔢 Embed query<br/>e5-small · 384-dim"]
+        EMB --> DENSE["Dense search<br/>cosine over 109k chunks"]
+        EMB --> SPARSE["Sparse search<br/>BM25, precomputed CSC"]
+        DENSE --> RRF["⚖️ Weighted RRF fusion<br/>per-language weights<br/>ranks passages, not chunks"]
+        SPARSE --> RRF
+        RRF --> G2["🛡️ Grounding gate<br/>3-feature logistic"]
+        G2 -->|"low confidence"| ABSTAIN["🤷 Abstain"]
+        G2 -->|grounded| EXT["✂️ Extractive answer<br/>IDF-weighted sentence pick"]
+        EXT --> G3["🛡️ Faithfulness<br/>token overlap + numeric grounding"]
+        G3 -->|ungrounded| ABSTAIN
+        G3 -->|passes| FAST["✅ TIER 1, grounded + cited"]
+    end
+
+    FAST --> LLM["🤖 TIER 2, LLM rewrite<br/>tool calls · ~2-6s · outside budget"]
+    LLM --> G4["🛡️ Verify citations<br/>+ faithfulness again"]
+    G4 -->|passes| FINAL["✨ Generated answer"]
+    G4 -->|"failed, timeout, or refused"| KEEP["↩️ Keep tier 1"]
+
+    style BUDGET fill:#0d2818,stroke:#3fb950,stroke-width:3px,color:#e6edf3
+    style FAST fill:#1a4d2e,stroke:#3fb950,stroke-width:2px,color:#ffffff
+    style FINAL fill:#1d3f6b,stroke:#4c9aff,color:#ffffff
+    style KEEP fill:#1a4d2e,stroke:#3fb950,color:#ffffff
+    style REFUSE fill:#4d1f1c,stroke:#f85149,color:#ffffff
+    style ABSTAIN fill:#4d3c15,stroke:#d29922,color:#ffffff
+```
+
+### The one decision that matters
+
+**Tier 1 is computed before generation and never depends on it.** One choice,
+three consequences:
+
+- The sub-200 ms claim becomes *measurable*, because the tier-1 answer is a real
+  grounded, citable answer rather than a placeholder or a passage dump.
+- It **is** the error-recovery path. An LLM timeout, a 429, malformed JSON, a
+  refused citation check: each leaves a real answer standing. Recovery here is a
+  second answer already computed, not a `try/except` returning an error string.
+- The demo feels instant. The answer appears in ~12 ms and improves in place a
+  few seconds later.
+
+The UI shows both tiers with their own timings, so the budget claim and the
+generation cost are never conflated.
+
+---
+
+## How a number gets into this README
+
+Every figure below survived this loop. It is also the reason the `parent_child`
+row changed twice: the first measurement was real, and the cause was ours.
+
+```mermaid
+flowchart LR
+    H["hypothesis"] --> T["tune on the dev slice<br/>eval is never touched"]
+    T --> M["measure on 530<br/>held-out queries"]
+    M --> S{"paired bootstrap<br/>10,000 resamples"}
+    S -->|"not significant"| N["publish the null result"]
+    S -->|"significant"| C{"is the cause the idea,<br/>or our own plumbing?"}
+    C -->|plumbing| F["fix it, re-run,<br/>publish both numbers"]
+    C -->|idea| R["publish, with the<br/>artifact path beside it"]
+    F --> M
+
+    style N fill:#4d3c15,stroke:#d29922,color:#ffffff
+    style R fill:#1a4d2e,stroke:#3fb950,color:#ffffff
+    style F fill:#4d1f1c,stroke:#f85149,color:#ffffff
+```
+
+Two rules fall out of it, and both cost us results we would rather have shown:
+
+- **A null result is a result.** No chunking strategy beats the plain baseline
+  significantly, and that is what the table says.
+- **Rule out your own bugs before blaming the idea.** `parent_child` looked
+  11.7 pp worse than baseline. Two thirds of that was our retrieval code.
+- **Select on dev, report on eval.** The per-language chunk window that eval
+  seemed to justify did not replicate on dev, so it is not in the repo.
+
+---
+
+## Requirements to implementation
+
+| # | Requirement | Where | Evidence |
+|---|---|---|---|
+| 1 | Speech-to-text (Sarvam / ElevenLabs) | `core/stt/elevenlabs.py` | ElevenLabs **Scribe v2**, verified live in hi + gu |
+| 2 | Chunking must be vast | `core/chunking/` | 6 strategies, [ablation](#2-chunking) with bootstrap |
+| 3 | Under 200 ms | `core/harness/orchestrator.py` | **P100 32.9 ms, 450/450 inside budget** |
+| 4 | P50 / P70 / P100 | `bench/runner.py` | [below](#34-latency) |
+| 5 | Harness | `core/harness/` | tool calls, retries, typed I/O, failover |
+| 6 | Guardrails | `core/guardrails/` | [below](#6-guardrails), 54/54 adversarial caught |
+
+---
+
+## 1. Speech-to-text
+
+ElevenLabs **Scribe v2**. Verified end to end in both languages, from real audio
+through retrieval to a grounded answer:
+
+| clip | transcript | retrieved | correct family |
+|---|---|---|---|
+| `hi_01.wav` | बीमा समाधान क्या है? | `hi_180145_p3` | yes |
+| `gu_01.wav` | વીમા રિઝોલ્યુશન શું છે? | `gu_1053197_p2` | yes |
+| `gu_02.wav` | સૌથી વધુ રોકડ પુરસ્કાર **credit cards** | `gu_202006_p4` | yes |
+
+`gu_02` is the most useful fixture. Scribe returns the loanword "ક્રેડિટ કાર્ડ્સ"
+in Latin script, which is realistic code-mixed ASR output and exactly what breaks
+a dense-only retriever. Retrieval still lands on the right passage because BM25
+matches the Latin token while the dense half carries the Gujarati context.
+**Hybrid retrieval earns its keep on the voice path, not just on the benchmark.**
+
+Fixtures are synthetic TTS, so they are cleaner than human speech. They verify
+the pipeline; they are not a WER benchmark. See
+[data/samples/audio/README.md](data/samples/audio/README.md).
+
+### Nobody should have to declare their language
+
+Devanagari (U+0900-U+097F) and Gujarati (U+0A80-U+0AFF) are disjoint Unicode
+blocks, so the script a question is written in *is* its language. There is no
+model and no ambiguity, which is why the UI has no language selector:
+
+```
+बीमा समाधान क्या है      -> hi
+વીમા સમાધાન શું છે        -> gu
+2026 में World Cup कहाँ   -> hi   (Latin loanwords ignored)
+bima samadhan kya hai   -> None -> falls back to DEFAULT_LANGUAGE
+```
+
+For voice, Scribe is asked to detect the language rather than being told it, and
+the transcript's script then settles it. A provider's language label can be
+wrong; the script cannot.
+
+This is not cosmetic. The language selects the fusion weights (hi=0.95,
+gu=0.50), the refusal message, and which passage the answer is quoted from, so a
+wrong language is a wrong answer. [core/text.py](core/text.py).
+
+---
+
+## 2. Chunking
+
+Six strategies, swappable via `CHUNKING_PROVIDER`:
+
+| strategy | idea |
+|---|---|
+| `fixed` | character windows with overlap |
+| `semantic` | sentence-boundary packing, danda-aware |
+| `metadata` | atomic MS MARCO passages, semantic fallback when long |
+| `recursive` | separator cascade: paragraph, danda, clause, char |
+| `parent_child` | embed 2-sentence children, resolve to the parent passage |
+| `token_window` | window sized in e5 **tokens**, not characters |
+
+**Measured, 530 held-out queries, paired bootstrap (10,000 resamples):**
+
+| strategy | chunks | fan-out | hit@5 | MRR | hi | gu | vs fixed |
+|---|---:|---:|---:|---:|---:|---:|---|
+| **fixed** | 109,082 | 1.09 | **0.6377** | 0.4113 | 0.7170 | **0.5585** | baseline |
+| semantic | 107,861 | 1.08 | 0.6358 | **0.4136** | 0.7170 | 0.5547 | -0.002 (p=0.82) |
+| metadata | 107,861 | 1.08 | 0.6358 | **0.4136** | 0.7170 | 0.5547 | -0.002 (p=0.82) |
+| recursive | 108,876 | 1.09 | 0.6302 | 0.4093 | 0.7132 | 0.5472 | -0.008 (p=0.13) |
+| token_window | 111,093 | 1.11 | 0.6283 | 0.4060 | 0.7057 | 0.5509 | -0.009 (p=0.12) |
+| parent_child | 236,950 | 2.37 | 0.6019 | 0.3929 | 0.6906 | 0.5132 | -0.036 (p=0.0010) |
+
+"Fan-out" is chunks per source passage. It is in the table because it turned out
+to be the thing that decided the ranking, for a reason that had nothing to do
+with chunking.
+
+### The null result
+
+**The plain baseline wins and nothing beats it significantly.** MS MARCO ships
+pre-segmented passages averaging ~300 characters, so a 512-character window
+already keeps almost every passage intact. The sophisticated splitters are
+solving a problem this corpus does not have. `semantic` and `metadata` are
+byte-identical for the same reason: both collapse to "emit the passage".
+
+Reporting that is more useful than a table engineered to make a clever strategy
+look good.
+
+### The bug that was in the table, not the strategy
+
+An earlier version of this table put `parent_child` last by a mile: 0.4887
+against a 0.6057 baseline, -11.7 pp. The stated cause was that children of one
+passage crowd each other out of the top-5.
+
+That was true, and it was **our retrieval code's fault, not the strategy's**.
+Two defects, both of which scale with fan-out:
+
+1. **Rank contamination.** Reciprocal Rank Fusion scores `1/(60 + rank)` on
+   *chunk* ranks. Siblings holding ranks 1-3 push the next distinct passage to
+   rank 4, so a fan-out chunker's second-best passage was scored as though it
+   were fourth.
+2. **Pool starvation.** `candidate_k = 50` counted *chunks*. Measured on this
+   corpus, a 50-chunk pool held 47.8 distinct passages under `fixed` but only
+   **35.3** under `parent_child`. The strategies were not being given the same
+   number of passages to choose from.
+
+Neither is a property of small-to-big retrieval. Both are fixed in
+[core/retriever/base.py](core/retriever/base.py): candidates collapse to one
+best chunk per passage *before* ranks are assigned, and the budget is counted in
+passages, so `candidate_k` means the same thing for every chunker.
+
+```mermaid
+flowchart TB
+    subgraph BEFORE["Ranking chunks · the bug"]
+        direction TB
+        B1["dense ranks<br/>1 · A-child1<br/>2 · A-child2<br/>3 · A-child3<br/>4 · B-child1"]
+        B2["RRF = 1/(60+rank)<br/>passage B scored as rank 4"]
+        B3["top-5 holds 3 copies of A<br/>3 distinct passages"]
+        B1 --> B2 --> B3
+    end
+
+    subgraph AFTER["Ranking passages · the fix"]
+        direction TB
+        A1["collapse to best child per passage<br/>1 · A<br/>2 · B<br/>3 · C<br/>4 · D"]
+        A2["RRF = 1/(60+rank)<br/>passage B scored as rank 2"]
+        A3["top-5 holds 5 distinct passages"]
+        A1 --> A2 --> A3
+    end
+
+    style BEFORE fill:#4d1f1c,stroke:#f85149,color:#e6edf3
+    style AFTER fill:#0d2818,stroke:#3fb950,color:#e6edf3
+```
+
+Collapsing first also lets a passage combine its dense and lexical evidence when
+the two retrievers nominate different children of it, which chunk-level fusion
+could not do: it scored those children separately and gave neither the sum.
+
+The ablation is the whole argument, and its size tracks fan-out exactly:
+
+| strategy | fan-out | chunk-level | passage-level | delta | p |
+|---|---:|---:|---:|---:|---:|
+| parent_child | 2.37 | 0.5717 | 0.6019 | **+0.0302** | 0.0022 |
+| semantic | 1.08 | 0.6226 | 0.6358 | +0.0132 | 0.0022 |
+| metadata | 1.08 | 0.6226 | 0.6358 | +0.0132 | 0.0022 |
+| fixed | 1.09 | 0.6321 | 0.6377 | +0.0057 | 0.10 |
+| recursive | 1.09 | 0.6245 | 0.6302 | +0.0057 | 0.25 |
+| token_window | 1.11 | 0.6264 | 0.6283 | +0.0019 | 0.83 |
+
+```bash
+# --reuse-index scores against indexes already built, skipping a 6x re-ingest
+./hhgoa chunk-compare --reuse-index --ablate-dedupe
+```
+
+### What `parent_child` actually does, once measured fairly
+
+Two things were wrong with the original row, and separating them matters:
+
+| | hit@5 | vs fixed |
+|---|---:|---:|
+| as first published (2-sentence children, chunk-level ranking) | 0.4887 | -11.7 pp |
+| after the ranking fix (2-sentence children) | 0.5962 | -4.2 pp |
+| after choosing the window on dev (3-sentence children) | **0.6019** | **-3.6 pp** |
+
+Two thirds of the original gap was our plumbing. The rest is real.
+
+### Does Gujarati want wider children?
+
+That was the open question: `parent_child` splits a passage into short windows,
+and e5-small is weak on Gujarati (0.438 hit@5 against 0.698 on Hindi), so
+perhaps two sentences is less text than that encoder can place. Swept with
+`child_stride` fixed at 1, so window size is the only variable:
+
+| window | chunks | dev hi | dev gu | eval hi | eval gu |
+|---|---:|---:|---:|---:|---:|
+| 2 sentences | 302,522 | 0.6881 | 0.4712 | **0.7208** | 0.4717 |
+| 3 sentences | 236,950 | **0.7051** | **0.5085** | 0.6906 | **0.5132** |
+
+**Gujarati: yes.** +3.7 pp on dev, **+4.2 pp on eval (p=0.021)**. The hypothesis
+holds, and it holds on both slices.
+
+**Hindi: the mirror claim does not survive.** On eval, narrow children look
+better for Hindi by 3.0 pp, which is exactly the per-language split we expected
+to find. Dev says the opposite, preferring wide children by 1.7 pp. One slice
+cannot overrule the other, and the eval-side effect is not significant anyway
+(p=0.072), so **there is no per-language window in this repo.** Dev picks a
+single window of 3 and that is the default.
+
+That is the whole argument for the dev/eval split, in one table. Selecting on
+eval would have produced a confident, published, per-language chunker justified
+by a difference that does not replicate.
+
+The strategy still loses to the baseline overall (-3.6 pp, p=0.0010), so `fixed`
+remains the shipping chunker. What changed is that the number now measures the
+idea instead of our code.
+
+```bash
+./hhgoa child-sweep --sizes 2 3 --reuse-index
+```
+
+### The tokenizer bug underneath all of it
+
+Python's `\w` does not match Indic combining marks, because matras are Unicode
+categories Mn/Mc and `str.isalnum()` is False for them. Tokenizing Devanagari
+with a bare `\w+` shatters words:
+
+```
+हैबर   ->  ['ह', 'बर']       # BM25 would index consonant fragments
+Delhi  ->  ['Delhi']          # English unaffected, which is how it hides
+```
+
+A second trap sits inside the fix: the danda `।` (U+0964) lives *inside* the
+Devanagari block, so a naive `[ऀ-ॿ]+` range glues sentence-final
+punctuation onto the word and `है।` never matches `है`.
+
+Both are handled in [core/text.py](core/text.py), which is the single tokenizer
+shared by chunking, BM25, and the guardrails so they cannot drift apart.
+
+### Script fairness
+
+`token_window` exists because character counts are not comparable across
+scripts. Measured on this corpus:
+
+| language | chars/passage | tokens/passage | chars/token | 512 chars = |
+|---|---:|---:|---:|---:|
+| Gujarati | 293.4 | 103.1 | 2.85 | **180 tokens** |
+| Hindi | 306.6 | 92.5 | 3.31 | **154 tokens** |
+
+A fixed 512-character window is a **16% larger effective window for Gujarati
+than for Hindi**, a confound sitting underneath every character-based comparison
+in this table. Sizing in tokens removes it. It did not win, but the measurement
+is the point.
+
+---
+
+## Retrieval
+
+```mermaid
+flowchart LR
+    Q["query"] --> E["e5-small<br/>query: prefix"]
+    E --> D["dense top-50<br/>cosine"]
+    Q --> B["BM25 top-50<br/>CSC weights"]
+    D --> F{"weighted RRF<br/>1/(60+rank)"}
+    B --> F
+    F --> T["top-5 fused"]
+    T --> C["components carried through:<br/>dense_score · sparse_score · ranks"]
+
+    style F fill:#1a4d2e,stroke:#3fb950,color:#ffffff
+    style C fill:#2b2b2b,stroke:#888,color:#e6edf3
+```
+
+| retriever | hit@5 | recall@5 | MRR | hi | gu |
+|---|---:|---:|---:|---:|---:|
+| dense | 0.5679 | 0.5579 | 0.3686 | 0.6981 | 0.4377 |
+| sparse (BM25) | 0.4491 | 0.4412 | 0.2869 | 0.4679 | 0.4302 |
+| **hybrid (RRF)** | **0.6377** | **0.6261** | **0.4113** | **0.7170** | **0.5585** |
+
+**+7.0 pp hit@5 (p<0.0001), +4.3 pp MRR (p=0.0006)** over dense.
+
+### A single global fusion weight is the wrong abstraction
+
+With a uniform weight, hybrid retrieval looks like a wash overall
+(+2.8 pp, p=0.15). That average hides two **significant and opposite** effects:
+
+| | Hindi | Gujarati |
+|---|---|---|
+| uniform w=0.5 | **-6.4 pp, p=0.0062** | **+12.1 pp, p<0.0001** |
+
+e5-small is strong on Hindi (0.698) and weak on Gujarati (0.438). Where dense is
+already strong, lexical candidates mostly add noise. Where it is weak, BM25
+genuinely rescues it.
+
+Sweeping the dense weight on the **dev** slice gave hi=0.95, gu=0.50. Applying
+those per language neutralised the Hindi regression while keeping the Gujarati
+gain, turning a non-significant wash into a significant win:
+
+| | overall | Hindi | Gujarati |
+|---|---|---|---|
+| uniform w=0.5 | +2.8 pp (p=0.15, ns) | **-6.4 pp (p=0.0062)** | +12.1 pp (p<0.0001) |
+| **dev-tuned per language** | **+7.0 pp (p<0.0001)** | +1.9 pp (p=0.12, ns) | +12.1 pp (p<0.0001) |
+
+Per-language weighting turns a non-significant wash into a significant win, and
+flips Hindi from a significant regression to a non-significant gain. The sweep
+re-run under passage-level fusion picks the same operating point it picked
+before, hi=0.95 and gu=0.50, so the shipping config is unchanged:
+
+```bash
+./hhgoa fusion-sweep        # dev slice only, never eval
+```
+
+`data/eval/retriever-compare.json`, `data/eval/fusion-sweep.json`.
+
+### Answering in the language that was asked
+
+MS MARCO-XI is parallel: every passage exists in both languages, so a Hindi
+query can rank the Gujarati copy of the right passage. That is a guaranteed
+miss for hit@5, which keys on `document_id`, and worse in production: the
+extractive answerer quotes its source verbatim, so a Hindi question came back
+answered in Gujarati for **0.8% of held-out queries**.
+
+The obvious fix is to restrict retrieval to the query's language, which would
+also halve the dense matmul. Measured first:
+
+| | hit@5 | Hindi | Gujarati |
+|---|---:|---:|---:|
+| all languages searched | 0.6377 | 0.7170 | 0.5585 |
+| restricted to the query's language | 0.6396 | 0.7170 | 0.5623 |
+
+**+0.0019, p=0.84.** Nothing. Cross-language candidates take 6.9% of the top-5
+slots but almost never displace a passage that would have been a hit. So the
+index stays unfiltered and the language choice moved to the answerer, where it
+is a list comprehension over five candidates instead of a restructured vector
+store, and costs no latency at all. Wrong-language answers: **0.8% to 0.0%**.
+
+Speed was not a reason to do it either: retrieval already uses 6% of the budget.
+
+---
+
+## 3-4. Latency
+
+**P50 12.19 ms · P70 12.75 ms · P100 32.86 ms**, 450 queries.
+
+| stage | P50 | P70 | P100 |
+|---|---:|---:|---:|
+| input_guard | 0.01 ms | 0.01 ms | 0.47 ms |
+| retrieve | 11.91 ms | 12.38 ms | 31.53 ms |
+| grounding_guard | 0.05 ms | 0.06 ms | 0.18 ms |
+| answer_fast | 0.12 ms | 0.13 ms | 0.26 ms |
+| faithfulness | 0.27 ms | 0.30 ms | 0.46 ms |
+
+Retrieval is ~97% of the total; within it the query embedding dominates, since
+BM25 scoring is ~0.1 ms and dense search ~2.5 ms at 109k chunks.
+
+Ranking passages instead of chunks costs **+0.5 ms at P50**. It widens the
+candidate fetch by the index's fan-out, but `argpartition` is linear in the
+corpus regardless of how many candidates are taken, so the extra work is a
+longer partition and a slightly bigger dict, not another model call.
+
+**What made it fast** was algorithmic, not tuning:
+
+- **Normalize once, not per query.** The store used to recompute row norms and
+  allocate a full normalized copy of the embedding matrix on every search,
+  ~150 MB per query at 109k x 384. Vectors are now L2-normalized at load.
+- **`argpartition`, not `argsort`.** Fully sorting 109k scores to take 5 is
+  `O(n log n)` for no reason.
+- **BM25 is precomputed.** The document-side weight is query-independent, so it
+  is built into a scipy CSC matrix at index time. A query is a few column
+  lookups and a vectorized add.
+
+The first two together: **21.89 ms to 2.44 ms, a 9x speedup.**
+
+Reported separately, never folded in:
+
+| track | P50 | note |
+|---|---:|---|
+| pipeline (the budget) | 12.19 ms | local, no network |
+| STT round trip | 899.7 ms | mandated hosted API, measured separately |
+| LLM tier 2 | ~2-6 s | optional, falls back to tier 1 |
+| cold start | 8,643 ms | model + index load, excluded from percentiles |
+
+Cold start is excluded from the percentiles and reported on its own: folding it
+in would report a one-time artifact as steady-state, and hiding it would omit a
+real cost. The API eliminates it from request latency by warming in the FastAPI
+lifespan.
+
+**These numbers assume an otherwise idle machine.** Retrieval is one dense
+matmul over the whole index, so it is CPU-bound and scales with whatever else is
+running: the same query that takes 12 ms idle takes 60-110 ms while a corpus
+re-ingest is saturating the cores. Reproduce on a quiet machine, or the number
+you get is a measurement of your load, not of this pipeline. Full method in
+[docs/latency.md](docs/latency.md).
+
+---
+
+## 5. Harness
+
+```mermaid
+flowchart TD
+    IN["QueryEnvelope<br/>validated input"] --> S1["input_guard"]
+    S1 --> S2["retrieve"] --> S3["grounding_guard"] --> S4["answer_fast"]
+    S4 --> DEC{"tier 2<br/>requested?"}
+    DEC -->|no| OUT["RAGResponse + Trace"]
+    DEC -->|yes| P1["primary provider"]
+
+    P1 --> R{"transient<br/>failure?"}
+    R -->|"429 / 5xx / timeout"| RETRY["retry, jittered backoff<br/>max 3 attempts"]
+    RETRY --> P1
+    R -->|"exhausted"| P2["secondary provider"]
+    P2 -->|"also fails"| FB["fall back to tier 1"]
+    R -->|ok| TOOLS{"tool call?"}
+
+    TOOLS -->|yes| EXEC["search_corpus / get_passage<br/>max 2 rounds"]
+    EXEC --> P1
+    TOOLS -->|no| JSON{"valid JSON<br/>schema?"}
+    JSON -->|no| REPAIR["one repair round-trip"]
+    REPAIR --> JSON
+    JSON -->|"still invalid"| FB
+    JSON -->|yes| CITE["verify citations<br/>against retrieved set"]
+    CITE --> OUT
+    FB --> OUT
+
+    style FB fill:#1a4d2e,stroke:#3fb950,color:#ffffff
+    style OUT fill:#1d3f6b,stroke:#4c9aff,color:#ffffff
+```
+
+Requirement 5 names four things. All four are built:
+
+- **Tool calls**, the model gets `search_corpus(query, k)` and
+  `get_passage(chunk_id)` as real OpenAI functions and may issue up to 2 extra
+  retrieval rounds. Verified live: `tool_calls: ['search_corpus','search_corpus']`.
+  The **final pass withholds the tools**, or a model that calls one every turn
+  never gets a turn to answer. That was a real bug, found only by running
+  against a live model.
+- **Retries**, transient failures only (408/409/425/429/5xx, connect and read
+  timeouts), never a 400. Exponential backoff with jitter. The policy lives in
+  the harness, not the client, because only the orchestrator knows how much
+  budget is left.
+- **Structured I/O**, `QueryEnvelope` in, `AnswerPayload` out, enforced by JSON
+  schema. Tolerant parsing recovers fenced or prose-wrapped JSON; one repair
+  round-trip before giving up.
+- **Error recovery**, `Orchestrator.run()` has no exception path. Callers
+  always get a response.
+
+Demonstrate it:
+
+```bash
+LLM_BASE_URL=http://127.0.0.1:9 ./hhgoa query "बीमा समाधान क्या है" --mode quality
+```
+
+Details in [docs/harness.md](docs/harness.md).
+
+---
+
+## 6. Guardrails
+
+Three layers, each catching what the others cannot:
+
+| layer | catches | cost |
+|---|---|---:|
+| input intent | unsafe content, prompt injection, empty | 0.01 ms, **pre-retrieval** |
+| grounding gate | off-topic, nonsense, unanswerable | 0.05 ms |
+| faithfulness | ungrounded answers, invented numbers, fake citations | 0.27 ms |
+
+Unsafe and injection queries are refused **before retrieval**. A corpus lookup
+cannot make "how do I build a bomb" safe to answer, so a confidence threshold is
+the wrong tool. Measured on 150 categorised fixtures: **54/54 unsafe and
+prompt-injection queries caught, 0 false positives across all 530 real queries.**
+
+### Why a single threshold could not work
+
+Thresholding top-1 cosine at the configured 0.86 refuses **16.2% of answerable
+questions**. The distributions genuinely overlap: answerable top-1 cosine
+averages 0.884, unanswerable 0.864. No threshold on that feature separates them,
+and sweeping it does not help, it only moves which error you pay.
+
+Lexical overlap does separate them (0.617 vs 0.333). Combining cosine, top-1
+margin, and lexical overlap in a logistic gate, fitted on one half and reported
+on the held-out half:
+
+| gate | answerable recall | false abstain | abstain recall | balanced acc |
+|---|---:|---:|---:|---:|
+| cosine 0.860 (default when uncalibrated) | 0.838 | **16.2%** | 0.417 | 0.627 |
+| cosine, swept to >=95% recall (0.843) | 0.977 | 2.3% | 0.063 | 0.520 |
+| **multi-feature logistic** | **0.955** | **4.5%** | **0.333** | **0.644** |
+
+The middle row is the point: the *best* single-threshold operating point that
+meets the answerable-recall floor catches almost nothing (abstain recall 0.063).
+The gate has to look at more than cosine.
+
+Fitted coefficients: `lexical_overlap` 4.44, `top1_dense` 0.90, `margin` -0.05.
+Overlap does nearly all the work, and `margin` is now worth ~nothing: ranking
+passages instead of chunks removed the near-duplicate siblings whose identical
+scores used to make a small margin a signal of anything.
+
+Two methodology fixes went in alongside. Calibration now uses only the abstain
+categories that actually *reach* the grounding gate, since unsafe and injection
+are refused earlier and counting them inflated the gate's apparent accuracy. And
+the metric previously reported as `balanced_accuracy` was in fact
+`min(recall_a, recall_b)`, which is worst-class recall. Both are correct now.
+
+```bash
+./hhgoa guardrail-calibrate
+```
+
+---
+
+## Evaluation design
+
+```mermaid
+flowchart LR
+    V["MS MARCO-XI validation<br/>97,941 rows"] --> SH["shuffle, seed 42"]
+    SH --> C["corpus [0, 5000)<br/>109,082 chunks indexed"]
+    SH --> D["dev [0, 500)<br/>590 queries"]
+    SH --> E["eval [500, 1000)<br/>530 queries"]
+    D --> TUNE["ALL tuning:<br/>embedder · fusion weights · guardrail"]
+    E --> REPORT["ALL reported metrics"]
+
+    style D fill:#4d3c15,stroke:#d29922,color:#ffffff
+    style E fill:#1a4d2e,stroke:#3fb950,color:#ffffff
+```
+
+Rows are shuffled **before** slicing, so dev and eval are comparable random bags
+rather than contiguous parquet blocks that cluster by topic.
+
+**Nothing is tuned on eval.** Dev and eval share zero query ids. Every
+hyperparameter chosen by looking at a number was chosen on dev.
+
+The corpus was widened from 1,000 to 5,000 rows/language deliberately. Eval
+labels live in `[500, 1000)` and stay covered, so the extra 4,000 rows act purely
+as distractors. Dense hit@5 fell from 0.638 to 0.568 as a result: a harder and
+more honest benchmark.
+
+Significance is paired bootstrap, 10,000 resamples, in `eval/significance.py`.
+
+---
+
+## Run it
+
+```bash
+cp .env.example .env          # add STT_API_KEY; LLM_API_KEY optional
+uv sync --extra dev
+./hhgoa eval-build            # held-out + dev query sets, and split.json
+./hhgoa ingest msmarco        # vector + BM25 index (~24 min)
+./hhgoa eval-validate         # labels present -> ok: true
+./hhgoa serve                 # http://127.0.0.1:8000
+```
+
+| command | what |
+|---|---|
+| `./hhgoa query "..."` | one question, `--mode fast\|quality` |
+| `./hhgoa voice-query a.wav` | STT then answer |
+| `./hhgoa eval` | hit@5 / recall@5 / MRR |
+| `./hhgoa retriever-compare` | dense vs sparse vs hybrid + bootstrap |
+| `./hhgoa chunk-compare` | six chunking strategies + bootstrap |
+| `./hhgoa fusion-sweep` | dense/lexical weight sweep on the dev slice |
+| `./hhgoa child-sweep` | parent_child window size, per language |
+| `./hhgoa guardrail-calibrate` | fit and report the grounding gate |
+| `./hhgoa bench --queries 300` | P50 / P70 / P100 |
+
+---
 
 ## Layout
 
-| Path | Tweak here for… |
-|------|-----------------|
-| `core/chunking/` | How documents are split |
-| `core/embeddings/` | Embedding models |
-| `core/vectorstore/` | Index storage (FAISS, Qdrant, …) |
-| `core/retriever/` | Search / reranking |
-| `core/llm/` | Answer generation |
-| `core/rag/prompts.py` | Prompt templates |
-| `core/factory.py` | Wire components from config |
-| `ingest/` | Load MS MARCO-XI or custom data |
-| `eval/` | Retrieval metrics |
-| `bench/` | Latency benchmarks |
-| `api/` | HTTP service |
-| `data/samples/` | Local ingest examples (MS MARCO-XI loaded from HF by default) |
-| `data/index/` | Built index (gitignored) |
+| path | what |
+|---|---|
+| `core/harness/` | orchestration: contracts, retries, tools, structured I/O |
+| `core/chunking/` | six chunking strategies |
+| `core/retriever/` | dense, BM25 sparse, hybrid RRF fusion |
+| `core/guardrails/` | input intent, confidence gate, faithfulness |
+| `core/llm/` | extractive (tier 1), chat client (tier 2) |
+| `core/stt/` | ElevenLabs Scribe |
+| `core/text.py` | shared Indic-aware tokenizer |
+| `eval/` | metrics, bootstrap significance, calibration |
+| `bench/` | P50/P70/P100 latency harness |
+| `api/` | FastAPI service + static demo UI (the live link) |
 
-## Config (`.env`)
+Docs: [architecture](docs/architecture.md) · [harness](docs/harness.md) ·
+[latency](docs/latency.md) · [scope](docs/scope.md)
 
-| Variable | Default | Purpose |
-|----------|---------|---------|
-| `EMBEDDING_PROVIDER` | `sentence_transformers` | Local ST models (default) |
-| `EMBEDDING_PRESET` | `e5-small` | `e5-small`, `indic-sbert`, `bge-m3` |
-| `EMBEDDING_MODEL` | — | Override HF model id (optional) |
-| `VECTOR_STORE` | `memory` | In-memory numpy store |
-| `CHUNKING_PROVIDER` | `fixed` | `fixed`, `semantic`, `metadata` |
-| `CHUNK_SIZE` / `CHUNK_OVERLAP` | 512 / 64 | Chunking limits |
-| `TOP_K` | 5 | Retrieval depth |
-| `LLM_API_KEY` | — | OpenAI-compatible chat API |
-| `LLM_MODEL` | `gpt-4o-mini` | Generation model |
+Languages: Hindi and Gujarati only, see [docs/scope.md](docs/scope.md).
 
-Full list in `.env.example`.
+---
 
-## Embedding model (locked in)
-
-**Default: `e5-small`** (`intfloat/multilingual-e5-small`) — local, no API key, query/passage prefixes applied in `core/embeddings/`.
-
-Compared against `indic-sbert` on the **dev** slice (first 500 rows after seeded shuffle, used for embedder selection — not for chunking eval):
-
-| Preset | hi hit@5 | gu hit@5 | overall hit@5 |
-|--------|----------|----------|---------------|
-| **e5-small** | **0.76** | **0.52** | **0.64** |
-| indic-sbert | 0.41 | 0.39 | 0.40 |
-
-Bootstrap significance (e5-small baseline): Hindi p≈0, Gujarati p=0.0004 on hit@5 — both significant. `bge-m3` was not evaluated; we proceeded with e5-small for speed and strong numbers on both languages.
-
-**Non-obvious finding:** the Indic-specialized `indic-sbert` did not beat general-purpose e5-small on this slice — worth reporting honestly, not assuming Indic-native always wins.
-
-To try another preset later: set `EMBEDDING_PRESET` in `.env`, then re-ingest.
-
-**Held-out eval** for chunking/retrieval work: validation rows are **shuffled with seed 42** before slicing, so dev and eval are comparable random bags (not contiguous parquet blocks). Eval uses shuffled positions `[500, 1000)`; dev/embedder work used `[0, 500)`. See [data/eval/README.md](data/eval/README.md).
-
-Compare chunking strategies with bootstrap significance:
-
-```bash
-./hhgoa chunk-compare --strategies fixed semantic metadata
-```
-
-## Chunking (locked in)
-
-| Strategy | hi hit@5 | gu hit@5 | overall hit@5 |
-|----------|----------|----------|---------------|
-| **fixed** (default) | 0.74 | 0.54 | 0.64 |
-| semantic | 0.75 | 0.55 | 0.65 |
-| metadata | 0.75 | 0.55 | 0.65 |
-
-Held-out eval (530 queries, e5-small). Semantic and metadata tie — most MS MARCO passages fit in one chunk, so metadata-aware atomic splitting collapses to the same result as sentence packing. Both edge fixed by ~+0.9pp hit@5, but **bootstrap p=0.27 (not significant)**. Default stays **`fixed`** (simpler; no proven loss). Set `CHUNKING_PROVIDER=semantic` if you prefer sentence boundaries on principle.
-
-## API
-
-```bash
-./hhgoa serve
-curl -X POST http://127.0.0.1:8000/query \
-  -H 'Content-Type: application/json' \
-  -d '{"question":"भारत की राजधानी क्या है?","language":"hi"}'
-
-# Voice (set STT_PROVIDER=elevenlabs + STT_API_KEY in .env)
-curl -X POST http://127.0.0.1:8000/transcribe \
-  -F language=hi -F audio=@sample.wav
-curl -X POST http://127.0.0.1:8000/voice-query \
-  -F language=hi -F audio=@sample.wav
-```
-
-CLI: `./hhgoa transcribe sample.wav --language hi` · `./hhgoa voice-query sample.wav`
-
-## Scope
-
-Languages: Hindi (`hi`) + Gujarati (`gu`) only — [docs/scope.md](docs/scope.md).
+Project by **Team Deploy For Good** ·
+corpus [ai4bharat/MSMARCO-XI](https://huggingface.co/datasets/ai4bharat/MSMARCO-XI)

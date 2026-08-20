@@ -1,4 +1,4 @@
-"""Registered chunking strategies — swap via CHUNKING_PROVIDER in .env."""
+"""Registered chunking strategies, swap via CHUNKING_PROVIDER in .env."""
 
 from __future__ import annotations
 
@@ -21,5 +21,14 @@ CHUNKING_PRESETS: dict[str, ChunkingPreset] = {
     ),
     "metadata": ChunkingPreset(
         description="Atomic MS MARCO passages when short; semantic fallback when long",
+    ),
+    "recursive": ChunkingPreset(
+        description="Separator cascade: paragraph -> danda -> clause -> char, with overlap",
+    ),
+    "parent_child": ChunkingPreset(
+        description="Embed 2-sentence children for precision; document_id stays the parent",
+    ),
+    "token_window": ChunkingPreset(
+        description="Sliding window sized in e5 tokens, not characters (script-fair)",
     ),
 }

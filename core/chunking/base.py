@@ -1,4 +1,4 @@
-"""Chunking interface — implement BaseChunker to plug in new strategies."""
+"""Chunking interface, implement BaseChunker to plug in new strategies."""
 
 from __future__ import annotations
 

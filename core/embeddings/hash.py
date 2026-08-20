@@ -1,4 +1,4 @@
-"""Deterministic hash embedder — no API keys, good for local dev."""
+"""Deterministic hash embedder, no API keys, good for local dev."""
 
 from __future__ import annotations
 

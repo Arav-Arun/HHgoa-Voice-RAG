@@ -8,7 +8,7 @@
   "shuffle_seed": 42,
   "corpus": {
     "shuffle_start": 0,
-    "limit": 1000
+    "limit": 5000
   },
   "dev": {
     "shuffle_start": 0,
@@ -18,6 +18,6 @@
     "shuffle_start": 500,
     "limit": 500
   },
-  "notes": "Rows are shuffled with shuffle_seed before slicing (not raw parquet order). corpus: passages indexed for retrieval; dev: queries used for embedder comparison; eval: held-out queries (disjoint from dev) with is_selected labels",
+  "notes": "Rows are shuffled with shuffle_seed before slicing (not raw parquet order). corpus: passages indexed for retrieval; dev: queries used for embedder comparison; eval: held-out queries (disjoint from dev) with is_selected labels. corpus was widened 1000 -> 5000 rows/lang: eval labels sit in [500,1000) and remain covered, so the extra rows act purely as distractors and make the benchmark harder.",
   "validation_rows": 97941
 }

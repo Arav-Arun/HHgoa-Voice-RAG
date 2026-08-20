@@ -1,4 +1,11 @@
-"""Grounding / abstain gate — require sufficient retrieval confidence before LLM."""
+"""Grounding / abstain gate, require sufficient retrieval confidence before LLM.
+
+Calibration note: this gate thresholds the **dense cosine similarity**, read via
+``ScoredChunk.dense_score``, never ``ScoredChunk.score``. Under hybrid retrieval
+``score`` is a Reciprocal Rank Fusion value in the ~0.01-0.05 range, which has no
+absolute meaning and is not comparable to the cosine-calibrated threshold, using
+it would abstain on every query.
+"""
 
 from __future__ import annotations
 
@@ -34,8 +41,8 @@ class GroundingGate(BaseGuardrail):
                 stage="grounding",
             )
 
-        filtered = [scored for scored in sources if scored.score >= self.min_score]
-        best_score = max(scored.score for scored in sources)
+        filtered = [scored for scored in sources if scored.dense_score >= self.min_score]
+        best_score = max(scored.dense_score for scored in sources)
 
         if not filtered:
             return GuardrailDecision(

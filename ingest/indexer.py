@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 from core.config import Settings, get_settings
 from core.factory import build_chunker, build_embedder, build_vector_store
+from core.retriever.sparse import BM25Index
 from core.types import Document
 from core.vectorstore.memory import MemoryVectorStore
 from ingest.loaders import (
@@ -15,6 +17,23 @@ from ingest.loaders import (
     load_jsonl,
     load_text_file,
 )
+
+
+def _build_sparse_index(store, settings: Settings) -> int:
+    """Build and persist the BM25 index from the store's chunks.
+
+    Built from ``store.chunks`` rather than from a separately accumulated list
+    so that BM25 row *i* is guaranteed to describe the same chunk as embedding
+    row *i*. Any drift between the two would silently corrupt hybrid fusion.
+    """
+    chunks = getattr(store, "chunks", [])
+    if not chunks:
+        return 0
+    index = BM25Index()
+    index.build([chunk.text for chunk in chunks])
+    settings.index_dir.mkdir(parents=True, exist_ok=True)
+    index.save(settings.index_dir)
+    return len(index.vocab)
 
 
 def ingest_documents(
@@ -43,6 +62,7 @@ def ingest_documents(
     if save_index:
         settings.index_dir.mkdir(parents=True, exist_ok=True)
         store.save(str(settings.index_dir))
+        _build_sparse_index(store, settings)
 
     return len(all_chunks)
 
@@ -107,5 +127,10 @@ def ingest_msmarco_xi(
     if save_index and total_chunks:
         settings.index_dir.mkdir(parents=True, exist_ok=True)
         store.save(str(settings.index_dir))
+        vocab_size = _build_sparse_index(store, settings)
+        print(
+            f"[ingest] built BM25 index: {total_chunks} docs, {vocab_size} terms",
+            file=sys.stderr,
+        )
 
     return total_chunks

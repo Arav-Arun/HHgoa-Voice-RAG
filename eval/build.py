@@ -11,6 +11,7 @@ from eval.split import (
     DEFAULT_SPLIT,
     DEFAULT_SPLIT_PATH,
     EvalSplitConfig,
+    get_dev_row_indices,
     get_eval_row_indices,
     get_validation_rows,
     write_split_config,
@@ -18,6 +19,7 @@ from eval.split import (
 from ingest.loaders import load_msmarco_xi_rows_by_indices, msmarco_passage_id
 
 DEFAULT_EVAL_PATH = Path("data/eval/queries.jsonl")
+DEFAULT_DEV_PATH = Path("data/eval/dev_queries.jsonl")
 
 
 def eval_example_from_msmarco_row(
@@ -94,5 +96,33 @@ def build_and_write_held_out_eval(
     config = replace(config, validation_rows=validation_rows)
     write_split_config(split_path, config)
     examples = build_held_out_eval_set(config)
+    write_eval_set(path, examples)
+    return examples
+
+
+def build_dev_eval_set(config: EvalSplitConfig = DEFAULT_SPLIT) -> list[EvalExample]:
+    """Queries from the **dev** slice, for tuning.
+
+    Any hyperparameter chosen by looking at results, fusion weights, chunk
+    size, guardrail thresholds, must be chosen here, never on the eval slice.
+    Tuning on eval turns a held-out score into a training score.
+    """
+    dev_indices = get_dev_row_indices(config)
+    examples: list[EvalExample] = []
+    for language in config.languages:
+        for row in load_msmarco_xi_rows_by_indices(language, config.split, dev_indices):
+            example = eval_example_from_msmarco_row(row, language=language, split=config.split)
+            if example is not None:
+                examples.append(example)
+    return examples
+
+
+def build_and_write_dev_eval(
+    path: Path = DEFAULT_DEV_PATH,
+    *,
+    config: EvalSplitConfig | None = None,
+) -> list[EvalExample]:
+    config = config or DEFAULT_SPLIT
+    examples = build_dev_eval_set(config)
     write_eval_set(path, examples)
     return examples

@@ -22,7 +22,7 @@ class MetadataAwareChunker(BaseChunker):
     """Keep passages atomic when possible; semantic sub-split only when over max size.
 
     Propagates passage/query metadata onto every chunk for traceability and
-    future filtering — without injecting query text into the embedded passage body.
+    future filtering, without injecting query text into the embedded passage body.
     """
 
     def __init__(self, chunk_size: int = 512, overlap: int = 64) -> None:

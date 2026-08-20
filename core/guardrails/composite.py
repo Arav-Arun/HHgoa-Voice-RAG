@@ -1,4 +1,4 @@
-"""Composite guardrail — input intent filter then grounding gate."""
+"""Composite guardrail, input intent filter then grounding gate."""
 
 from __future__ import annotations
 

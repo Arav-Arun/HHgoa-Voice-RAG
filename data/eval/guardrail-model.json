@@ -1,0 +1,42 @@
+{
+  "model": "logistic_regression",
+  "features": [
+    "top1_dense",
+    "margin",
+    "lexical_overlap"
+  ],
+  "coefficients": [
+    0.901131765004478,
+    -0.045247449711263946,
+    4.441407005159553
+  ],
+  "intercept": -2.952104379282612,
+  "threshold": 0.255,
+  "target_answerable_recall": 0.95,
+  "calibration_metrics": {
+    "answerable_recall": 0.9509,
+    "abstain_recall": 0.3125,
+    "answerable_precision": 0.8842,
+    "answerable_f1": 0.9164,
+    "balanced_accuracy": 0.6317,
+    "worst_class_recall": 0.3125,
+    "false_abstain_rate": 0.0491,
+    "true_positives": 252,
+    "false_negatives": 13,
+    "true_negatives": 15,
+    "false_positives": 33
+  },
+  "held_out_metrics": {
+    "answerable_recall": 0.9547,
+    "abstain_recall": 0.3333,
+    "answerable_precision": 0.8877,
+    "answerable_f1": 0.92,
+    "balanced_accuracy": 0.644,
+    "worst_class_recall": 0.3333,
+    "false_abstain_rate": 0.0453,
+    "true_positives": 253,
+    "false_negatives": 12,
+    "true_negatives": 16,
+    "false_positives": 32
+  }
+}

@@ -2,58 +2,17 @@
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 from core.config import Settings, get_settings
 from core.factory import build_retriever
+from eval._report import log, pairwise_significance
 from eval.dataset import load_eval_set
 from eval.metrics import aggregate_scores, aggregate_scores_by_language
-from eval.significance import compare_preset_scores, score_examples
+from eval.significance import score_examples
 
-
-def _log(msg: str) -> None:
-    print(msg, file=sys.stderr, flush=True)
-
-
-def _pairwise_significance(
-    scores_by_preset: dict[str, list[dict]],
-    presets: tuple[str, ...],
-    *,
-    baseline: str,
-    languages: tuple[str, ...] = ("hi", "gu"),
-    metrics: tuple[str, ...] = ("hit", "mrr"),
-    n_resamples: int = 10_000,
-) -> dict:
-    """Bootstrap baseline vs each other preset, per language and overall."""
-    comparisons: dict[str, dict] = {}
-    for challenger in presets:
-        if challenger == baseline:
-            continue
-        key = f"{baseline}_vs_{challenger}"
-        comparisons[key] = {}
-        for metric in metrics:
-            comparisons[key][metric] = {
-                "overall": compare_preset_scores(
-                    scores_by_preset,
-                    baseline=baseline,
-                    challenger=challenger,
-                    metric=metric,  # type: ignore[arg-type]
-                    n_resamples=n_resamples,
-                ),
-                "by_language": {
-                    lang: compare_preset_scores(
-                        scores_by_preset,
-                        baseline=baseline,
-                        challenger=challenger,
-                        language=lang,
-                        metric=metric,  # type: ignore[arg-type]
-                        n_resamples=n_resamples,
-                    )
-                    for lang in languages
-                },
-            }
-    return comparisons
+_log = log
+_pairwise_significance = pairwise_significance
 
 
 def compare_embedding_presets(
@@ -91,7 +50,12 @@ def compare_embedding_presets(
         )
         _log(f"[eval-compare] preset={preset}: scoring {len(examples)} queries...")
         retriever = build_retriever(preset_settings)
-        retrieve_fn = lambda query, top_k=top_k: retriever.retrieve(query, top_k=top_k)
+        # Bind `retriever` explicitly: the lambda is consumed within this
+        # iteration, but a late-binding closure over a loop variable is a
+        # trap waiting for the first person who defers the call.
+        def retrieve_fn(query, top_k=top_k, language=None, _r=retriever):
+            return _r.retrieve(query, top_k=top_k, language=language)
+
         per_example = score_examples(examples, retrieve_fn, top_k=top_k)
         scores_by_preset[preset] = per_example
         results[preset] = {

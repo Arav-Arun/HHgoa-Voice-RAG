@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voice RAG · Hindi + Gujarati</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,400..900,0..100,0..1&family=Noto+Serif+Devanagari:wght@400;600&family=Noto+Serif+Gujarati:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+
+<main>
+  <header class="masthead">
+    <h1>Voice RAG</h1>
+    <p class="masthead-sub">Ask in Hindi or Gujarati, by voice or text. Every answer is
+      retrieved from the corpus and cited, or declined.</p>
+    <p class="config" id="config"></p>
+  </header>
+
+  <section class="card">
+    <h2 class="card-title">Ask a question</h2>
+
+    <div class="ask-grid">
+      <div class="mic-wrap">
+        <button id="mic" class="mic" aria-label="Record a question">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3z"/>
+            <path d="M18 11a6 6 0 0 1-12 0M12 17v4M8 21h8"/>
+          </svg>
+        </button>
+        <p id="mic-label" class="mic-label">Tap to record</p>
+      </div>
+
+      <div class="controls">
+        <label class="field">
+          <span>Question</span>
+          <textarea id="question" rows="3" placeholder="हिन्दी या ગુજરાતી में पूछें"></textarea>
+        </label>
+
+        <div class="toggles">
+          <button id="ask" class="btn btn-pink">Ask</button>
+          <p class="detected" id="detected">Hindi and Gujarati are detected automatically.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="result" class="card" hidden>
+    <div class="answer-head">
+      <!-- badges: detected language, then how the answer was produced -->
+      <!-- The answer arrives in two tiers. Tier 1 is what the budget is measured
+           against; tier 2 replaces the text only if it succeeds. -->
+      <div class="tiers">
+        <span class="tier" id="tier1" data-state="idle">
+          <b>1</b> Retrieved <em id="tier1-ms">-</em>
+        </span>
+        <span class="tier-link" aria-hidden="true"></span>
+        <span class="tier" id="tier2" data-state="idle">
+          <b>2</b> Generated <em id="tier2-ms">-</em>
+        </span>
+      </div>
+      <span id="badge-lang" class="tag tag-quiet"></span>
+      <span id="badge-path" class="tag"></span>
+    </div>
+
+    <!-- The 200ms budget, drawn to scale. -->
+    <div class="budget">
+      <div class="budget-bar"><i id="budget-fill"></i></div>
+      <p class="budget-legend" id="budget-legend">&nbsp;</p>
+    </div>
+
+    <p id="transcript" class="transcript" hidden></p>
+    <p id="answer" class="answer"></p>
+    <p id="refusal" class="refusal" hidden></p>
+
+    <h3 class="sub" id="stages-head">Stage timings</h3>
+    <div id="stages" class="stages"></div>
+
+    <h3 class="sub" id="sources-head">Retrieved passages</h3>
+    <div id="sources" class="sources"></div>
+  </section>
+
+  <!-- Measured results. Every value is read from a run artifact by /stats. -->
+  <section class="card">
+    <h2 class="card-title">Measured results</h2>
+
+    <div class="metrics">
+      <div class="metric">
+        <p class="metric-label">Retrieval quality</p>
+        <p class="metric-value" id="m-hit">-</p>
+        <p class="metric-note" id="m-hit-note">hit@5</p>
+      </div>
+      <div class="metric">
+        <p class="metric-label">Latency</p>
+        <p class="metric-value metric-stack" id="m-latency">-</p>
+        <p class="metric-note" id="m-latency-note">milliseconds</p>
+      </div>
+      <div class="metric">
+        <p class="metric-label">Guardrail</p>
+        <p class="metric-value" id="m-guard">-</p>
+        <p class="metric-note" id="m-guard-note">false abstain rate</p>
+      </div>
+      <div class="metric">
+        <p class="metric-label">Index size</p>
+        <p class="metric-value" id="m-chunks">-</p>
+        <p class="metric-note">chunks indexed</p>
+      </div>
+    </div>
+
+    <p class="provenance" id="provenance"></p>
+  </section>
+  <footer>
+    <p class="credit">Project by <strong>Team Deploy For Good</strong></p>
+    <p class="dataset">
+      Corpus:
+      <a href="https://huggingface.co/datasets/ai4bharat/MSMARCO-XI" target="_blank" rel="noopener">
+        ai4bharat/MSMARCO-XI
+      </a>
+      · Speech-to-text by ElevenLabs Scribe v2
+    </p>
+  </footer>
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,10 +1,10 @@
-"""Document loaders — MS MARCO-XI and custom formats."""
+"""Document loaders, MS MARCO-XI and custom formats."""
 
 from __future__ import annotations
 
 import json
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Iterator
 
 from core.types import Document
 
@@ -81,7 +81,6 @@ def _msmarco_example_to_documents(row: dict, *, language: str, split: str) -> li
     passages = row["passages"]
     translated = passages["Translated_passages"]
     is_selected = passages.get("is_selected", [])
-    english_passages = passages.get("English_passages", [])
 
     documents: list[Document] = []
     for idx, text in enumerate(translated):
@@ -93,15 +92,16 @@ def _msmarco_example_to_documents(row: dict, *, language: str, split: str) -> li
                 id=msmarco_passage_id(language, query_id, idx),
                 text=passage_text,
                 language=language,
+                # Deliberately does NOT persist `query`, `Eng_Query`, or
+                # `Eng_passage`: storing them on every chunk more than doubles
+                # the on-disk index and the JSON load time at 100k+ chunks,
+                # and all of it is recoverable from the dataset via query_id.
                 metadata={
                     "source": MSMARCO_XI_DATASET,
                     "split": split,
                     "query_id": query_id,
                     "passage_index": idx,
                     "is_selected": is_selected[idx] if idx < len(is_selected) else 0,
-                    "query": row.get("query", ""),
-                    "Eng_Query": row.get("Eng_Query", ""),
-                    "Eng_passage": english_passages[idx] if idx < len(english_passages) else "",
                 },
             )
         )

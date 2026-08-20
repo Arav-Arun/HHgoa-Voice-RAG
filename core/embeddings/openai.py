@@ -1,4 +1,4 @@
-"""OpenAI-compatible embedding API — requires LLM_API_KEY + EMBEDDING_MODEL."""
+"""OpenAI-compatible embedding API, requires LLM_API_KEY + EMBEDDING_MODEL."""
 
 from __future__ import annotations
 

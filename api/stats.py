@@ -1,0 +1,75 @@
+"""Read measured results off disk for the demo UI.
+
+Every number the UI shows comes from an artifact written by an actual run
+(``./hhgoa retriever-compare``, ``./hhgoa bench``, ``./hhgoa guardrail-calibrate``).
+Nothing is hardcoded. A missing artifact yields ``None`` and the UI renders a
+dash, so an unmeasured metric is visibly absent rather than quietly invented.
+"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import Any
+
+RETRIEVER_PATH = Path("data/eval/retriever-compare.json")
+BENCH_PATH = Path("data/bench/latency.json")
+GUARDRAIL_PATH = Path("data/eval/guardrail-model.json")
+
+
+def _load(path: Path) -> dict[str, Any] | None:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
+def _dig(data: dict | None, *keys: str) -> Any:
+    """Walk nested keys, returning None if any level is missing."""
+    for key in keys:
+        if not isinstance(data, dict) or key not in data:
+            return None
+        data = data[key]
+    return data
+
+
+def collect_stats() -> dict[str, Any]:
+    retriever = _load(RETRIEVER_PATH)
+    bench = _load(BENCH_PATH)
+    guardrail = _load(GUARDRAIL_PATH)
+
+    hybrid = _dig(retriever, "hybrid", "overall")
+    dense = _dig(retriever, "dense", "overall")
+    latency = _dig(bench, "tracks", "fast", "total")
+    gate = _dig(guardrail, "held_out_metrics")
+
+    return {
+        "retrieval": {
+            "hit_at_5": _dig(hybrid, "hit@5"),
+            "mrr": _dig(hybrid, "mrr"),
+            "baseline_hit_at_5": _dig(dense, "hit@5"),
+            "queries": _dig(hybrid, "count"),
+        },
+        "latency": {
+            "p50_ms": _dig(latency, "p50_ms"),
+            "p70_ms": _dig(latency, "p70_ms"),
+            "p100_ms": _dig(latency, "p100_ms"),
+            "queries": _dig(latency, "count"),
+            "budget_ms": _dig(bench, "target_ms"),
+        },
+        "guardrail": {
+            # Reported as a pair on purpose: a false-abstain rate alone says
+            # nothing about what the refusals bought.
+            "false_abstain_rate": _dig(gate, "false_abstain_rate"),
+            "abstain_recall": _dig(gate, "abstain_recall"),
+        },
+        "sources": [
+            str(path)
+            for path, data in (
+                (RETRIEVER_PATH, retriever),
+                (BENCH_PATH, bench),
+                (GUARDRAIL_PATH, guardrail),
+            )
+            if data
+        ],
+    }
