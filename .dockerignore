@@ -1,6 +1,12 @@
-# The index arrives at boot from INDEX_URL, so baking it in would add 288 MB to
-# the image and pin it to one corpus build.
-data/
+# The index arrives at boot from INDEX_URL, so baking it in would add 320 MB to
+# the image and pin it to one corpus build. Use data/** rather than data/ so the
+# exception below can still match: excluding the directory itself stops docker
+# descending into it.
+data/**
+# Except the fitted gate coefficients. 2 KB of model config the serving path
+# needs, and without it ConfidenceGate.from_file silently falls back to a raw
+# cosine cutoff, which is not the gate any published number describes.
+!data/eval/guardrail-model.json
 .venv/
 .git/
 .github/

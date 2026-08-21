@@ -64,5 +64,8 @@ class HealthResponse(BaseModel):
     chunking: str
     embedding_preset: str
     guardrail: str
+    # False means the fitted coefficients were not found and the gate fell back
+    # to a raw cosine cutoff. Every published guardrail number assumes True.
+    guardrail_calibrated: bool
     stt_provider: str
     quality_path_available: bool

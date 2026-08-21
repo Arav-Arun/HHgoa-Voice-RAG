@@ -165,6 +165,13 @@ def _transcribe(data: bytes, audio: UploadFile, language: str | None):
     return result, (time.perf_counter() - start) * 1000.0
 
 
+def _gate_is_fitted() -> bool:
+    """The gate degrades quietly when its coefficients are missing, so report it."""
+    guardrail = getattr(get_pipeline().orchestrator, "guardrail", None)
+    gate = getattr(guardrail, "grounding_gate", guardrail)
+    return bool(getattr(gate, "fitted", False))
+
+
 @app.get("/health", response_model=HealthResponse)
 def health() -> HealthResponse:
     settings = _state.get("settings") or get_settings()
@@ -184,6 +191,7 @@ def health() -> HealthResponse:
         chunking=settings.chunking_provider,
         embedding_preset=settings.embedding_preset,
         guardrail=settings.guardrail_provider,
+        guardrail_calibrated=_gate_is_fitted(),
         stt_provider=settings.stt_provider,
         quality_path_available=bool(getattr(get_pipeline().orchestrator, "chat_clients", [])),
     )
