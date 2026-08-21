@@ -548,7 +548,6 @@ name = "hhgoa"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
-    { name = "datasets" },
     { name = "fastapi" },
     { name = "httpx" },
     { name = "numpy" },
@@ -567,10 +566,13 @@ dev = [
     { name = "pytest" },
     { name = "ruff" },
 ]
+ingest = [
+    { name = "datasets" },
+]
 
 [package.metadata]
 requires-dist = [
-    { name = "datasets", specifier = ">=5.0.1" },
+    { name = "datasets", marker = "extra == 'ingest'", specifier = ">=5.0.1" },
     { name = "fastapi", specifier = ">=0.115.0" },
     { name = "gtts", marker = "extra == 'dev'", specifier = ">=2.5.0" },
     { name = "httpx", specifier = ">=0.27.0" },
@@ -585,7 +587,7 @@ requires-dist = [
     { name = "torch", marker = "sys_platform == 'linux'", specifier = ">=2.9.0", index = "https://download.pytorch.org/whl/cpu" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.32.0" },
 ]
-provides-extras = ["dev"]
+provides-extras = ["dev", "ingest"]
 
 [[package]]
 name = "httpcore"

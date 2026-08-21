@@ -1,7 +1,7 @@
 # Render Blueprint. Connect the repo at dashboard.render.com/blueprints and
 # Render reads this instead of asking you to fill in forms.
 #
-# Plan: measured peak RSS in the container is 1.19 GB (vector store 1,059 MB +
+# Plan: measured peak RSS in the container is 1.16 GiB (vector store 1,059 MB +
 # BM25 83 MB + two transformers), so the 512 MB free plan cannot hold it.
 # `standard` is 2 GB.
 # Dropping to a smaller corpus slice would fit a smaller plan; the numbers in

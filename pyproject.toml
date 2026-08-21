@@ -12,7 +12,6 @@ dependencies = [
     "fastapi>=0.115.0",
     "uvicorn[standard]>=0.32.0",
     "python-multipart>=0.0.9",
-    "datasets>=5.0.1",
     "sentence-transformers>=5.7.0",
     # Pulled in by sentence-transformers anyway. Declared directly because uv
     # sources only bind a project's own dependencies, and without that binding
@@ -26,6 +25,12 @@ dev = [
     "pytest>=8.0.0",
     # Only used by scripts/make_audio_fixtures.py, never imported at runtime.
     "gtts>=2.5.0",
+]
+# Building the index from Hugging Face needs this; answering never does, and the
+# deployment fetches a prebuilt index at boot. Keeping it out of the base
+# dependencies drops pyarrow and pandas from the serving image.
+ingest = [
+    "datasets>=5.0.1",
 ]
 
 [project.scripts]

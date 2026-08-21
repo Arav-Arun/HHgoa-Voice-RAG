@@ -821,7 +821,7 @@ Significance is paired bootstrap, 10,000 resamples, in `eval/significance.py`.
 
 ```bash
 cp .env.example .env          # add STT_API_KEY; LLM_API_KEY optional
-uv sync --extra dev
+uv sync --extra dev --extra ingest
 ./hhgoa eval-build            # held-out + dev query sets, and split.json
 ./hhgoa ingest msmarco        # vector + BM25 index (~24 min)
 ./hhgoa eval-validate         # labels present -> ok: true
@@ -861,15 +861,17 @@ add ~60 s to every cold start and make the service depend on Hugging Face being
 up) and fetches the index at boot, because it is 320 MB, gitignored, and
 container disks are ephemeral.
 
-Two sizing decisions are load-bearing. torch resolves from PyTorch's CPU index
+Three sizing decisions are load-bearing. torch resolves from PyTorch's CPU index
 rather than PyPI: the default Linux wheel pulls 2.2 GB of CUDA that never loads,
-since `TORCH_DEVICE` is `cpu` everywhere this runs. And the plan has to be at
-least 2 GB, because measured peak RSS in the container is **1.19 GB** against a
-512 MB free tier. Vercel is out regardless, since torch alone unpacks to 606 MB
-against its 250 MB function limit.
+since `TORCH_DEVICE` is `cpu` everywhere this runs. `datasets` sits behind an
+`ingest` extra, so the serving image carries neither it nor pyarrow and pandas,
+none of which answer a query. And the plan has to be at least 2 GB, because
+measured peak RSS in the container is **1.16 GiB** against a 512 MB free tier.
+Vercel is out regardless, since torch alone unpacks to 606 MB against its
+250 MB function limit.
 
-Verified on the built image: 1.12 GB compressed, `torch==2.13.0+cpu`, zero CUDA
-packages, both languages answering and the guardrail abstaining.
+Verified on the built image: 1.05 GB compressed, 54 packages, `torch==2.13.0+cpu`,
+zero CUDA packages, both languages answering and the guardrail abstaining.
 
 ---
 
