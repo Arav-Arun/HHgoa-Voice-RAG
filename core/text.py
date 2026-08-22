@@ -87,6 +87,28 @@ def detect_language(text: str) -> str | None:
     return "gu" if counts["gu"] / total >= _GUJARATI_SHARE else "hi"
 
 
+def off_script_terms(text: str, language: str) -> set[str]:
+    """Query terms carrying none of the target language's script.
+
+    A Hindi question can be typed with an English word in it, "hari mirch mein
+    sodium kitna hai". The corpus is Devanagari, so `sodium` and `सोडियम` are
+    different tokens and lexical scoring silently ignores the most informative
+    word in the question. Naming those terms lets a caller notice and escalate
+    instead of answering from whatever else happened to match.
+
+    Numbers are excluded: they are script-neutral and match across both.
+    """
+    block = _SCRIPT_BLOCKS.get(language)
+    if block is None:
+        return set()
+    low, high = block
+    return {
+        term
+        for term in tokenize(text)
+        if not term.isdigit() and not any(low <= ord(ch) <= high for ch in term)
+    }
+
+
 def normalize_digits(text: str) -> str:
     """Map Devanagari/Gujarati digits onto ASCII digits."""
     return text.translate(_DIGIT_MAP)

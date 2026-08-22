@@ -20,7 +20,7 @@ from __future__ import annotations
 
 from core.chunking.sentences import split_sentences
 from core.llm.base import BaseLLM
-from core.text import tokenize
+from core.text import off_script_terms, tokenize
 from core.types import ScoredChunk
 
 # A sentence needs at least this share of the query's informative mass to be
@@ -36,10 +36,14 @@ class ExtractiveAnswerer(BaseLLM):
         max_chars: int = 480,
         consider_chunks: int = 3,
         idf_lookup=None,
+        embedder=None,
     ) -> None:
         self.max_sentences = max_sentences
         self.max_chars = max_chars
         self.consider_chunks = consider_chunks
+        # Only consulted when the query carries a term the corpus script cannot
+        # spell. See _dense_pick for why lexical scoring cannot cover that case.
+        self.embedder = embedder
         # Callable term -> idf. Without one, every term weighs the same, which
         # lets ubiquitous words like "क्या"/"है" dominate sentence selection.
         self.idf_lookup = idf_lookup
@@ -54,6 +58,31 @@ class ExtractiveAnswerer(BaseLLM):
         # Floor at a small positive value so a term with no index entry still
         # counts a little rather than vanishing.
         return max(float(self.idf_lookup(term)), 0.05)
+
+    def _dense_pick(self, query: str, context_chunks: list[ScoredChunk]) -> str:
+        """Best sentence by embedding similarity, or "" if that is unavailable.
+
+        Sentences are embedded in one batch so the escalation costs a single
+        forward pass rather than one per candidate.
+        """
+        sentences: list[str] = []
+        for scored_chunk in context_chunks[: self.consider_chunks]:
+            sentences.extend(split_sentences(scored_chunk.chunk.text))
+        if not sentences:
+            return ""
+        try:
+            vectors = self.embedder.embed_texts([query, *sentences])
+        except Exception:  # noqa: BLE001 - an embedder failure falls back to lexical
+            return ""
+        if len(vectors) != len(sentences) + 1:
+            return ""
+        query_vector, sentence_vectors = vectors[0], vectors[1:]
+        best, best_score = "", float("-inf")
+        for sentence, vector in zip(sentences, sentence_vectors, strict=True):
+            score = sum(a * b for a, b in zip(query_vector, vector, strict=True))
+            if score > best_score:
+                best, best_score = sentence, score
+        return best[: self.max_chars]
 
     def answer_with_context(
         self,
@@ -77,6 +106,16 @@ class ExtractiveAnswerer(BaseLLM):
         query_terms = set(tokenize(query))
         if not query_terms:
             return context_chunks[0].chunk.text[: self.max_chars]
+
+        # "sodium" cannot match "सोडियम", so a query mixing scripts loses its
+        # most informative term and picks a sentence on the leftovers. Measured:
+        # asked for sodium, answered with calories from the same passage.
+        # Escalate to the embedder, which is multilingual, and only then: this
+        # costs an encode, where the lexical path costs a string scan.
+        if self.embedder is not None and off_script_terms(query, language):
+            dense = self._dense_pick(query, context_chunks)
+            if dense:
+                return dense
 
         total_weight = sum(self._weight(t) for t in query_terms) or 1.0
 

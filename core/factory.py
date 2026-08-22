@@ -346,11 +346,17 @@ def build_fast_answerer(
     settings: Settings | None = None,
     *,
     index: BM25Index | None = None,
+    embedder=None,
 ) -> ExtractiveAnswerer:
     """Local extractive answerer, IDF-weighted from the BM25 index when present."""
     settings = settings or get_settings()
     index = index if index is not None else build_bm25_index(settings)
-    return ExtractiveAnswerer(idf_lookup=index.idf_for if index.idf is not None else None)
+    return ExtractiveAnswerer(
+        idf_lookup=index.idf_for if index.idf is not None else None,
+        # The retriever's embedder, passed in rather than built: the escalation
+        # for mixed-script queries must not load a second copy of the model.
+        embedder=embedder if embedder is not None else build_embedder(settings),
+    )
 
 
 def build_orchestrator(settings: Settings | None = None) -> Orchestrator:
@@ -362,7 +368,7 @@ def build_orchestrator(settings: Settings | None = None) -> Orchestrator:
     return Orchestrator(
         retriever=build_retriever(settings, store=store, embedder=embedder, index=index),
         guardrail=build_guardrail(settings),
-        fast_answerer=build_fast_answerer(settings, index=index),
+        fast_answerer=build_fast_answerer(settings, index=index, embedder=embedder),
         chat_clients=build_chat_clients(settings),
         default_language=settings.default_language,
         top_k=settings.top_k,
