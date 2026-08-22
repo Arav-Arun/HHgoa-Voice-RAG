@@ -536,3 +536,78 @@ footer {
   .mic { width: 120px; height: 120px; }
   .stage { grid-template-columns: 110px 1fr 64px; }
 }
+
+/* Session analytics. Both panels are computed from the server's own
+   timings_ms, so they describe this browser's queries and nothing else. */
+.session-panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.session-panel {
+  border: 2px solid var(--ink);
+  background: #fff;
+  padding: 12px 14px;
+  min-width: 0;
+}
+
+.panel-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 10px;
+}
+.panel-label span { text-transform: none; letter-spacing: 0.02em; opacity: 0.75; }
+
+.stages { display: flex; flex-direction: column; gap: 7px; }
+
+.stage-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "name ms" "bar bar";
+  gap: 2px 8px;
+  align-items: baseline;
+}
+.stage-name { grid-area: name; font-size: 12.5px; color: var(--ink); }
+.stage-ms {
+  grid-area: ms;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--green);
+}
+.stage-ms small { font-size: 9.5px; color: var(--muted); }
+.stage-bar { grid-area: bar; height: 4px; background: var(--rule); display: block; }
+.stage-bar i { display: block; height: 100%; background: var(--green); }
+
+.histogram {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 108px;
+}
+.hist-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
+  height: 100%;
+  min-width: 0;
+}
+.hist-bar { width: 100%; background: var(--yellow); border: 1px solid var(--ink); min-height: 2px; }
+.hist-tick {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 620px) {
+  .session-panels { grid-template-columns: 1fr; }
+}

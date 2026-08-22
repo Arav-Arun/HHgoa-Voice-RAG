@@ -47,6 +47,8 @@ const el = {
   provenance: $("#provenance"),
   session: $("#session"),
   sCount: $("#s-count"),
+  sStages: $("#s-stages"),
+  sHist: $("#s-hist"),
   sP50: $("#s-p50"),
   sP70: $("#s-p70"),
   sP100: $("#s-p100"),
@@ -184,7 +186,16 @@ function renderSources(sources, citations) {
 // Tier 1: the local answer. This is the number the budget is measured against.
 // Percentiles over this session's fast-path queries, computed the same way the
 // benchmark does: nearest-rank on the sorted sample, P100 as the true maximum.
-const session = { latencies: [], abstains: 0 };
+const session = { latencies: [], abstains: 0, stages: {} };
+
+// Fixed edges rather than computed ones: the buckets must not move as queries
+// arrive, or the shape of the distribution changes under the reader.
+const BUCKETS = [10, 15, 20, 25, 30, 40, 50, 75, 100, 150, 200, 400];
+
+function median(xs) {
+  const s = [...xs].sort((a, b) => a - b);
+  return s[Math.floor(s.length / 2)];
+}
 
 function percentile(sorted, q) {
   if (!sorted.length) return null;
@@ -197,6 +208,9 @@ function recordQuery(data) {
   if (typeof data.total_ms !== "number") return;
   session.latencies.push(data.total_ms);
   if (data.abstained) session.abstains += 1;
+  for (const [name, ms] of Object.entries(data.timings_ms || {})) {
+    (session.stages[name] ||= []).push(ms);
+  }
 
   const sorted = [...session.latencies].sort((a, b) => a - b);
   const n = sorted.length;
@@ -206,8 +220,48 @@ function recordQuery(data) {
   el.sP70.textContent = percentile(sorted, 0.7).toFixed(1);
   el.sP100.textContent = sorted[n - 1].toFixed(1);
   el.sAbstain.textContent = String(session.abstains);
+  renderStages();
+  renderHistogram(sorted);
   el.sNote.textContent =
     `Live, this browser only. The figures above come from committed benchmark runs; ${n} ${n === 1 ? "query is" : "queries are"} far too few to compare against them.`;
+}
+
+function renderStages() {
+  // Medians, not means: one cross-encoder escalation would drag a mean and
+  // misreport what a typical query costs.
+  const rows = Object.entries(session.stages)
+    .map(([name, xs]) => ({ name, ms: median(xs), n: xs.length }))
+    .sort((a, b) => b.ms - a.ms);
+  if (!rows.length) return;
+  const max = rows[0].ms || 1;
+  el.sStages.innerHTML = rows
+    .map(
+      (r) => `<div class="stage-row">
+        <span class="stage-name">${esc(stageLabel(r.name))}</span>
+        <span class="stage-ms">${r.ms.toFixed(r.ms < 1 ? 2 : 1)}<small> ms</small></span>
+        <span class="stage-bar"><i style="width:${Math.max(1.5, (r.ms / max) * 100)}%"></i></span>
+      </div>`
+    )
+    .join("");
+}
+
+function renderHistogram(sorted) {
+  const counts = new Array(BUCKETS.length + 1).fill(0);
+  for (const ms of sorted) {
+    let i = BUCKETS.findIndex((edge) => ms <= edge);
+    counts[i === -1 ? BUCKETS.length : i] += 1;
+  }
+  const max = Math.max(...counts, 1);
+  el.sHist.innerHTML = counts
+    .map((c, i) => {
+      const label = i === BUCKETS.length ? `${BUCKETS[BUCKETS.length - 1]}+` : String(BUCKETS[i]);
+      const title = c === 1 ? "1 query" : `${c} queries`;
+      return `<div class="hist-col" title="${title} \u2264 ${label} ms">
+        <span class="hist-bar" style="height:${(c / max) * 100}%"></span>
+        <span class="hist-tick">${label}</span>
+      </div>`;
+    })
+    .join("");
 }
 
 function renderFast(data, transcript) {
@@ -485,6 +539,14 @@ async function loadStats() {
     if (label) {
       label.textContent = `INSIDE THE ${l.budget_ms} ms BUDGET \u00b7 measured P50 ${l.p50_ms} ms`;
     }
+  }
+
+  // Speech-to-text was hardcoded in the diagram and had drifted from the
+  // artifact by 21%. Read it from the same payload as everything else.
+  const stt = $("#d-stt-ms");
+  if (stt && s.voice && s.voice.stt_p50_ms !== null) {
+    // Kept short: a longer string collides with the label beneath it.
+    stt.textContent = `P50 ${Math.round(s.voice.stt_p50_ms)} ms`;
   }
 
   if (g.false_abstain_rate !== null) {

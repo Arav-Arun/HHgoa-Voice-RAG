@@ -45,6 +45,7 @@ def collect_stats() -> dict[str, Any]:
     hybrid = _dig(retriever, "hybrid", "overall")
     dense = _dig(retriever, "dense", "overall")
     latency = _dig(bench, "tracks", "fast", "total")
+    voice = _dig(bench, "tracks", "voice")
     gate = _dig(guardrail, "multi_feature_gate", "repeated_holdout")
 
     return {
@@ -64,6 +65,14 @@ def collect_stats() -> dict[str, Any]:
             # on slower shared CPU, so the page must not imply one number
             # describes both.
             "platform": _dig(bench, "host", "platform"),
+        },
+        # Speech-to-text is reported apart from the pipeline percentiles: it is a
+        # network call to ElevenLabs and sits outside the 200 ms budget.
+        "voice": {
+            "stt_p50_ms": _dig(voice, "stt", "p50_ms"),
+            "rag_p50_ms": _dig(voice, "rag", "p50_ms"),
+            "end_to_end_p50_ms": _dig(voice, "end_to_end", "p50_ms"),
+            "clips": _dig(voice, "stt", "count"),
         },
         "guardrail": {
             # Reported as a pair on purpose: a false-abstain rate alone says
