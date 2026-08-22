@@ -549,13 +549,24 @@ async function loadStats() {
     stt.textContent = `P50 ${Math.round(s.voice.stt_p50_ms)} ms`;
   }
 
+  const gateSub = $("#d-gate-sub");
+  if (gateSub && g.features && g.cross_encoder_rate !== null) {
+    // The node is 150px wide; the escalation rate goes in the note below,
+    // where there is room for prose.
+    gateSub.textContent = `${g.features}-feature cascade`;
+  }
+
   if (g.false_abstain_rate !== null) {
     el.mGuard.innerHTML = `${(g.false_abstain_rate * 100).toFixed(1)}<small>%</small>`;
     // Pair the two rates: a low false-abstain rate alone says nothing about
     // how many unanswerable questions the gate actually caught.
-    el.mGuardNote.textContent = g.abstain_recall !== null
-      ? `answerable questions wrongly refused, while catching ${(g.abstain_recall * 100).toFixed(0)}% of unanswerable ones`
-      : "answerable questions wrongly refused";
+    const caught = g.abstain_recall !== null
+      ? `, while catching ${(g.abstain_recall * 100).toFixed(0)}% of unanswerable ones`
+      : "";
+    const cascade = g.cross_encoder_rate !== null
+      ? `. A cheap gate decides most queries; the cross-encoder runs on ${Math.round(g.cross_encoder_rate * 100)}%`
+      : "";
+    el.mGuardNote.textContent = `answerable questions wrongly refused${caught}${cascade}`;
   }
 
   if (s.sources.length) {

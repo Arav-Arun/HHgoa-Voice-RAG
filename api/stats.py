@@ -19,6 +19,7 @@ BENCH_PATH = Path("data/bench/latency.json")
 # the 30-split average that the README quotes. The page must not disagree with
 # the docs.
 GUARDRAIL_PATH = Path("data/eval/guardrail-calibration.json")
+GATE_MODEL_PATH = Path("data/eval/guardrail-model.json")
 
 
 def _load(path: Path) -> dict[str, Any] | None:
@@ -47,6 +48,9 @@ def collect_stats() -> dict[str, Any]:
     latency = _dig(bench, "tracks", "fast", "total")
     voice = _dig(bench, "tracks", "voice")
     gate = _dig(guardrail, "multi_feature_gate", "repeated_holdout")
+    # The cascade itself lives in the fitted model: three cheap features decide
+    # most queries and the cross-encoder only runs inside an undecided band.
+    cascade = _load(GATE_MODEL_PATH)
 
     return {
         "retrieval": {
@@ -79,6 +83,8 @@ def collect_stats() -> dict[str, Any]:
             # nothing about what the refusals bought.
             "false_abstain_rate": _dig(gate, "false_abstain_rate"),
             "abstain_recall": _dig(gate, "abstain_recall"),
+            "features": len(_dig(cascade, "features") or []) or None,
+            "cross_encoder_rate": _dig(cascade, "cascade", "cross_encoder_rate"),
         },
         "sources": [
             str(path)
