@@ -157,9 +157,28 @@ Since the 200 ms budget is claimed at P100, a change that improves the median
 and pushes P100 from 138 ms to 203 ms is a regression on the number that
 matters. `EMBEDDING_RUNTIME=torch` is the default here.
 
-The deployment is the opposite case. Its P100 is already 323 ms and
-cross-encoder bound, so the tail is not the binding constraint, while its encode
-is 38 ms of a 68 ms retrieve stage. `EMBEDDING_RUNTIME=onnx` is set there.
+The deployment is the opposite case, and there it is a clear win. Its tail is
+cross-encoder bound and already over budget, so the tail is not what ONNX would
+be trading against, while the encode is the dominant share of retrieval.
+Measured on the VM, warm, 50 queries:
+
+| stage | torch | onnx |
+|---|---|---|
+| retrieve P50 | 68.54 | **44.08** |
+| retrieve P100 | 104.42 | **88.03** |
+| grounding_guard P100 | 246.16 | 246.09 |
+| **total P50** | 71.55 | **48.40** |
+| total P100 | 323.62 | 334.28 |
+
+Retrieval drops 36% at the median and the tail is untouched, because the tail
+was never the encode. `EMBEDDING_RUNTIME=onnx` is set there. Resident memory
+goes from 1.53 GiB to 1.87 GiB, which the 4 GB instance carries comfortably.
+
+Both of those numbers had to be taken warm. A benchmark run immediately after a
+container restart reads the index and both models off disk and reports a
+grounding-gate P100 near 1,900 ms, which is page cache and not the pipeline; the
+first measurement here said ONNX had made the tail six times worse before a
+repeat run on a warm cache showed the two were identical.
 
 ## Cold start
 
