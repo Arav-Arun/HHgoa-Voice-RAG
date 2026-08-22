@@ -60,6 +60,10 @@ def collect_stats() -> dict[str, Any]:
             "p100_ms": _dig(latency, "p100_ms"),
             "queries": _dig(latency, "count"),
             "budget_ms": _dig(bench, "target_ms"),
+            # The machine these percentiles were measured on. A deployment runs
+            # on slower shared CPU, so the page must not imply one number
+            # describes both.
+            "platform": _dig(bench, "host", "platform"),
         },
         "guardrail": {
             # Reported as a pair on purpose: a false-abstain rate alone says

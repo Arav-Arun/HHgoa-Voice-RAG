@@ -474,8 +474,17 @@ async function loadStats() {
     el.mLatency.innerHTML = [["P50", l.p50_ms], ["P70", l.p70_ms], ["P100", l.p100_ms]]
       .map(([name, ms]) => `<span><b>${name}</b>${ms}<small> ms</small></span>`)
       .join("");
+    // "macOS-26.6-arm64-arm-64bit" -> "macOS 26.6 arm64". The architecture is
+    // the part that explains a gap against a shared-CPU deployment.
+    const on = l.platform ? ` on ${l.platform.split("-").slice(0, 3).join(" ")}` : "";
     el.mLatencyNote.textContent =
-      `${l.queries} queries, worst case inside a ${l.budget_ms} ms budget`;
+      `${l.queries} queries${on}, worst case inside a ${l.budget_ms} ms budget`;
+    // Read from the same artifact rather than baked into the SVG, or the
+    // diagram drifts from the table above it after any re-run.
+    const label = $("#d-budget-label");
+    if (label) {
+      label.textContent = `INSIDE THE ${l.budget_ms} ms BUDGET \u00b7 measured P50 ${l.p50_ms} ms`;
+    }
   }
 
   if (g.false_abstain_rate !== null) {

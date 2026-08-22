@@ -4,9 +4,9 @@
   "buildCommand": "mkdir -p dist/static && cp api/static/index.html dist/ && cp api/static/app.css api/static/app.js dist/static/",
   "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/query", "destination": "https://REPLACE-WITH-CLOUD-RUN-URL/query" },
-    { "source": "/voice-query", "destination": "https://REPLACE-WITH-CLOUD-RUN-URL/voice-query" },
-    { "source": "/health", "destination": "https://REPLACE-WITH-CLOUD-RUN-URL/health" },
-    { "source": "/stats", "destination": "https://REPLACE-WITH-CLOUD-RUN-URL/stats" }
+    { "source": "/query", "destination": "https://hhgoa-voice-rag-876918782987.us-central1.run.app/query" },
+    { "source": "/voice-query", "destination": "https://hhgoa-voice-rag-876918782987.us-central1.run.app/voice-query" },
+    { "source": "/health", "destination": "https://hhgoa-voice-rag-876918782987.us-central1.run.app/health" },
+    { "source": "/stats", "destination": "https://hhgoa-voice-rag-876918782987.us-central1.run.app/stats" }
   ]
 }
