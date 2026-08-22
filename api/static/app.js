@@ -45,6 +45,13 @@ const el = {
   mGuardNote: $("#m-guard-note"),
   mChunks: $("#m-chunks"),
   provenance: $("#provenance"),
+  session: $("#session"),
+  sCount: $("#s-count"),
+  sP50: $("#s-p50"),
+  sP70: $("#s-p70"),
+  sP100: $("#s-p100"),
+  sAbstain: $("#s-abstain"),
+  sNote: $("#s-note"),
 };
 
 const state = { busy: false };
@@ -175,8 +182,37 @@ function renderSources(sources, citations) {
 }
 
 // Tier 1: the local answer. This is the number the budget is measured against.
+// Percentiles over this session's fast-path queries, computed the same way the
+// benchmark does: nearest-rank on the sorted sample, P100 as the true maximum.
+const session = { latencies: [], abstains: 0 };
+
+function percentile(sorted, q) {
+  if (!sorted.length) return null;
+  return sorted[Math.min(Math.floor(sorted.length * q), sorted.length - 1)];
+}
+
+function recordQuery(data) {
+  // total_ms is the server's own pipeline timing, so the figure excludes
+  // network and matches what the published percentiles measure.
+  if (typeof data.total_ms !== "number") return;
+  session.latencies.push(data.total_ms);
+  if (data.abstained) session.abstains += 1;
+
+  const sorted = [...session.latencies].sort((a, b) => a - b);
+  const n = sorted.length;
+  el.session.hidden = false;
+  el.sCount.textContent = `· ${n} ${n === 1 ? "query" : "queries"}`;
+  el.sP50.textContent = percentile(sorted, 0.5).toFixed(1);
+  el.sP70.textContent = percentile(sorted, 0.7).toFixed(1);
+  el.sP100.textContent = sorted[n - 1].toFixed(1);
+  el.sAbstain.textContent = String(session.abstains);
+  el.sNote.textContent =
+    `Live, this browser only. The figures above come from committed benchmark runs; ${n} ${n === 1 ? "query is" : "queries are"} far too few to compare against them.`;
+}
+
 function renderFast(data, transcript) {
   el.result.hidden = false;
+  recordQuery(data);
 
   el.transcript.hidden = !transcript;
   if (transcript) el.transcript.innerHTML = `heard <b>${esc(transcript)}</b>`;

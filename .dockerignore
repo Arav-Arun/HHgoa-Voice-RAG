@@ -3,10 +3,14 @@
 # exception below can still match: excluding the directory itself stops docker
 # descending into it.
 data/**
-# Except the fitted gate coefficients. 2 KB of model config the serving path
-# needs, and without it ConfidenceGate.from_file silently falls back to a raw
-# cosine cutoff, which is not the gate any published number describes.
+# Except 21 KB the serving path reads. Without the first, the gate silently
+# falls back to a raw cosine cutoff, which is not the gate any published number
+# describes. Without the rest, /stats has nothing to read and the UI shows a
+# dash where every measured result should be.
 !data/eval/guardrail-model.json
+!data/eval/retriever-compare.json
+!data/eval/guardrail-calibration.json
+!data/bench/latency.json
 .venv/
 .git/
 .github/

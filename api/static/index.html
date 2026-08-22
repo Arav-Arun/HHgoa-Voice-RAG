@@ -248,6 +248,32 @@
     </div>
 
     <p class="provenance" id="provenance"></p>
+
+    <!-- Live counters for this browser session. Kept separate from the numbers
+         above, which come from committed benchmark runs, so a handful of demo
+         queries can never be mistaken for the published result. -->
+    <div class="session" id="session" hidden>
+      <p class="session-title">This session <span id="s-count"></span></p>
+      <div class="session-row">
+        <div class="session-stat">
+          <span class="session-label">P50</span>
+          <span class="session-value" id="s-p50">-</span><small>ms</small>
+        </div>
+        <div class="session-stat">
+          <span class="session-label">P70</span>
+          <span class="session-value" id="s-p70">-</span><small>ms</small>
+        </div>
+        <div class="session-stat">
+          <span class="session-label">P100</span>
+          <span class="session-value" id="s-p100">-</span><small>ms</small>
+        </div>
+        <div class="session-stat">
+          <span class="session-label">Declined</span>
+          <span class="session-value" id="s-abstain">-</span>
+        </div>
+      </div>
+      <p class="session-note" id="s-note"></p>
+    </div>
   </section>
   <footer>
     <p class="credit">Project by <strong>Team Deploy For Good</strong></p>
