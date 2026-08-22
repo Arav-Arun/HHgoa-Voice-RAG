@@ -1,0 +1,22 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "rewrites": [
+    {
+      "source": "/query",
+      "destination": "https://hhgoa.duckdns.org/query"
+    },
+    {
+      "source": "/voice-query",
+      "destination": "https://hhgoa.duckdns.org/voice-query"
+    },
+    {
+      "source": "/health",
+      "destination": "https://hhgoa.duckdns.org/health"
+    },
+    {
+      "source": "/stats",
+      "destination": "https://hhgoa.duckdns.org/stats"
+    }
+  ]
+}

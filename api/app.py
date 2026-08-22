@@ -82,14 +82,17 @@ class _RevalidatingStatic(StaticFiles):
 
 # Static demo UI. Purely a client of the endpoints below; it holds no
 # retrieval or model logic, and the API works identically without it.
-_STATIC_DIR = Path(__file__).parent / "static"
-if _STATIC_DIR.is_dir():
-    app.mount("/static", _RevalidatingStatic(directory=_STATIC_DIR), name="static")
+# The page lives outside the api package because Vercel turns everything under a
+# root api/ directory into serverless functions. Resolved from the working
+# directory, like the index and model paths in core.config.
+_WEB_DIR = Path("web")
+if _WEB_DIR.is_dir():
+    app.mount("/static", _RevalidatingStatic(directory=_WEB_DIR / "static"), name="static")
 
     @app.get("/", include_in_schema=False)
     def index() -> FileResponse:
         return FileResponse(
-            _STATIC_DIR / "index.html", headers={"cache-control": "no-cache"}
+            _WEB_DIR / "index.html", headers={"cache-control": "no-cache"}
         )
 
 

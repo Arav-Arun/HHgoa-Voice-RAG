@@ -888,7 +888,8 @@ zero CUDA packages, both languages answering and the guardrail abstaining.
 | `core/text.py` | shared Indic-aware tokenizer |
 | `eval/` | metrics, bootstrap significance, calibration |
 | `bench/` | P50/P70/P100 latency harness |
-| `api/` | FastAPI service + static demo UI (the live link) |
+| `api/` | FastAPI service |
+| `web/` | static demo UI, served by the API and by Vercel |
 | `Dockerfile`, `render.yaml` | container + Render blueprint for deployment |
 
 Docs: [architecture](docs/architecture.md) · [harness](docs/harness.md) ·

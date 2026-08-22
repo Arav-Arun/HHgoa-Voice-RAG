@@ -53,7 +53,7 @@ See [harness.md](harness.md).
 | Data sources | `ingest/loaders.py` |
 | Metrics | `eval/metrics.py`, `eval/significance.py` |
 | HTTP API | `api/app.py`, `api/schemas.py` |
-| Demo UI | `api/static/` (no build step; pure client of the API) |
+| Demo UI | `web/` (no build step; pure client of the API) |
 | Config defaults | `core/config.py`, `.env.example` |
 
 ## Components (defaults)
