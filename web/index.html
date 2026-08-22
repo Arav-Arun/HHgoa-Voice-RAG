@@ -216,6 +216,31 @@
         </g>
         <line x1="500" y1="400" x2="500" y2="434" marker-end="url(#arrow)"/>
       </svg>
+      <!-- Where the pipeline above actually runs. Separate from the diagram
+           because it is deployment, not retrieval: the same container serves
+           this page locally and on the VM. -->
+      <div class="deploy">
+        <p class="deploy-label">Where it runs</p>
+        <div class="deploy-chain">
+          <div class="hop">
+            <b>Browser</b><span>Hindi or Gujarati, voice or text</span>
+          </div>
+          <div class="hop">
+            <b>Vercel</b><span>serves this page, proxies the API paths</span>
+          </div>
+          <div class="hop">
+            <b>Caddy</b><span>HTTPS on the VM, Let's Encrypt</span>
+          </div>
+          <div class="hop hop-run">
+            <b>Docker · Oracle ARM</b><span>2 dedicated cores, index and both models resident</span>
+          </div>
+        </div>
+        <p class="deploy-note">
+          The container is the same one that runs locally, so the pipeline above
+          is identical in both places. Only the CPU differs, which is why live
+          timings here sit above the benchmark figures below.
+        </p>
+      </div>
     </div>
   </section>
 
@@ -253,6 +278,7 @@
          queries can never be mistaken for the published result. -->
     <div class="session" id="session" hidden>
       <p class="session-title">This session <span id="s-count"></span></p>
+      <p class="session-served" id="s-served" hidden></p>
       <div class="session-row">
         <div class="session-stat">
           <span class="session-label">P50</span>

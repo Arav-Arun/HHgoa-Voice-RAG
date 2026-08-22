@@ -47,6 +47,7 @@ const el = {
   provenance: $("#provenance"),
   session: $("#session"),
   sCount: $("#s-count"),
+  sServed: $("#s-served"),
   sStages: $("#s-stages"),
   sHist: $("#s-hist"),
   sP50: $("#s-p50"),
@@ -222,8 +223,26 @@ function recordQuery(data) {
   el.sAbstain.textContent = String(session.abstains);
   renderStages();
   renderHistogram(sorted);
+  // The server counts every query it has answered, which is the only figure
+  // here that is not limited to one browser tab.
+  refreshServed();
   el.sNote.textContent =
     `Live, this browser only. The figures above come from committed benchmark runs; ${n} ${n === 1 ? "query is" : "queries are"} far too few to compare against them.`;
+}
+
+async function refreshServed() {
+  try {
+    const { serving: v } = await (await fetch("/stats")).json();
+    if (!v || !v.queries) return;
+    const q = `${v.queries.toLocaleString()} ${v.queries === 1 ? "query" : "queries"}`;
+    const pct = v.queries ? Math.round((v.abstained / v.queries) * 100) : 0;
+    const tail = v.p50_ms === null ? "" : ` · P50 ${v.p50_ms.toFixed(1)} ms, P100 ${v.p100_ms.toFixed(1)} ms`;
+    el.sServed.textContent =
+      `Served by this instance since it started: ${q}, ${pct}% declined${tail}.`;
+    el.sServed.hidden = false;
+  } catch {
+    // The panel above still stands on its own if /stats is unreachable.
+  }
 }
 
 function renderStages() {

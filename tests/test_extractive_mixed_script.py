@@ -8,6 +8,8 @@ the same passage. The answerer escalates to the embedder for exactly this case.
 
 from __future__ import annotations
 
+from typing import ClassVar
+
 from core.llm.extractive import ExtractiveAnswerer
 from core.text import off_script_terms
 from core.types import Chunk, ScoredChunk
@@ -25,7 +27,7 @@ class StubEmbedder:
     that particular model bridges scripts.
     """
 
-    BRIDGE = {"sodium": "सोडियम", "vitamin": "विटामिन"}
+    BRIDGE: ClassVar[dict[str, str]] = {"sodium": "सोडियम", "vitamin": "विटामिन"}
 
     @property
     def dimension(self) -> int:
@@ -72,7 +74,7 @@ def test_without_an_embedder_the_lexical_path_still_answers():
 
 def test_same_script_query_does_not_pay_for_an_encode():
     class Explodes(StubEmbedder):
-        def embed_texts(self, texts):  # noqa: ARG002 - must never be reached
+        def embed_texts(self, texts):
             raise AssertionError("embedder consulted for a same-script query")
 
     answerer = ExtractiveAnswerer(embedder=Explodes())

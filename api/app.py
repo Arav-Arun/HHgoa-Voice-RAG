@@ -16,6 +16,7 @@ from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
+from api.counters import ServingCounters
 from api.schemas import (
     HealthResponse,
     QueryRequest,
@@ -168,6 +169,23 @@ def _transcribe(data: bytes, audio: UploadFile, language: str | None):
     return result, (time.perf_counter() - start) * 1000.0
 
 
+counters = ServingCounters()
+
+
+def _record(response, *, voice: bool = False) -> None:
+    """Count a served query. Never let bookkeeping fail a request."""
+    meta = response.metadata or {}
+    total_ms = meta.get("total_ms")
+    if total_ms is None:
+        return
+    counters.record(
+        total_ms,
+        abstained=meta.get("path") == "abstained",
+        stages=meta.get("timings_ms"),
+        voice=voice,
+    )
+
+
 def _gate_is_fitted() -> bool:
     """The gate degrades quietly when its coefficients are missing, so report it."""
     guardrail = getattr(get_pipeline().orchestrator, "guardrail", None)
@@ -202,8 +220,12 @@ def health() -> HealthResponse:
 
 @app.get("/stats", include_in_schema=True)
 def stats() -> dict:
-    """Measured results, read from run artifacts. Never synthesised."""
-    return collect_stats()
+    """Measured results, read from run artifacts. Never synthesised.
+
+    ``serving`` is the exception to "read from artifacts": it is this process
+    counting what it has answered, which no committed file can know.
+    """
+    return {**collect_stats(), "serving": counters.snapshot()}
 
 
 @app.post("/query", response_model=QueryResponse)
@@ -214,6 +236,7 @@ def query(request: QueryRequest) -> QueryResponse:
         top_k=request.top_k,
         mode=request.mode,
     )
+    _record(response)
     return _to_query_response(response)
 
 
@@ -234,6 +257,7 @@ async def voice_query(
     response = get_pipeline().query(
         transcription.text, language=language or transcription.language, top_k=top_k, mode=mode
     )
+    _record(response, voice=True)
     base = _to_query_response(response)
     return VoiceQueryResponse(
         **base.model_dump(),

@@ -611,3 +611,44 @@ footer {
 @media (max-width: 620px) {
   .session-panels { grid-template-columns: 1fr; }
 }
+
+/* Counted by the server, so unlike everything else in this panel it survives
+   a page reload and spans every visitor. */
+.session-served {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  margin: 4px 0 0;
+}
+
+/* Deployment topology. Plain elements rather than SVG: it is a four-step chain
+   that must reflow on a phone, which fixed coordinates cannot do. */
+.deploy { margin-top: 22px; border-top: 2px solid var(--rule); padding-top: 16px; }
+
+.deploy-label {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+
+.deploy-chain { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.deploy-chain .hop {
+  flex: 1 1 160px;
+  min-width: 0;
+  border: 2px solid var(--ink);
+  background: #fff;
+  padding: 9px 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.deploy-chain .hop b { font-family: var(--display); font-size: 14px; }
+.deploy-chain .hop span { font-family: var(--mono); font-size: 10.5px; color: var(--muted); line-height: 1.5; }
+.deploy-chain .hop-run { background: var(--yellow); }
+.deploy-chain .hop-run span { color: rgba(7, 48, 27, 0.72); }
+
+.deploy-note { font-size: 13px; color: var(--muted); margin: 10px 0 0; max-width: 68ch; }
