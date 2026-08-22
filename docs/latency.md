@@ -25,7 +25,7 @@ guardrail working, not a measurement artifact, and it is why the percentiles
 rather than the mean are the headline.
 
 Measured on macOS arm64, torch limited to 4 threads, e5-small, hybrid
-retrieval (RRF). Reproduce with `./hhgoa bench --queries 300`.
+retrieval (RRF). Reproduce with `uv run hhgoa bench --queries 300`.
 
 ## Why three tracks are reported separately
 
@@ -133,7 +133,7 @@ The query encode is the largest single cost in retrieval, so running the same
 graph under ONNX Runtime instead of PyTorch is the obvious lever. The vectors
 are identical, not merely close: `scripts/export_onnx.py` traces the torch model
 and refuses to write an export whose cosine against torch is below 0.999999.
-Measured 1.0 on every probe, and `./hhgoa eval` returns `hit@5 0.6377358491`
+Measured 1.0 on every probe, and `uv run hhgoa eval` returns `hit@5 0.6377358491`
 either way, to ten decimal places.
 
 It still is not the default, because the trade runs in opposite directions at

@@ -60,7 +60,7 @@ def synthesize(text: str, language: str, stem: str) -> Path:
 
 def main() -> None:
     if not QUERIES.exists():
-        sys.exit(f"{QUERIES} not found. Run ./hhgoa eval-build first.")
+        sys.exit(f"{QUERIES} not found. Run uv run hhgoa eval-build first.")
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     queries = load_queries()

@@ -35,7 +35,7 @@ class Settings(BaseSettings):
     chunk_size: int = 512
     chunk_overlap: int = 64
     # parent_child: children are this many sentences, advanced by this stride.
-    # 3 is the dev-selected window (`./hhgoa child-sweep`). A per-language
+    # 3 is the dev-selected window (`uv run hhgoa child-sweep`). A per-language
     # window looked justified on eval and did not replicate on dev, so there
     # is deliberately only one knob here.
     child_sentences: int = Field(default=3, validation_alias="CHILD_SENTENCES")

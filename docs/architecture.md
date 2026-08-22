@@ -110,14 +110,14 @@ See [harness.md](harness.md).
 ## CLI
 
 ```bash
-./hhgoa ingest [path|msmarco]     # build vector + BM25 index
-./hhgoa query "question"          # --mode fast|quality
-./hhgoa voice-query <audio.wav>   # STT + RAG
-./hhgoa transcribe <audio.wav>    # STT only
-./hhgoa eval                      # hit@5 / recall@5 / MRR
-./hhgoa retriever-compare         # dense vs sparse vs hybrid + bootstrap
-./hhgoa chunk-compare             # six chunking strategies + bootstrap
-./hhgoa guardrail-calibrate       # fit + report the grounding gate
-./hhgoa bench                     # P50/P70/P100
-./hhgoa serve                     # HTTP API
+uv run hhgoa ingest [path|msmarco]     # build vector + BM25 index
+uv run hhgoa query "question"          # --mode fast|quality
+uv run hhgoa voice-query <audio.wav>   # STT + RAG
+uv run hhgoa transcribe <audio.wav>    # STT only
+uv run hhgoa eval                      # hit@5 / recall@5 / MRR
+uv run hhgoa retriever-compare         # dense vs sparse vs hybrid + bootstrap
+uv run hhgoa chunk-compare             # six chunking strategies + bootstrap
+uv run hhgoa guardrail-calibrate       # fit + report the grounding gate
+uv run hhgoa bench                     # P50/P70/P100
+uv run hhgoa serve                     # HTTP API
 ```

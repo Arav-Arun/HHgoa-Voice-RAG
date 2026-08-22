@@ -31,7 +31,7 @@ from core.types import Chunk, Document
 
 class ParentChildChunker(BaseChunker):
     def __init__(self, child_sentences: int = 3, child_stride: int = 1) -> None:
-        # Window size is chosen on the dev slice by `./hhgoa child-sweep`.
+        # Window size is chosen on the dev slice by `uv run hhgoa child-sweep`.
         self.child_sentences = max(child_sentences, 1)
         # Stride < child_sentences gives overlapping children, so a claim
         # spanning a sentence boundary still lands whole inside some window.

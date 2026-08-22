@@ -29,7 +29,7 @@ Metrics are averaged over 30 random half-splits: one split leaves ~48 abstain
 examples and its balanced accuracy swings by +/-0.03 between seeds.
 
 Coefficients live in ``data/eval/guardrail-model.json``, written by
-``./hhgoa guardrail-calibrate``. If that file is absent the gate degrades to the
+``uv run hhgoa guardrail-calibrate``. If that file is absent the gate degrades to the
 plain cosine threshold, so the system still runs on a fresh checkout.
 """
 

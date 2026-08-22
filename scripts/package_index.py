@@ -25,7 +25,7 @@ OPTIONAL = ("passages_en.json",)
 def package(index_dir: Path, output: Path) -> Path:
     missing = [name for name in REQUIRED if not (index_dir / name).exists()]
     if missing:
-        raise SystemExit(f"{index_dir} is missing {', '.join(missing)}. Run './hhgoa ingest msmarco' first.")
+        raise SystemExit(f"{index_dir} is missing {', '.join(missing)}. Run 'uv run hhgoa ingest msmarco' first.")
 
     output.parent.mkdir(parents=True, exist_ok=True)
     # arcname is the directory name so the tarball extracts to data/index/,

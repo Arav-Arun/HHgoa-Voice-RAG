@@ -2,7 +2,7 @@
 
 The page already reports two things and they answer different questions. The
 metric cards come from committed benchmark runs, reproducible with
-``./hhgoa bench``. The session panel counts one browser tab, which is too few
+``uv run hhgoa bench``. The session panel counts one browser tab, which is too few
 queries to mean anything. Neither says what the deployed service has done.
 
 This is the third: every query the process has served, held in memory. Not

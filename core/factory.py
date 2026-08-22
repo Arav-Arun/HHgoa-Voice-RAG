@@ -224,7 +224,7 @@ def build_retriever(
             print(
                 "[factory] No BM25 index found in "
                 f"{settings.index_dir}; falling back to dense retrieval. "
-                "Re-run './hhgoa ingest msmarco' to build it.",
+                "Re-run 'uv run hhgoa ingest msmarco' to build it.",
                 file=sys.stderr,
             )
             return DenseRetriever(

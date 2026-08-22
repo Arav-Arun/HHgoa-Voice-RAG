@@ -45,10 +45,10 @@ MS MARCO-XI parquets).
 ## Rebuild
 
 ```bash
-./hhgoa eval-build          # shuffle + write split.json, queries.jsonl, dev_queries.jsonl
-./hhgoa ingest msmarco      # index the corpus slice (~24 min, 109k chunks)
-./hhgoa eval-validate       # confirm labels exist in the index -> ok: true
-./hhgoa eval                # hit@5 / recall@5 / MRR on held-out queries
+uv run hhgoa eval-build          # shuffle + write split.json, queries.jsonl, dev_queries.jsonl
+uv run hhgoa ingest msmarco      # index the corpus slice (~24 min, 109k chunks)
+uv run hhgoa eval-validate       # confirm labels exist in the index -> ok: true
+uv run hhgoa eval                # hit@5 / recall@5 / MRR on held-out queries
 ```
 
 ## Labels
@@ -60,8 +60,8 @@ hit@5 and recall@5 track each other closely.
 ## Comparisons
 
 ```bash
-./hhgoa retriever-compare --retrievers dense sparse hybrid
-./hhgoa chunk-compare --strategies fixed semantic metadata recursive parent_child token_window
+uv run hhgoa retriever-compare --retrievers dense sparse hybrid
+uv run hhgoa chunk-compare --strategies fixed semantic metadata recursive parent_child token_window
 ```
 
 Both re-score the held-out set and run a paired bootstrap (10,000 resamples)
@@ -81,7 +81,7 @@ against the baseline. `chunk-compare` re-ingests per strategy into
 | `prompt_injection` | 24 | **input filter, pre-retrieval** |
 
 ```bash
-./hhgoa guardrail-calibrate
+uv run hhgoa guardrail-calibrate
 ```
 
 **Only the three gate-reaching categories are used to calibrate the grounding

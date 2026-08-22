@@ -29,7 +29,7 @@ output."* Speech-to-text and LLM generation are network calls and are reported
 separately below, never folded into this number.
 
 ```bash
-./hhgoa bench --queries 300
+uv run hhgoa bench --queries 300
 ```
 
 ---
@@ -343,7 +343,7 @@ The ablation is the whole argument, and its size tracks fan-out exactly:
 
 ```bash
 # --reuse-index scores against indexes already built, skipping a 6x re-ingest
-./hhgoa chunk-compare --reuse-index --ablate-dedupe
+uv run hhgoa chunk-compare --reuse-index --ablate-dedupe
 ```
 
 ### What `parent_child` actually does, once measured fairly
@@ -389,7 +389,7 @@ remains the shipping chunker. What changed is that the number now measures the
 idea instead of our code.
 
 ```bash
-./hhgoa child-sweep --sizes 2 3 --reuse-index
+uv run hhgoa child-sweep --sizes 2 3 --reuse-index
 ```
 
 ### The tokenizer bug underneath all of it
@@ -479,7 +479,7 @@ re-run under passage-level fusion picks the same operating point it picked
 before, hi=0.95 and gu=0.50, so the shipping config is unchanged:
 
 ```bash
-./hhgoa fusion-sweep        # dev slice only, never eval
+uv run hhgoa fusion-sweep        # dev slice only, never eval
 ```
 
 `data/eval/retriever-compare.json`, `data/eval/fusion-sweep.json`.
@@ -579,7 +579,7 @@ are noisier than typed questions, land in the undecided confidence band more
 often, and so pay for the cross-encoder.
 
 ```bash
-./hhgoa bench --queries 300 --audio-dir data/samples/audio
+uv run hhgoa bench --queries 300 --audio-dir data/samples/audio
 ```
 
 Reported separately, never folded in:
@@ -682,7 +682,7 @@ Requirement 5 names four things. All four are built:
 Demonstrate it:
 
 ```bash
-LLM_BASE_URL=http://127.0.0.1:9 ./hhgoa query "बीमा समाधान क्या है" --mode quality
+LLM_BASE_URL=http://127.0.0.1:9 uv run hhgoa query "बीमा समाधान क्या है" --mode quality
 ```
 
 Details in [docs/harness.md](docs/harness.md).
@@ -782,7 +782,7 @@ the metric previously reported as `balanced_accuracy` was in fact
 `min(recall_a, recall_b)`, which is worst-class recall. Both are correct now.
 
 ```bash
-./hhgoa guardrail-calibrate
+uv run hhgoa guardrail-calibrate
 ```
 
 ---
@@ -822,23 +822,23 @@ Significance is paired bootstrap, 10,000 resamples, in `eval/significance.py`.
 ```bash
 cp .env.example .env          # add STT_API_KEY; LLM_API_KEY optional
 uv sync --extra dev --extra ingest
-./hhgoa eval-build            # held-out + dev query sets, and split.json
-./hhgoa ingest msmarco        # vector + BM25 index (~24 min)
-./hhgoa eval-validate         # labels present -> ok: true
-./hhgoa serve                 # http://127.0.0.1:8000
+uv run hhgoa eval-build            # held-out + dev query sets, and split.json
+uv run hhgoa ingest msmarco        # vector + BM25 index (~24 min)
+uv run hhgoa eval-validate         # labels present -> ok: true
+uv run hhgoa serve                 # http://127.0.0.1:8000
 ```
 
 | command | what |
 |---|---|
-| `./hhgoa query "..."` | one question, `--mode fast\|quality` |
-| `./hhgoa voice-query a.wav` | STT then answer |
-| `./hhgoa eval` | hit@5 / recall@5 / MRR |
-| `./hhgoa retriever-compare` | dense vs sparse vs hybrid + bootstrap |
-| `./hhgoa chunk-compare` | six chunking strategies + bootstrap |
-| `./hhgoa fusion-sweep` | dense/lexical weight sweep on the dev slice |
-| `./hhgoa child-sweep` | parent_child window size, per language |
-| `./hhgoa guardrail-calibrate` | fit and report the grounding gate |
-| `./hhgoa bench --queries 300` | P50 / P70 / P100 |
+| `uv run hhgoa query "..."` | one question, `--mode fast\|quality` |
+| `uv run hhgoa voice-query a.wav` | STT then answer |
+| `uv run hhgoa eval` | hit@5 / recall@5 / MRR |
+| `uv run hhgoa retriever-compare` | dense vs sparse vs hybrid + bootstrap |
+| `uv run hhgoa chunk-compare` | six chunking strategies + bootstrap |
+| `uv run hhgoa fusion-sweep` | dense/lexical weight sweep on the dev slice |
+| `uv run hhgoa child-sweep` | parent_child window size, per language |
+| `uv run hhgoa guardrail-calibrate` | fit and report the grounding gate |
+| `uv run hhgoa bench --queries 300` | P50 / P70 / P100 |
 
 ---
 

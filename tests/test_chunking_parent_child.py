@@ -1,7 +1,7 @@
 """Parent-child chunking: parent identity, overlap, and window sizing.
 
 These pin the mechanism. The window size itself is chosen on the dev slice by
-``./hhgoa child-sweep`` and recorded in ``data/eval/child-size-sweep.json``.
+``uv run hhgoa child-sweep`` and recorded in ``data/eval/child-size-sweep.json``.
 """
 
 from __future__ import annotations

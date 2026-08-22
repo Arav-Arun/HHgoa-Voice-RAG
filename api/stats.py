@@ -1,7 +1,7 @@
 """Read measured results off disk for the demo UI.
 
 Every number the UI shows comes from an artifact written by an actual run
-(``./hhgoa retriever-compare``, ``./hhgoa bench``, ``./hhgoa guardrail-calibrate``).
+(``uv run hhgoa retriever-compare``, ``uv run hhgoa bench``, ``uv run hhgoa guardrail-calibrate``).
 Nothing is hardcoded. A missing artifact yields ``None`` and the UI renders a
 dash, so an unmeasured metric is visibly absent rather than quietly invented.
 """
