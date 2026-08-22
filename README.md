@@ -852,6 +852,18 @@ docker run --rm -p 7860:7860 -e INDEX_URL=<that url> -e STT_API_KEY=<key> hhgoa:
 curl -s localhost:7860/health   # ready: true, indexed_chunks: 109082
 ```
 
+Optionally export the query encoder to ONNX and set `EMBEDDING_RUNTIME=onnx` on
+the server. It produces the same vectors (the export refuses to be written
+otherwise) and takes roughly 30% off the median, at the cost of a longer tail:
+
+```bash
+uv run python scripts/export_onnx.py
+```
+
+Worth it only where the tail is not the binding constraint. It is not the local
+default for exactly that reason, and [docs/latency.md](docs/latency.md) carries
+the measurements both ways.
+
 Then point Render at the repo. `render.yaml` is a Blueprint it reads directly,
 so the only manual step is filling in `INDEX_URL`, `STT_API_KEY`, and optionally
 `LLM_API_KEY`. Render injects `$PORT`; the app reads it ahead of `API_PORT`.
