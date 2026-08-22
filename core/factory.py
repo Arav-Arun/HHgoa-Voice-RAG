@@ -13,6 +13,7 @@ from core.chunking.semantic import SemanticChunker
 from core.chunking.token_window import TokenWindowChunker
 from core.config import Settings, get_settings
 from core.embeddings.hash import HashEmbedder
+from core.embeddings.onnx import OnnxEmbedder
 from core.embeddings.openai import OpenAIEmbedder
 from core.embeddings.presets import EMBEDDING_PRESETS
 from core.embeddings.sentence_transformers import SentenceTransformerEmbedder
@@ -53,13 +54,18 @@ def build_embedder(settings: Settings | None = None):
                 "Set EMBEDDING_MODEL or a known EMBEDDING_PRESET "
                 f"({', '.join(sorted(EMBEDDING_PRESETS))})"
             )
-        return SentenceTransformerEmbedder(
-            model_name=model_name,
-            query_prefix=preset.query_prefix if preset else "",
-            passage_prefix=preset.passage_prefix if preset else "",
-            batch_size=settings.embedding_batch_size,
-            device=settings.torch_device,
-        )
+        shared = {
+            "model_name": model_name,
+            "query_prefix": preset.query_prefix if preset else "",
+            "passage_prefix": preset.passage_prefix if preset else "",
+            "batch_size": settings.embedding_batch_size,
+            "device": settings.torch_device,
+        }
+        if settings.embedding_runtime.lower() in {"auto", "onnx"}:
+            # Falls back to torch on its own when no export is present, so this
+            # is safe to leave on by default.
+            return OnnxEmbedder(threads=settings.embedding_threads, **shared)
+        return SentenceTransformerEmbedder(**shared)
     if provider == "openai":
         return OpenAIEmbedder(
             api_key=settings.llm_api_key,

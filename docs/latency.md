@@ -127,6 +127,40 @@ Two other decisions matter:
   sentences from retrieved context locally. A remote LLM call cannot fit in
   200 ms, which is exactly why generation is a separate, optional path.
 
+## The ONNX query encoder, and why it is not the default
+
+The query encode is the largest single cost in retrieval, so running the same
+graph under ONNX Runtime instead of PyTorch is the obvious lever. The vectors
+are identical, not merely close: `scripts/export_onnx.py` traces the torch model
+and refuses to write an export whose cosine against torch is below 0.999999.
+Measured 1.0 on every probe, and `./hhgoa eval` returns `hit@5 0.6377358491`
+either way, to ten decimal places.
+
+It still is not the default, because the trade runs in opposite directions at
+the median and the tail. 300 queries, this machine, repeated runs:
+
+| runtime | P50 | P70 | P100 |
+|---|---|---|---|
+| torch | 10.04 | 10.87 | **138.38** |
+| onnx, threads auto | 8.46 | 10.02 | 197.76 |
+| onnx, 2 threads | 7.27 | 7.92 | 233.38 |
+| onnx, 4 threads | 7.86 | 8.61 | 192.30 |
+| onnx 2 / torch 4 | **6.87** | **7.29** | 202.79 |
+
+Roughly 30% off the median and 50 to 90% onto the tail. The tail lands on the
+same query positions under both runtimes, which are the cross-encoder
+escalations, so it is not ONNX warm-up. Constraining the total thread budget
+across both runtimes did not recover it either, so it is not simple
+oversubscription.
+
+Since the 200 ms budget is claimed at P100, a change that improves the median
+and pushes P100 from 138 ms to 203 ms is a regression on the number that
+matters. `EMBEDDING_RUNTIME=torch` is the default here.
+
+The deployment is the opposite case. Its P100 is already 323 ms and
+cross-encoder bound, so the tail is not the binding constraint, while its encode
+is 38 ms of a 68 ms retrieve stage. `EMBEDDING_RUNTIME=onnx` is set there.
+
 ## Cold start
 
 **17,445 ms** to ready, loading e5-small, the cross-encoder, torch init, and reading a 320 MB index.

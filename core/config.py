@@ -80,6 +80,21 @@ class Settings(BaseSettings):
         validation_alias="EMBEDDING_PRESET",
     )
     embedding_model: str = Field(default="", validation_alias="EMBEDDING_MODEL")
+    # Which runtime executes the query encoder. Both produce identical vectors
+    # (cosine 1.0, verified at export), so this is purely a latency trade, and
+    # it goes in opposite directions on the two machines we measured:
+    #
+    #   this Mac      torch  P50 10.04  P70 10.87  P100 138   <- default
+    #                 onnx   P50  6.87  P70  7.29  P100 203
+    #   deploy VM     see docs/latency.md
+    #
+    # ONNX wins the typical case and loses the tail. Locally the tail is what
+    # the 200 ms budget is claimed against, so torch is the default. On the VM
+    # the tail is already cross-encoder bound and over budget, so ONNX is set
+    # there and buys back the encode. "onnx" opts in; "auto" also opts in when
+    # an export exists.
+    embedding_runtime: str = Field(default="torch", validation_alias="EMBEDDING_RUNTIME")
+    embedding_threads: int = Field(default=0, validation_alias="EMBEDDING_THREADS")
     embedding_batch_size: int = Field(default=32, validation_alias="EMBEDDING_BATCH_SIZE")
     # Torch device for the query encoder and the gate's cross-encoder. Both
     # models are small and run one item at a time, where GPU dispatch overhead

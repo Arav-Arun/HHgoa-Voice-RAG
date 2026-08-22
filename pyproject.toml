@@ -13,6 +13,9 @@ dependencies = [
     "uvicorn[standard]>=0.32.0",
     "python-multipart>=0.0.9",
     "sentence-transformers>=5.7.0",
+    # Runs the query encoder's exported graph. Same vectors as torch, about
+    # half the time. See core/embeddings/onnx.py.
+    "onnxruntime>=1.20.0",
     # Pulled in by sentence-transformers anyway. Declared directly because uv
     # sources only bind a project's own dependencies, and without that binding
     # the CPU index below is ignored.
@@ -25,6 +28,9 @@ dev = [
     "pytest>=8.0.0",
     # Only used by scripts/make_audio_fixtures.py, never imported at runtime.
     "gtts>=2.5.0",
+    # torch.onnx.export needs these; serving does not.
+    "onnx>=1.17.0",
+    "onnxscript>=0.1.0",
 ]
 # Building the index from Hugging Face needs this; answering never does, and the
 # deployment fetches a prebuilt index at boot. Keeping it out of the base
